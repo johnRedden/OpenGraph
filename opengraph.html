@@ -195,7 +195,6 @@
 					cc.style.visibility=	"visible";
 					cc.style.display=	"table-cell";
 					parent.val([parent.css("left"), parent.css("right"), getInnerWidth($(cc)), getInnerHeight($(cc))]);
-					alert(parent.val()[3]);
 					if(parent.hasClass("dockable-left"))
 					{
 						$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
@@ -209,7 +208,6 @@
 				else
 				{
 					parent.val([parent.css("left"), parent.css("right"), getInnerWidth($(cc)), getInnerHeight($(cc))]);
-					alert(parent.val()[3]);
 					cc.style.visibility=	"hidden";
 					cc.style.display=	"none";
 					$(e.target).height(parent.val()[3]+"px");
