@@ -22,7 +22,6 @@
     <script type="text/javascript" src="js/jquery-ui.js"></script>
     <script type="text/javascript" src="js/mathquill.js"></script>
     <!-- Our Files /-->
-    <script type="text/javascript" src="js/PemdasReader.js"></script>
     <script type="text/javascript" src="js/OpenGraphAppPaper.js"></script>
     <script type="text/javascript" src="js/OpenGraphAppEntry.js"></script>
     <script type="text/javascript" src="js/OpenGraph.js"></script>
@@ -90,32 +89,105 @@
             height: 128px;
         }
 
-            div.listbox .item {
-                width: 100%;
-                height: 32px;
-            }
+		div.listbox .item {
+			width: 100%;
+			height: 32px;
+		}
 
-                div.listbox .item span {
-                    width: 10%;
-                    height: 32px;
-                    letter-spacing: 2px;
-                    text-align: center;
-                    line-height: 32px;
-                    cursor: pointer;
-                    float: left;
-                    display: inline-block;
-                }
+		div.listbox .item span {
+			width: 10%;
+			height: 32px;
+			letter-spacing: 2px;
+			text-align: center;
+			line-height: 32px;
+			cursor: pointer;
+			float: left;
+			display: inline-block;
+		}
 
-                    div.listbox .item span:hover {
-                        background-color: #aaddff;
-                    }
+		div.listbox .item span:hover {
+			background-color: #aaddff;
+		}
 
-                div.listbox .item textarea {
-                    width: 90%;
-                    height: 32px;
-                    clear: both;
-                }
+		div.listbox .item textarea {
+			width: 90%;
+			height: 32px;
+			clear: both;
+		}
+		
+		.collapse-container
+		{
+			min-width:	48px;
+			min-height:	48px;
+			position:	absolute;
+			right:	15px;
+			display:	table;
+			z-index:	1000;
+			user-select:	none;
+			-moz-user-select:	none;
+			-webkit-user-select:	none;
+		}
+		
+		.collapser
+		{
+			background-color:	#ffffff;
+			border:	1px #cccccc solid;
+			width:	48px;
+			display:	table-cell;
+			z-index:	1000;
+		}
+		
+		.collapser:hover
+		{
+			background-color:	#e6e6e6;
+			cursor:	pointer;
+			border-color:	#adadad;
+		}
+		
+		.collapser span.glyphicon
+		{
+			width:	100%;
+			text-align:	center;
+			height:	48px;
+		}
+		
+		.collapse-content
+		{
+			background-color:	#dddddd;
+			border:	1px solid #cccccc;
+			display:	table-cell;
+			width:	auto;
+			transition:	width 1s;
+			padding:	4px;
+			z-index:	1000;
+		}
     </style>
+	
+	<script type="text/javascript">
+		$(document).ready(function()
+		{
+			$(".collapser").click(function(e)
+			{
+				// Variables
+				var	cc=	$($(e.target).parents(".collapse-container")[0]).find(".collapse-content")[0];
+				
+				// Move the thing over and dock and undock and whatever
+				// if( $($(e.target).parents(".collapse-container")[0]).hasClass("dockable") )
+				if(cc.style.width== "0px")
+				{
+					cc.style.width=	"auto";
+					cc.style.visibility=	"visible";
+					$(this).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
+				}
+				else
+				{
+					cc.style.width=	"0px";
+					cc.style.visibility=	"collapse";
+					$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+				}
+			});
+		});
+	</script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -149,27 +221,41 @@
         </div>
 
     </div>
+	
+	<div class="collapse-container">
+		
+		<div class="collapser">
+			<span class="glyphicon glyphicon-menu-right"></span>
+		</div>
+		
+		<div class="collapse-content">
+			
+			<div class="btn-group-vertical">
+				
+				<div class="btn-group-sm">
+					<div id="resetHome" class="btn btn-default btn-sm" title="Reset Home" size="10"><div class="glyphicon glyphicon-screenshot"></div></div>
+					<div id="resetZoom" class="btn btn-default btn-sm" title="Reset Zoom" size="10"><div class="glyphicon glyphicon-fullscreen"></div></div>
+				</div>
+				<div>
+					<span id="toggleZoomType" class="btn btn-default btn-sm" title="Toggle Zoom Type" style="width: 76px;">
+						<span class="glyphicon glyphicon-zoom-in"></span>
+						<span id="zoomType" style="font-family:'Courier New', Courier, monospace">xy</span>
+					</span>
+				</div>
+				<div class="btn-group-sm">
+					<span id="zoomIn" class="btn btn-default btn-sm" title="Zoom in" size="10"><span class="glyphicon glyphicon-zoom-in"></span></span>
+					<span id="zoomOut" class="btn btn-default btn-sm" title="Zoom out" size="10"><span class="glyphicon glyphicon-zoom-out"></span></span>
+				</div>
 
-    <div class="btn-group-vertical" style="position: absolute; top: 15px; right: 15px; z-index:1000;">
-
-        <div class="btn-group-sm">
-            <div id="resetHome" class="btn btn-default btn-sm" title="Reset Home" size="10"><div class="glyphicon glyphicon-screenshot"></div></div>
-            <div id="resetZoom" class="btn btn-default btn-sm" title="Reset Zoom" size="10"><div class="glyphicon glyphicon-fullscreen"></div></div>
-        </div>
-        <span id="toggleZoomType" class="btn btn-default btn-sm" title="Toggle Zoom Type">
-            <span class="glyphicon glyphicon-zoom-in"></span>
-            <span id="zoomType" style="font-family:'Courier New', Courier, monospace">xy</span>
-        </span>
-        <div class="btn-group-sm">
-            <span id="zoomIn" class="btn btn-default btn-sm" title="Zoom in" size="10"><span class="glyphicon glyphicon-zoom-in"></span></span>
-            <span id="zoomOut" class="btn btn-default btn-sm" title="Zoom out" size="10"><span class="glyphicon glyphicon-zoom-out"></span></span>
-        </div>
-
-    </div>
-
-    <div id="shfuncs" class="btn btn-default" style="position: absolute; top: 15px; right: 135px; z-index: 1000;">
+			</div>
+			
+		</div>
+		
+	</div>
+	
+    <!--<div id="shfuncs" class="btn btn-default" style="position: absolute; top: 15px; right: 135px; z-index: 1000;">
         <span class="glyphicon glyphicon-menu-down"></span>
-    </div>
+    </div>/-->
 
     <div id="m-entry" class="listbox">
         <div class="item"><span>y =</span><textarea></textarea></div>
