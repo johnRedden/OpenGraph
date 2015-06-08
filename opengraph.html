@@ -1,0 +1,178 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!-- I know!  I'm still working on it. (John Redden: jtredden@gmail.com)-->
+    <title>Open Graph Alpha</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/jsxgraph.css" rel="stylesheet" />
+    <link href="css/mathquill.css" rel="stylesheet" />
+    <link href="css/jquery-ui.min.css" rel="stylesheet" />
+
+
+    <script type="text/javascript" src="js/mathjs.js"></script>
+    <script type="text/javascript" src="js/jsxgraphcore.js"></script>
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/mathquill.js"></script>
+    <!-- Our Files /-->
+    <script type="text/javascript" src="js/PemdasReader.js"></script>
+    <script type="text/javascript" src="js/OpenGraphAppPaper.js"></script>
+    <script type="text/javascript" src="js/OpenGraphAppEntry.js"></script>
+    <script type="text/javascript" src="js/OpenGraph.js"></script>
+
+    <style>
+        .myForm {
+            position: absolute;
+            top: 50px;
+            left: 15px;
+            width: 300px;
+        }
+
+        .entry:not(:first-of-type) {
+            margin-top: 10px;
+        }
+
+        .entry {
+            position: relative;
+            padding: 5px;
+            border-color: lightgray;
+            border-width: 1px;
+            border-radius: 4px;
+            border-style: solid;
+            background-color: white;
+            font-size: larger;
+            height: 70px;
+            z-index: 1000;
+            transition: opacity 800ms, visibility 800ms;
+        }
+
+        .mathinput {
+            position: absolute;
+            width: 155px;
+            height: 85%;
+            padding: 4px;
+            margin-left: 4px;
+            background-color: oldlace;
+        }
+
+        .showColor {
+            cursor: pointer;
+        }
+
+        .btn-add {
+            color: lightgreen;
+        }
+
+        .btn-remove {
+            color: lightcoral;
+        }
+        .btn-group-sm{
+            padding-bottom:3px;
+            padding-top:3px;
+        }
+
+        #m-entry {
+            display: block;
+            position: absolute;
+        }
+
+        div.listbox {
+            padding-left: 0px;
+            overflow: auto;
+            width: 100%;
+            height: 128px;
+        }
+
+            div.listbox .item {
+                width: 100%;
+                height: 32px;
+            }
+
+                div.listbox .item span {
+                    width: 10%;
+                    height: 32px;
+                    letter-spacing: 2px;
+                    text-align: center;
+                    line-height: 32px;
+                    cursor: pointer;
+                    float: left;
+                    display: inline-block;
+                }
+
+                    div.listbox .item span:hover {
+                        background-color: #aaddff;
+                    }
+
+                div.listbox .item textarea {
+                    width: 90%;
+                    height: 32px;
+                    clear: both;
+                }
+    </style>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+    <div id="myBox" class="jxgbox" style="position:absolute; width:100px; height:100px;"></div>
+
+    <div class="container-fluid" style="top: 0px; background-color:black; opacity:0.5; "><h4 id="header" style="color:white"><em>OpenGraph <sub>&alpha; 0.1</sub></em></h4></div>
+
+    <div class="myForm">
+        <!-- make these collapsable -->
+
+        <div class="entry">
+            <span class="btn-group-sm btn-group-vertical">
+                <span class="showColor btn btn-default" style="color:white">y =</span>
+                <span class="dashed btn btn-default" style="color:gray"><span class="glyphicon glyphicon-option-horizontal"></span></span>
+            </span>
+            <span class="mathinput">
+                <span class="mathquill-editable"></span>
+            </span>
+            <span class="btn-group pull-right">
+                <span class="btn btn-default map"> <span class="glyphicon glyphicon-map-marker"></span> </span>
+                <span class="btn btn-default btn-add"> <span class="glyphicon glyphicon-plus"></span> </span>
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="btn-group-vertical" style="position: absolute; top: 15px; right: 15px; z-index:1000;">
+
+        <div class="btn-group-sm">
+            <div id="resetHome" class="btn btn-default btn-sm" title="Reset Home" size="10"><div class="glyphicon glyphicon-screenshot"></div></div>
+            <div id="resetZoom" class="btn btn-default btn-sm" title="Reset Zoom" size="10"><div class="glyphicon glyphicon-fullscreen"></div></div>
+        </div>
+        <span id="toggleZoomType" class="btn btn-default btn-sm" title="Toggle Zoom Type">
+            <span class="glyphicon glyphicon-zoom-in"></span>
+            <span id="zoomType" style="font-family:'Courier New', Courier, monospace">xy</span>
+        </span>
+        <div class="btn-group-sm">
+            <span id="zoomIn" class="btn btn-default btn-sm" title="Zoom in" size="10"><span class="glyphicon glyphicon-zoom-in"></span></span>
+            <span id="zoomOut" class="btn btn-default btn-sm" title="Zoom out" size="10"><span class="glyphicon glyphicon-zoom-out"></span></span>
+        </div>
+
+    </div>
+
+    <div id="shfuncs" class="btn btn-default" style="position: absolute; top: 15px; right: 135px; z-index: 1000;">
+        <span class="glyphicon glyphicon-menu-down"></span>
+    </div>
+
+    <div id="m-entry" class="listbox">
+        <div class="item"><span>y =</span><textarea></textarea></div>
+    </div>
+</body>
+</html>
