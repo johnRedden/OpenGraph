@@ -10,7 +10,7 @@ $(document).ready(function()
 	$(".entry")[0].graphRef;
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;
-	$(".entry").draggable();
+	$(".entry").draggable({ disabled: true }); // only want to drag in grabber.
 	$("#m-entry").graphRef;
 	
 	entryFocusMath($(".entry")[0]);
@@ -20,6 +20,8 @@ $(document).ready(function()
 	).on("click", ".btn-remove", onRemoveClick
 	).on("click", ".map", onMapClick
 	).on("click", ".showColor", onShowColorClick
+    ).on("mouseover", ".grabber", makeDraggable
+    ).on("mouseout", ".grabber", makeUnDraggable
 	).on("click", ".dashed", onDashedClick
 	).on("click", ".mathinput", onMathInputClick
 	).on("keyup", ".entry", onEntryKeyUp);
@@ -188,6 +190,13 @@ function onShowColorClick(e)
 	if(currEntry[0].graphRef)
 		(currEntry[0].graphRef).setProperty({strokeColor: currEntry[0].color});
 	displayColorToEntry(currEntry);
+}
+// enable entry dragging.
+function makeDraggable(e) {
+     $(this).parents(".entry").draggable({ disabled: false });
+}
+function makeUnDraggable(e) {
+    $(this).parents(".entry").draggable({ disabled: true });
 }
 
 // Called whenever the user wants to toggle between a dashed equation
