@@ -40,29 +40,45 @@
 
         .entry {
             position: relative;
-            padding: 5px;
+            padding: 4px;
+
             border-color: lightgray;
             border-width: 1px;
-            border-radius: 4px;
+            border-radius: 2px;
             border-style: solid;
             background-color: white;
             font-size: larger;
-            height: 70px;
+            height: 78px;
             z-index: 1000;
             transition: opacity 800ms, visibility 800ms;
+        }
+        .grabber{
+            position:absolute;
+            width:20px;
+            height: 90%;
+
+            background-image:url(imgs/grabber2.gif);
+            background-repeat: repeat-y;
         }
 
         .mathinput {
             position: absolute;
-            width: 155px;
-            height: 85%;
+            width: 167px;
+            height: 90%;
             padding: 4px;
-            margin-left: 4px;
+            margin-left: 15px;
             background-color: oldlace;
         }
-
-        .showColor {
+        .showColor{
+            
+            width:15px;
+            height: 100%;
+            background-color: lightblue;
             cursor: pointer;
+            margin-left:2px;
+        }
+        .spcLeft{
+            margin-left:2px;
         }
 
         .btn-add {
@@ -206,19 +222,22 @@
         <!-- make these collapsable -->
 
         <div class="entry">
-            <span class="btn-group-sm btn-group-vertical">
-                <span class="showColor btn btn-default" style="color:white">y =</span>
-                <span class="dashed btn btn-default" style="color:gray"><span class="glyphicon glyphicon-option-horizontal"></span></span>
-            </span>
+            <span class="grabber"></span>
             <span class="mathinput">
                 <span class="mathquill-editable"></span>
             </span>
-            <span class="btn-group pull-right">
-                <span class="btn btn-default map"> <span class="glyphicon glyphicon-map-marker"></span> </span>
+            <span class="showColor  pull-right spcLeft"></span>
+            <span class="btn-group-vertical pull-right spcLeft">
                 <span class="btn btn-default btn-add"> <span class="glyphicon glyphicon-plus"></span> </span>
+                <span class="btn btn-default"><span class="glyphicon glyphicon-import"></span></span>
             </span>
-
+            <span class="btn-group-vertical pull-right spcLeft">
+                <span class="btn btn-default map"> <span class="glyphicon glyphicon-map-marker"></span> </span>
+                <span class="dashed btn btn-default" style="color:gray"><span class="glyphicon glyphicon-option-horizontal"></span></span>
+            </span>
         </div>
+
+    </div>
 
     </div>
 	
