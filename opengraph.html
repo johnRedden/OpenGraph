@@ -133,7 +133,7 @@
 		
 		.collapse-container
 		{
-			min-width:	48px;
+			min-width:	35px;
 			min-height:	48px;
 			position:	absolute;
 			right:	15px;
@@ -148,7 +148,7 @@
 		{
 			background-color:	#ffffff;
 			border:	1px #cccccc solid;
-			width:	48px;
+			width:	35px;
 			display:	table-cell;
 			z-index:	1000;
 		}
@@ -185,23 +185,57 @@
 			$(".collapser").click(function(e)
 			{
 				// Variables
-				var	cc=	$($(e.target).parents(".collapse-container")[0]).find(".collapse-content")[0];
+				var	parent=	$($(e.target).parents(".collapse-container")[0]);
+				var	cc=	parent.find(".collapse-content")[0];
 				
 				// Move the thing over and dock and undock and whatever
 				// if( $($(e.target).parents(".collapse-container")[0]).hasClass("dockable") )
-				if(cc.style.width== "0px")
+				if(cc.style.visibility== "hidden")
 				{
-					cc.style.width=	"auto";
 					cc.style.visibility=	"visible";
-					$(this).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
+					cc.style.display=	"table-cell";
+					parent.val([parent.css("left"), parent.css("right"), getInnerWidth($(cc)), getInnerHeight($(cc))]);
+					alert(parent.val()[3]);
+					if(parent.hasClass("dockable-left"))
+					{
+						$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+					}
+					else if(parent.hasClass("dockable-right"))
+					{
+						$(this).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
+						parent.css({right: parent.val()[1]});
+					}
 				}
 				else
 				{
-					cc.style.width=	"0px";
-					cc.style.visibility=	"collapse";
-					$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+					parent.val([parent.css("left"), parent.css("right"), getInnerWidth($(cc)), getInnerHeight($(cc))]);
+					alert(parent.val()[3]);
+					cc.style.visibility=	"hidden";
+					cc.style.display=	"none";
+					$(e.target).height(parent.val()[3]+"px");
+					if(parent.hasClass("dockable-left"))
+					{
+						$(this).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
+						parent.css({left: "0px"});
+					}
+					else if(parent.hasClass("dockable-right"))
+					{
+						$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+						parent.css({right: "0px"});
+					}
 				}
 			});
+			//$(".collapser").click().click();
+			
+			function getInnerWidth(obj)
+			{
+				return obj.outerWidth()-obj.width();
+			}
+			
+			function getInnerHeight(obj)
+			{
+				return obj.outerHeight()-obj.height();
+			}
 		});
 	</script>
 
@@ -241,7 +275,7 @@
 
     </div>
 	
-	<div class="collapse-container">
+	<div class="collapse-container dockable-right">
 		
 		<div class="collapser">
 			<span class="glyphicon glyphicon-menu-right"></span>
