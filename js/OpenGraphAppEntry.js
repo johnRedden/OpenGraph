@@ -1,4 +1,4 @@
-
+/// <reference path="bootstrap.js" />
 
 // Variables
 var	colors=	['SlateGray', 'RoyalBlue', 'SeaGreen', 'Violet', 'Coral'];
@@ -24,6 +24,7 @@ $(document).ready(function()
     ).on("mouseout", ".grabber", makeUnDraggable
 	).on("click", ".dashed", onDashedClick
 	).on("click", ".mathinput", onMathInputClick
+    ).on("click", ".drawer1", onDrawerClick
 	).on("keyup", ".entry", onEntryKeyUp);
 	
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);
@@ -162,7 +163,8 @@ function onAddClick(e)
 	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');//TODO give focus
 	displayColorToEntry(newEntry);//newEntry.find('.showColor').css({ backgroundColor: newEntry[0].color });
 	newEntry.find('.dashed').css({ color: colors[0] });
-	newEntry.draggable();
+	newEntry.draggable({ disabled: true }); // only want to drag in grabber.
+	
 	
 	// change the button faces
 	controlForm.find('.entry:not(:last) .btn-add'
@@ -191,9 +193,18 @@ function onShowColorClick(e)
 		(currEntry[0].graphRef).setProperty({strokeColor: currEntry[0].color});
 	displayColorToEntry(currEntry);
 }
+// Called whenever the drawer button is clicked
+function onDrawerClick(e) {
+    // Variables
+    console.log("hi");
+    var currEntry = $(this).parents(".entry");
+    currEntry.find(".collapse").collapse("toggle");
+
+    
+}
 // enable entry dragging.
 function makeDraggable(e) {
-     $(this).parents(".entry").draggable({ disabled: false });
+    $(this).parents(".entry").draggable({ disabled: false });
 }
 function makeUnDraggable(e) {
     $(this).parents(".entry").draggable({ disabled: true });

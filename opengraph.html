@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <!-- I know!  I'm still working on it. (John Redden: jtredden@gmail.com)-->
+    <!-- (John Redden: jtredden@gmail.com  and Paul too ( ?? )-->
     <title>Open Graph Alpha</title>
 
     <!-- Bootstrap -->
@@ -21,21 +21,31 @@
     <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="js/jquery-ui.js"></script>
     <script type="text/javascript" src="js/mathquill.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
     <!-- Our Files /-->
     <script type="text/javascript" src="js/OpenGraphAppPaper.js"></script>
     <script type="text/javascript" src="js/OpenGraphAppEntry.js"></script>
     <script type="text/javascript" src="js/OpenGraph.js"></script>
 
     <style>
-        .myForm {
+        .noselect {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+          .myForm {
             position: absolute;
             top: 50px;
             left: 15px;
             width: 300px;
+           
         }
 
         .entry:not(:first-of-type) {
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         .entry {
@@ -66,7 +76,7 @@
             position: absolute;
             width: 167px;
             height: 90%;
-            padding: 4px;
+            padding: 8px;
             margin-left: 15px;
             background-color: oldlace;
         }
@@ -80,6 +90,13 @@
         }
         .spcLeft{
             margin-left:2px;
+        }
+        .hiddenRow{
+            position:absolute;
+            margin-top:75px;
+            width:95%;
+            float:right;
+            
         }
 
         .btn-add {
@@ -246,15 +263,15 @@
     <![endif]-->
 </head>
 <body>
-
+    
     <div id="myBox" class="jxgbox" style="position:absolute; width:100px; height:100px;"></div>
-
-    <div class="container-fluid" style="top: 0px; background-color:black; opacity:0.5; "><h4 id="header" style="color:white"><em>OpenGraph <sub>&alpha; 0.1</sub></em></h4></div>
-
+   
+    <div class="container-fluid noselect" style="top: 0px; background-color:black; opacity:0.5; "><h4 id="header" style="color:white"><em>OpenGraph <sub>&alpha; 0.1</sub></em></h4></div>
+    
     <div class="myForm">
-        <!-- make these collapsable -->
+        <!-- all in this form makes the whole thing jumpy... TODO: Redesign using Entry only Ughh. -->
 
-        <div class="entry">
+        <div class="entry noselect">
             <span class="grabber"></span>
             <span class="mathinput">
                 <span class="mathquill-editable"></span>
@@ -262,16 +279,25 @@
             <span class="showColor  pull-right spcLeft"></span>
             <span class="btn-group-vertical pull-right spcLeft">
                 <span class="btn btn-default btn-add"> <span class="glyphicon glyphicon-plus"></span> </span>
-                <span class="btn btn-default"><span class="glyphicon glyphicon-import"></span></span>
+                <span class="btn btn-default drawer1"><span class="glyphicon glyphicon-import"></span></span>
             </span>
             <span class="btn-group-vertical pull-right spcLeft">
                 <span class="btn btn-default map"> <span class="glyphicon glyphicon-map-marker"></span> </span>
                 <span class="dashed btn btn-default" style="color:gray"><span class="glyphicon glyphicon-option-horizontal"></span></span>
             </span>
+            <span class="collapse hiddenRow">
+                <span class="btn-group pull-right">
+                    <span class="btn">Extras:</span>
+                    <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
+                    <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
+                    <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
+                    <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
+                </span>
+            </span>
         </div>
 
     </div>
-
+    
     
 	
 	<div class="collapse-container dockable-right">
