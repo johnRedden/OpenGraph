@@ -160,11 +160,11 @@ function onAddClick(e)
 	var	newEntry= 	$(currentEntry.clone()).appendTo(controlForm);
 	
 	newEntry[0].color= nextColor();
-	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');//TODO give focus
-	displayColorToEntry(newEntry);//newEntry.find('.showColor').css({ backgroundColor: newEntry[0].color });
-	newEntry.find('.dashed').css({ color: colors[0] });
-	newEntry.draggable({ disabled: true }); // only want to drag in grabber.
-	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus(); //hack to focus mathquill??
+	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
+	displayColorToEntry(newEntry);
+	newEntry.find('.dashed').css({ color: "DarkGray" });
+	newEntry.draggable({ disabled: true });
+	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus();
 	
 	
 	// change the button faces
@@ -223,13 +223,13 @@ function onDashedClick(e)
 		{
 			(currEntry[0].graphRef).setProperty({dash: 0});
 			currEntry[0].dashed=	false;
-			currEntry.find(".dashed").css({color: colors[0]});
+			currEntry.find(".dashed").css({color: "DarkGray"});
 		}
 		else
 		{
 			(currEntry[0].graphRef).setProperty({dash: 2});
 			currEntry[0].dashed=	true;
-			currEntry.find(".dashed").css({color: "red"});
+			currEntry.find(".dashed").css({color: "Black"});
 		}
 	}
 	else
@@ -264,14 +264,15 @@ function onEntryKeyUp(e)
 	var	currEntry=	$(e.target).parents(".entry")[0];
 	
 	if(e.keyCode=== 13)
+	{
 		$(currEntry).find(".btn-add").trigger("click");
+	}
 	
 	renderGraph(currEntry);
 	
 	if(currEntry.dashed)
 	{
-		$(currEntry).find(".dashed").trigger("click");
-		$(currEntry).find(".dashed").trigger("click");
+		$(currEntry).find(".dashed").click().click();
 	}
 }
 
