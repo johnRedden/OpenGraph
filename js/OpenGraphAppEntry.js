@@ -162,7 +162,7 @@ function onAddClick(e)
 	newEntry[0].color= nextColor();
 	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
 	displayColorToEntry(newEntry);
-	newEntry.find('.dashed').css({ color: "DarkGray" });
+	newEntry.find('.dashed').css({ color: "LightGray" });
 	newEntry.draggable({ disabled: true });
 	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus();
 	
@@ -223,7 +223,7 @@ function onDashedClick(e)
 		{
 			(currEntry[0].graphRef).setProperty({dash: 0});
 			currEntry[0].dashed=	false;
-			currEntry.find(".dashed").css({color: "DarkGray"});
+			currEntry.find(".dashed").css({color: "LightGray"});
 		}
 		else
 		{
