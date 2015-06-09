@@ -164,6 +164,7 @@ function onAddClick(e)
 	displayColorToEntry(newEntry);//newEntry.find('.showColor').css({ backgroundColor: newEntry[0].color });
 	newEntry.find('.dashed').css({ color: colors[0] });
 	newEntry.draggable({ disabled: true }); // only want to drag in grabber.
+	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus(); //hack to focus mathquill??
 	
 	
 	// change the button faces

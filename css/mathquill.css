@@ -189,9 +189,11 @@
 }
 .mathquill-editable.hasCursor,
 .mathquill-editable .hasCursor {
+    /*
   -webkit-box-shadow: #68b4df 0 0 3px 2px;
   -moz-box-shadow: #68b4df 0 0 3px 2px;
   box-shadow: #68b4df 0 0 3px 2px;
+        */
 }
 .mathquill-editable .latex-command-input {
   color: inherit;
@@ -200,6 +202,8 @@
   padding-right: 1px;
   margin-right: 1px;
   margin-left: 2px;
+
+
 }
 .mathquill-editable .latex-command-input.empty {
   background: transparent;
