@@ -8,6 +8,7 @@ var	n=	0;
 $(document).ready(function()
 {
 	$(".entry")[0].graphRef;
+	$(".entry")[0].gliderRefs=	new Array();
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;
 	$(".entry").draggable({ disabled: true }); // only want to drag in grabber.
@@ -211,6 +212,8 @@ function onShowColorClick(e)
 	currEntry[0].color=	nextColor();
 	if(currEntry[0].graphRef)
 		(currEntry[0].graphRef).setProperty({strokeColor: currEntry[0].color});
+	for(var i= 0; i< currEntry[0].gliderRefs.length; i++)
+		currEntry[0].gliderRefs[i].setProperty({color: currEntry[0].color});
 	displayColorToEntry(currEntry);
 }
 // Called whenever the drawer button is clicked
@@ -262,7 +265,7 @@ function onMapClick(e)
 	var	currEntry=	$(this).parents(".entry");
 	
 	if(currEntry[0].graphRef)
-		board.create("glider", [0, 0, currEntry[0].graphRef], {color: currEntry[0].color});
+		currEntry[0].gliderRefs.push(board.create("glider", [0, 0, currEntry[0].graphRef], {color: currEntry[0].color}));
 	else
 		currEntry.effect("shake", {times: 2}, 700);
 }
