@@ -36,35 +36,37 @@
                 -ms-user-select: none;
                 user-select: none;
             }
-          .myForm {
-            position: absolute;
+        /* ENTRY css *****************************/
+        .myForm {
+            position:absolute;
             top: 50px;
             left: 15px;
-            width: 300px;
-           
+            width:350px;
         }
 
         .entry:not(:first-of-type) {
-            margin-top: 40px;
+            margin-top: 36px;
         }
 
         .entry {
-            position: relative;
+            
             padding: 4px;
 
             border-color: lightgray;
             border-width: 1px;
             border-radius: 2px;
             border-style: solid;
-            background-color: white;
+
+            background-color:white;
             font-size: larger;
             height: 78px;
+            width:100%;
             z-index: 1000;
             transition: opacity 800ms, visibility 800ms;
         }
         .grabber{
-            position:absolute;
-            width:20px;
+            float:left;
+            width:12px;
             height: 90%;
             cursor:move;
 
@@ -72,38 +74,36 @@
             background-repeat: repeat-y;
         }
         .mathinput {
-            position: absolute;
-            width: 167px;
-            height: 90%;
+            float:left;
+            margin-left:4px;
+            /* this is tough... fixed width is best I can do*/
+            width:220px;
+            height:100%;
             padding: 8px;
-            margin-left: 15px;
+            
             background-color: oldlace;
-           
         }
         .mathquill-editable{
             position: relative;
             top: 50%;
             transform: translateY(-55%);
         }
+  
         .showColor{
-            
-            width:15px;
-            height: 100%;
-            background-color: lightblue;
-            cursor: pointer;
-            margin-left:2px;
+            float:right;
+            width: 12px;
+            height:100%;
         }
         .spcLeft{
             margin-left:2px;
+            float:left;
         }
         .hiddenRow{
-            position:absolute;
-            margin-top:75px;
-            width:95%;
-            float:right;
-            
+            margin-top:4px;
+            width:100%;
+            float:left;
         }
-
+        
         .btn-add {
             color: lightgreen;
         }
@@ -111,6 +111,7 @@
         .btn-remove {
             color: lightcoral;
         }
+        /* end ENTRY css****************/
         .btn-group-sm{
             padding-bottom:3px;
             padding-top:3px;
@@ -264,22 +265,23 @@
         <!-- all in this form makes the whole thing jumpy... TODO: Redesign using Entry only Ughh. -->
 
         <div class="entry noselect">
+            <span class="showColor"></span>
             <span class="grabber"></span>
-            <span class="mathinput">
-                <span class="mathquill-editable"></span>
-            </span>
-            <span class="showColor  pull-right spcLeft"></span>
-            <span class="btn-group-vertical pull-right spcLeft">
+            <span class="btn-group-vertical spcLeft">
                 <span class="btn btn-default btn-add"> <span class="glyphicon glyphicon-plus"></span> </span>
                 <span class="btn btn-default drawer1"><span class="glyphicon glyphicon-import"></span></span>
             </span>
-            <span class="btn-group-vertical pull-right spcLeft">
+            <span class="btn-group-vertical  spcLeft">
                 <span class="btn btn-default map"> <span class="glyphicon glyphicon-map-marker"></span> </span>
                 <span class="dashed btn btn-default" style="color:LightGray;"><span class="glyphicon glyphicon-option-horizontal"></span></span>
             </span>
+            <span class="mathinput">
+                <span class="mathquill-editable"></span>
+            </span>
+
             <span class="collapse hiddenRow">
-                <span class="btn-group pull-right">
-                    <span class="btn">Extras:</span>
+                <span class="btn-group">
+                    <span class="btn btn-default">Extras:</span>
                     <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
                     <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
                     <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
