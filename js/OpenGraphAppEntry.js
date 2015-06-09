@@ -11,7 +11,7 @@ $(document).ready(function()
 	$(".entry")[0].gliderRefs=	new Array();
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;
-	$(".entry").draggable({ disabled: true }); // only want to drag in grabber.
+	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
 	$("#m-entry").graphRef;
 	
 	entryFocusMath($(".entry")[0]);
