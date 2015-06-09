@@ -159,6 +159,13 @@ function onAddClick(e)
 	var	currentEntry=	$(this).parents(".entry");
 	var	newEntry= 	$(currentEntry.clone()).appendTo(controlForm);
 	
+	if(newEntry.offset().top+newEntry.height()> $(window).height())
+	{
+		// Variables
+		var	offset=	newEntry.offset();
+		
+		newEntry.offset({top: 64, left: offset.left+64, right: offset.right, bottom: offset.bottom});
+	}
 	newEntry[0].color= nextColor();
 	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
 	displayColorToEntry(newEntry);
@@ -178,9 +185,21 @@ function onRemoveClick(e)
 {
 	// Variables
 	var	currEntry=	$(this).parents(".entry");
+	var	locations=	new Array();
 	
 	removeFromGraph(currEntry[0]);
+	$(".entry").each(function(index, elem)
+	{
+		if(elem=== currEntry[0])
+			return;
+		
+		locations.push($(elem).offset());
+	});
 	currEntry.remove();
+	$(".entry").each(function(index, elem)
+	{
+		$(elem).offset(locations[index]);
+	});
 }
 
 // Called whenever the user changes the color of the equation
