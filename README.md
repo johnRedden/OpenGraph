@@ -1,8 +1,9 @@
 # OpenGraph
-First Draft of OpenGraph
-
-We are working on this right now... view progress here:
+This will become an open source project... not quite ready but here is the current version:
 
 https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html
+
+This project is based on JSXGraph: 
+http://jsxgraph.uni-bayreuth.de/wp/
 
 --
