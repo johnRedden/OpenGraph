@@ -42,9 +42,10 @@ function nextColor()
 }
 
 // Displays the color to the entry loader thingy mabober... NOTE: What is the official name to that thing?
+// John Says - huh - you mean the color indicator ?
 function displayColorToEntry(entry)
 {
-	entry.find(".showColor").css({backgroundColor: entry[0].color});
+    entry.find(".showColor").css({ 'background-color': entry[0].color });
 }
 	
 // Focuses on mathquill's textarea
@@ -171,7 +172,7 @@ function onAddClick(e)
 	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
 	displayColorToEntry(newEntry);
 	newEntry.find('.dashed').css({ color: "LightGray" });
-	newEntry.draggable({ disabled: true });
+	newEntry.draggable({ disabled: true });  // TODO: change to mobile friendly
 	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus();
 	
 	
@@ -211,9 +212,15 @@ function onShowColorClick(e)
 	
 	currEntry[0].color=	nextColor();
 	if(currEntry[0].graphRef)
-		(currEntry[0].graphRef).setProperty({strokeColor: currEntry[0].color});
-	for(var i= 0; i< currEntry[0].gliderRefs.length; i++)
-		currEntry[0].gliderRefs[i].setProperty({color: currEntry[0].color});
+	    (currEntry[0].graphRef).setProperty({ strokeColor: currEntry[0].color });
+	try{
+	    for(var i= 0; i< currEntry[0].gliderRefs.length; i++)
+	        currEntry[0].gliderRefs[i].setProperty({color: currEntry[0].color});
+	} catch (e) {
+        // sometimes there are not any gliders and length is undefined.
+	    //console.log(e);
+	}
+
 	displayColorToEntry(currEntry);
 }
 // Called whenever the drawer button is clicked
