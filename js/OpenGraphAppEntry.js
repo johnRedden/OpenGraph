@@ -71,10 +71,10 @@ function renderGraph(inputObj)
 	var	userFunction;
 	var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
 	txt = fixInput(txt, inputObj).toLowerCase();
-	
+	console.log(txt.substring(0, 7));
 	if (txt.indexOf(",") !== -1 ){
 	    // if there is a comma try to plot a point
-	    // try to render text ((3,2)) as an array [3,2]  using the eval below
+	    // try to render text ((3,2)) as an array [3,2] using the eval below
 	    var modifiedTxt = eval( txt.replace("((", "[").replace("))", "]") );
 	    try {
 	        if(JXG.isArray(modifiedTxt)){
@@ -91,6 +91,26 @@ function renderGraph(inputObj)
 	    } catch (e) {
 	        console.log("with comma " + e);
 	    }
+
+	} else if (txt.substring(0,7)==="l*i*n*e") {
+	    //console.log(txt[8] + "," + txt[10]);
+
+	    try {
+	        var pt1 = board.select(txt[8].toUpperCase());
+	        var pt2 = board.select(txt[10].toUpperCase());
+	       
+	        if (JXG.isPoint(pt1) && JXG.isPoint(pt2)) {
+	            removeFromGraph(inputObj);
+	            inputObj.graphRef = board.create("line", [pt1,pt2],
+                {
+                    visible: true,
+                    strokeWidth: 2,
+                    strokeColor: inputObj.color
+                });
+	        }
+	    }
+	    catch (e) { console.log("caught " + e); }
+
 
 	} else {
 	    try {
@@ -168,7 +188,9 @@ function fixInput(txt, entry)
 	txt=	txt.replace("tan*h", "tanh");
 	txt=	txt.replace("s*q*r*t", "sqrt");
 	txt=	txt.replace("p*i", "pi");
-	txt=	txt.replace("xcdot", "");
+	txt = txt.replace("xcdot", "");
+
+	
 	
 	return txt;
 }
@@ -231,8 +253,11 @@ function onShowColorClick(e)
 	var	currEntry=	$(this).parents(".entry");
 	
 	currEntry[0].color=	nextColor();
-	if(currEntry[0].graphRef)
+	if (currEntry[0].graphRef)
 	    (currEntry[0].graphRef).setProperty({ strokeColor: currEntry[0].color });
+	    if (JXG.isPoint(currEntry[0].graphRef))
+	        (currEntry[0].graphRef).setProperty({ fillColor: currEntry[0].color });
+	    
 	try{
 	    for(var i= 0; i< currEntry[0].gliderRefs.length; i++)
 	        currEntry[0].gliderRefs[i].setProperty({color: currEntry[0].color});
