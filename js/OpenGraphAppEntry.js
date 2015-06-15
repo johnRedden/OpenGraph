@@ -7,13 +7,13 @@ var	n=	0;
 // Called when the page is loaded up
 $(document).ready(function()
 {
-	$(".entry")[0].bCollapsed=	false;
 	$(".entry")[0].graphRef;
 	$(".entry")[0].gliderRefs=	new Array();
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
 	$("#m-entry").graphRef;
+	$(".sideListbox")[0].items=	new Array();
 	
 	entryFocusMath($(".entry")[0]);
 	displayColorToEntry($(".entry"));
@@ -361,16 +361,77 @@ function onMobileEntryKeyUp(e)
 	renderGraphMobile(currEntry);
 }
 
+// Called whenever the collapse entry button has been clicked
 function onCollapseEntryClick(e)
 {
 	// Variables
 	var	currEntry=	$(e.target).parents(".entry")[0];
+	var	listbox=	$(".sideListbox")[0];
 	
-	if(!e.target.bCollapsed)
+	listbox.items.push(currEntry);
+	$(currEntry).hide();
+	updateListbox();
+}
+
+// Called when one of the listbox items clicked on the entry
+function uncollapseEntry(elem)
+{
+	// Variables
+	var	listbox=	$(".sideListbox")[0];
+	
+	for(var i= 0; i< listbox.items.length; i++)
 	{
-		e.target.bCollapsed=	true;
-		
+		if(listbox.items[i]=== $(elem).parents(".item")[0].refEntry)
+		{
+			$($(elem).parents(".item")[0].refEntry).show();
+			listbox.items=	removeFromArray(i, listbox.items);
+			updateListbox();
+			
+			return;
+		}
 	}
+}
+
+// Removes the given index from the array
+function removeFromArray(index, list)
+{
+	// Variables
+	var	result=	new Array();
+	
+	for(var i= 0; i< list.length; i++)
+	{
+		if(i!= index)
+			result.push(list[i]);
+	}
+	
+	return result;
+}
+
+// Updates the listbox of entries
+function updateListbox()
+{
+	// Variables
+	var	listbox=	$(".sideListbox")[0];
+	var	str=	"";
+	
+	if(listbox.items.length== 0)
+		$(listbox).hide();
+	else
+		$(listbox).show();
+	
+	for(var i= 0; i< listbox.items.length; i++)
+	{
+		str+=	"<div class='item' style='background-color: "+($(listbox.items[i]).find(".showColor").css("background-color"))+";'>";
+		str+=	"<span class='uncollapse' onclick='uncollapseEntry(this);'>";
+		str+=	"<span class='glyphicon glyphicon-menu-right'></span>";
+		str+=	"</span>";
+		str+=	"</div>";
+	}
+	$(listbox).html(str);
+	$(listbox).find(".item").each(function(index, elem)
+	{
+		elem.refEntry=	listbox.items[index];
+	});
 }
 
 // End of File

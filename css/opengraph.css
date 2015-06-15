@@ -209,5 +209,22 @@ div.listbox .item textarea {
 {
 	height:	32px;
 	width:	100%;
-	background-color:	red;
+}
+
+.sideListbox .uncollapse
+{
+	height:	100%;
+	width:	24px;
+	float:	right;
+	border:	1px solid #cccccc;
+	background-color:	#ffffff;
+	text-align:	center;
+	line-height:	32px;
+}
+
+.sideListbox .uncollapse:hover
+{
+	cursor:	pointer;
+	border-color:	#adadad;
+	background-color:	#e6e6e6;
 }
