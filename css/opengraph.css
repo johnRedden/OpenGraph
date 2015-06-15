@@ -198,7 +198,7 @@ div.listbox .item textarea {
 	z-index:	10;
 	height:	90%;
 	width:	64px;
-	background-color:	green;
+	background-color:	#e6e6e6;
 	position:	absolute;
 	top:	32px;
 	overflow:	auto;

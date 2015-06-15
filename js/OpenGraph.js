@@ -11,6 +11,11 @@ $(document).ready(function()
 	$(".collapser").click(onCollapseCollapser);
 });
 
+$(document).on("contextmenu", function(e)
+{
+	$("#header").text("EEEE");
+});
+
 // Called when the collapser has collapsed a collapsible collapser
 function onCollapseCollapser(e)
 {
