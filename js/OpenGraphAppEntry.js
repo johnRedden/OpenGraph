@@ -69,27 +69,47 @@ function renderGraph(inputObj)
 {
 	// Variables
 	var	userFunction;
-	var	txt=	$(inputObj).find(".mathquill-editable").mathquill("text");
-	var	convertedMath;
+	var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
+	txt = fixInput(txt, inputObj).toLowerCase();
 	
-	txt=	fixInput(txt, inputObj).toLowerCase();
-	convertedMath=	mathjs(txt);
-	
-	try
-	{
-		eval("userFunction= function(x) { with(Math) return "+convertedMath+" }");
-		if(JXG.isFunction(userFunction))
-		{
-			removeFromGraph(inputObj);
-			inputObj.graphRef=	board.create("functiongraph", userFunction,
-			{
-				visible:	true,
-				strokeWidth:	2,
-				strokeColor:	inputObj.color
-			});
-		}
+	if (txt.indexOf(",") !== -1 ){
+	    // if there is a comma try to plot a point
+	    // try to render text ((3,2)) as an array [3,2]  using the eval below
+	    var modifiedTxt = eval( txt.replace("((", "[").replace("))", "]") );
+	    try {
+	        if(JXG.isArray(modifiedTxt)){
+	            removeFromGraph(inputObj);
+	            inputObj.graphRef = board.create("point", modifiedTxt,
+                {
+                    visible: true,
+                    strokeColor: inputObj.color,
+                    fillColor: inputObj.color,
+                    fixed: true
+                });
+	        }
+	    
+	    } catch (e) {
+	        console.log("with comma " + e);
+	    }
+
+	} else {
+	    try {
+	        eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+	        if (JXG.isFunction(userFunction)) {
+	            removeFromGraph(inputObj);
+	            inputObj.graphRef = board.create("functiongraph", userFunction,
+                {
+                    visible: true,
+                    strokeWidth: 2,
+                    strokeColor: inputObj.color
+                });
+	        }
+	    }
+	    catch (e) { console.log("caught " + e); }
 	}
-	catch(e)	{	console.log("caught "+e);	}
+	
+	
+
 }
 
 // Renders the graph for the mobile view
