@@ -7,6 +7,7 @@ var	n=	0;
 // Called when the page is loaded up
 $(document).ready(function()
 {
+	$(".entry")[0].bCollapsed=	false;
 	$(".entry")[0].graphRef;
 	$(".entry")[0].gliderRefs=	new Array();
 	$(".entry")[0].color=	nextColor();
@@ -26,7 +27,8 @@ $(document).ready(function()
 	).on("click", ".dashed", onDashedClick
 	).on("click", ".mathinput", onMathInputClick
     ).on("click", ".drawer1", onDrawerClick
-	).on("keyup", ".entry", onEntryKeyUp);
+	).on("keyup", ".entry", onEntryKeyUp
+	).on("click", ".collapse-entry", onCollapseEntryClick);
 	
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);
 });
@@ -357,6 +359,18 @@ function onMobileEntryKeyUp(e)
 	var	currEntry=	$(e.target).parents("#m-entry")[0];
 	
 	renderGraphMobile(currEntry);
+}
+
+function onCollapseEntryClick(e)
+{
+	// Variables
+	var	currEntry=	$(e.target).parents(".entry")[0];
+	
+	if(!e.target.bCollapsed)
+	{
+		e.target.bCollapsed=	true;
+		
+	}
 }
 
 // End of File
