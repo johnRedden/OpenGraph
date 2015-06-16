@@ -35,6 +35,7 @@
 	width:108%;
 	z-index: 1000;
 	transition: opacity 800ms, visibility 800ms;
+
 }
 .grabber{
 	float:left;
@@ -70,6 +71,7 @@
 	line-height:	78px;
 	text-align:	center;
 	border:	1px #cccccc solid;
+
 }
 
 .collapse-entry:hover
@@ -77,6 +79,7 @@
 	cursor:	pointer;
 	background-color:	#e6e6e6;
 	border-color:	#adadad;
+   
 }
 
 .showColor{
@@ -200,9 +203,10 @@ div.listbox .item textarea {
 	width:	64px;
 	background-color:	#e6e6e6;
 	position:	absolute;
-	top:	32px;
+	top:	50px;
 	overflow:	auto;
 	display:	none;
+    
 }
 
 .sideListbox .item

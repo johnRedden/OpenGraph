@@ -364,6 +364,20 @@ function onMobileEntryKeyUp(e)
 // Called whenever the collapse entry button has been clicked
 function onCollapseEntryClick(e)
 {
+    var currEntry = $(e.target).parents(".entry")[0];
+    
+    if (currEntry.oldLeft) {
+        $(currEntry).animate({ left: currEntry.oldLeft }, "fast");
+        currEntry.oldLeft = 0;
+        //slide back should be constrained to the window.
+    } else {
+        console.log($(currEntry).offset().left);
+        currEntry.oldLeft = $(currEntry).offset().left;
+        $(currEntry).animate({ left: "-340px" }, "fast");
+        //-340px should be dependent on the size of Entry really
+        //TODO change the glyphicon to right
+    }
+    /*
 	// Variables
 	var	currEntry=	$(e.target).parents(".entry")[0];
 	var	listbox=	$(".sideListbox")[0];
@@ -371,6 +385,7 @@ function onCollapseEntryClick(e)
 	listbox.items.push(currEntry);
 	$(currEntry).hide();
 	updateListbox();
+    */
 }
 
 // Called when one of the listbox items clicked on the entry
