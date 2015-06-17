@@ -227,10 +227,6 @@ function onNewEntryClick(e)
 function onAddClick(e)
 {
     // Variables
-    console.log("Paul HELP");
-    // If the plus button is clicked... myForm may not have any entries
-    // So we need to find the latest entry and clone that OR if there are no entries in the form create a new one... but its gone??
-    // maybe store a blank entry somehow??
 	var controlForm=	$(".myForm");
 	var	currentEntry=	$(this).parents(".entry");
 	var	newEntry= 	$(currentEntry.clone()).appendTo(controlForm);

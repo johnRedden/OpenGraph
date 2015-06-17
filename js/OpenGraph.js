@@ -15,7 +15,7 @@ function onCollapseCollapser(e)
 {
 	// Variables
 	var	parent=	$($(e.target).parents(".controlContainer")[0]);
-	var	cc=	parent.find(".collapse-content")[0];
+	var	cc=	parent.find(".buttons")[0];
 	
 	if(cc.style.visibility== "hidden")
 	{
