@@ -244,7 +244,7 @@ function constructNewEntry(newEntry, lastEntry)
 	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
 	displayColorToEntry(newEntry);
 	newEntry.find('.dashed').css({ color: "LightGray" });
-	newEntry.draggable({ disabled: true });  // TODO: change to mobile friendly
+	newEntry.draggable({ disabled: true, containment:'document' });  // TODO: change to mobile friendly
 	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus();
 	
 	return newEntry;

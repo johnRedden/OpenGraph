@@ -16,10 +16,6 @@
 	width:345px;
 }
 
-.entry:not(:first-of-type) {
-	margin-top: 36px;
-}
-
 .entry {
 	
 	padding: 4px;
