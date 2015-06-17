@@ -28,6 +28,7 @@
 	border-width: 1px;
 	border-radius: 2px;
 	border-style: solid;
+	position:	absolute;
 
 	background-color:white;
 	font-size: larger;

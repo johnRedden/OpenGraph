@@ -219,29 +219,26 @@ function onNewEntryClick(e)
 {
 	// Variables
 	var	newEntry;
-	
-	if($(".entry").length!= 0)
-	{
-		$(".entry").find(".btn-add").click();
-		newEntry=	$($($(".entry").find(".btn-add")[0]).parents(".entry")[0]);
-		constrainTo(newEntry, window);
-	}
-	else
-	{
-		newEntry=	$(blankEntry.clone()).appendTo($(".myForm"));
-		constructNewEntry(newEntry);
-	}
+	var	lastEntry=	null;
+	try{
+	if($(".entry").length> 0)
+		lastEntry=	$($(".entry")[$(".entry").length-1]);
+	newEntry=	$(blankEntry.clone()).appendTo($(".myForm"));
+	constructNewEntry(newEntry, lastEntry);
+	}catch(e){$("#header").text(e.message);}
 }
 
 // Constructs the new entry
-function constructNewEntry(newEntry)
+function constructNewEntry(newEntry, lastEntry)
 {
+	if(lastEntry!= null)
+		newEntry.offset({top: lastEntry.offset().top+lastEntry.height()+36, left: lastEntry.offset().left});
 	if(newEntry.offset().top+newEntry.height()> $(window).height())
 	{
 		// Variables
 		var	offset=	newEntry.offset();
 		
-		newEntry.offset({top: 64, left: offset.left+64, right: offset.right, bottom: offset.bottom});
+		newEntry.offset({top: 85, left: offset.left+64, right: offset.right, bottom: offset.bottom});
 	}
 	newEntry[0].color= nextColor();
 	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
