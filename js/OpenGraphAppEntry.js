@@ -28,7 +28,13 @@ $(document).ready(function()
     ).on("click", ".drawer1", onDrawerClick
 	).on("keyup", ".entry", onEntryKeyUp
 	).on("click", ".collapse-entry", onCollapseEntryClick);
+<<<<<<< HEAD
 	$("#addNewEntry").on("click", onNewEntryClick);
+=======
+
+    // for the page add button.
+	$('#addNewEntry').on('click', onAddClick);
+>>>>>>> origin/master
 	
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
@@ -226,7 +232,11 @@ function onNewEntryClick(e)
 // Called when the add button has been clicked
 function onAddClick(e)
 {
-	// Variables
+    // Variables
+    console.log("Paul HELP");
+    // If the plus button is clicked... myForm may not have any entries
+    // So we need to find the latest entry and clone that OR if there are no entries in the form create a new one... but its gone??
+    // maybe store a blank entry somehow??
 	var controlForm=	$(".myForm");
 	var	currentEntry=	$(this).parents(".entry");
 	var	newEntry= 	$(currentEntry.clone()).appendTo(controlForm);
