@@ -13,7 +13,6 @@ $(document).ready(function()
 	$(".entry")[0].dashed=	false;
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
 	$("#m-entry").graphRef; // not sure what this is for??
-	$(".sideListbox")[0].items=	new Array(); // not sure we need this??
 	
 	entryFocusMath($(".entry")[0]);
 	displayColorToEntry($(".entry"));
@@ -29,6 +28,7 @@ $(document).ready(function()
     ).on("click", ".drawer1", onDrawerClick
 	).on("keyup", ".entry", onEntryKeyUp
 	).on("click", ".collapse-entry", onCollapseEntryClick);
+	$("#addNewEntry").on("click", onNewEntryClick);
 	
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
@@ -197,6 +197,30 @@ function fixInput(txt, entry)
 	
 	
 	return txt;
+}
+
+// Constrains the given entry to the given element
+function constrainTo(entry, elem)
+{
+	if(entry.offset().left< 0)
+		entry.offset({left: 0});
+	if(entry.offset().left+entry.width()> $(elem).width())
+		entry.offset({left: $(elem).width()-entry.width()});
+	if(entry.offset().top< 0)
+		entry.offset({top: 0});
+	if(entry.offset().top+entry.height()> $(elem).height())
+		entry.offset({top: $(elem).height()-entry.height()});
+}
+
+// Creates a new entry, despite clicking on the entry
+function onNewEntryClick(e)
+{
+	// Variables
+	var	newEntry;
+	
+	$(".entry").find(".btn-add").click();
+	newEntry=	$($($(".entry").find(".btn-add")[0]).parents(".entry")[0]);
+	constrainTo(newEntry, window);
 }
 
 // Called when the add button has been clicked
@@ -375,7 +399,10 @@ function onCollapseEntryClick(e)
         //slide back should be constrained to the window.
     } else {
         console.log($(currEntry).offset().left);
-        currEntry.oldLeft = $(currEntry).offset().left;
+		if($(currEntry).offset().left> 0)
+			currEntry.oldLeft = $(currEntry).offset().left;
+		else
+			currEntry.oldLeft=	1;
         $(currEntry).animate({ left: "-340px" }, "fast");
         //-340px should be dependent on the size of Entry really
         //TODO change the glyphicon to right
@@ -390,6 +417,8 @@ function onCollapseEntryClick(e)
 	updateListbox();
     */
 }
+
+/*
 
 // Called when one of the listbox items clicked on the entry
 function uncollapseEntry(elem)
@@ -450,6 +479,6 @@ function updateListbox()
 	{
 		elem.refEntry=	listbox.items[index];
 	});
-}
+}*/
 
 // End of File

@@ -2,25 +2,19 @@
 // Called when the page is ready and loaded
 $(document).ready(function()
 {
-	$("#shfuncs").click(fadeEntries);
 	detectMobile();
 	$(window).resize(detectMobile);
 	if(location.hash!= "")
 		updateEntry($(".entry")[0], location.hash.substring(1));
 		
-	$(".collapser").click(onCollapseCollapser);
-});
-
-$(document).on("contextmenu", function(e)
-{
-	$("#header").text("EEEE");
+	$("#dockButton").click(onCollapseCollapser);
 });
 
 // Called when the collapser has collapsed a collapsible collapser
 function onCollapseCollapser(e)
 {
 	// Variables
-	var	parent=	$($(e.target).parents(".collapse-container")[0]);
+	var	parent=	$($(e.target).parents(".controlContainer")[0]);
 	var	cc=	parent.find(".collapse-content")[0];
 	
 	if(cc.style.visibility== "hidden")
