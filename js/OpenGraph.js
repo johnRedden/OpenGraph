@@ -111,7 +111,6 @@ function detectMobile()
 			$(elem).show();
 			renderGraph($(".entry")[index]);
 		});
-		$("#shfuncs").show();
 		changeHeader("<em>OpenGraphingCalculator <sub>&alpha; 0.15</sub></em>");
 		resizeBoard();
 		
@@ -126,7 +125,6 @@ function detectMobile()
 		$(elem).hide();
 		removeFromGraph($(".entry")[index]);
 	});
-	$("#shfuncs").hide();
 	resizeBoardMobile();
 	changeHeader("<em>OpenGraph Mobile <sub>&alpha; 0.1</sub></em>");
 }

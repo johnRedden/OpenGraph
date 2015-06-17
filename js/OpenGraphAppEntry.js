@@ -28,13 +28,7 @@ $(document).ready(function()
     ).on("click", ".drawer1", onDrawerClick
 	).on("keyup", ".entry", onEntryKeyUp
 	).on("click", ".collapse-entry", onCollapseEntryClick);
-<<<<<<< HEAD
 	$("#addNewEntry").on("click", onNewEntryClick);
-=======
-
-    // for the page add button.
-	$('#addNewEntry').on('click', onAddClick);
->>>>>>> origin/master
 	
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
