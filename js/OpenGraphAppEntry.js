@@ -19,8 +19,7 @@ $(document).ready(function()
 	entryFocusMath($(".entry")[0]);
 	displayColorToEntry($(".entry"));
 	
-	$(".myForm").on("click", ".btn-add", onAddClick
-	).on("click", ".btn-remove", onRemoveClick
+	$(".myForm").on("click", ".btn-remove", onRemoveClick
 	).on("click", ".map", onMapClick
 	).on("click", ".showColor", onShowColorClick
     ).on("mouseover", ".grabber", makeDraggable // TODO: make touch friendly
@@ -201,19 +200,6 @@ function fixInput(txt, entry)
 	return txt;
 }
 
-// Constrains the given entry to the given element
-function constrainTo(entry, elem)
-{
-	if(entry.offset().left< 0)
-		entry.offset({left: 0});
-	if(entry.offset().left+entry.width()> $(elem).width())
-		entry.offset({left: $(elem).width()-entry.width()});
-	if(entry.offset().top< 0)
-		entry.offset({top: 0});
-	if(entry.offset().top+entry.height()> $(elem).height())
-		entry.offset({top: $(elem).height()-entry.height()});
-}
-
 // Creates a new entry, despite clicking on the entry
 function onNewEntryClick(e)
 {
@@ -239,6 +225,11 @@ function constructNewEntry(newEntry, lastEntry)
 		
 		newEntry.offset({top: 85, left: offset.left+64, right: offset.right, bottom: offset.bottom});
 	}
+	if(newEntry.offset().left< 0)
+	{
+		newEntry.offset({left: 1});
+		//newEntry.find(".collapse-entry").find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+	}
 	newEntry[0].color= nextColor();
 	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
 	displayColorToEntry(newEntry);
@@ -247,22 +238,6 @@ function constructNewEntry(newEntry, lastEntry)
 	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus();
 	
 	return newEntry;
-}
-
-// Called when the add button has been clicked
-function onAddClick(e)
-{
-    // Variables
-	var controlForm=	$(".myForm");
-	var	currentEntry=	$(this).parents(".entry");
-	var	newEntry= 	$(currentEntry.clone()).appendTo(controlForm);
-	
-	newEntry=	constructNewEntry(newEntry);
-	
-	// change the button faces
-	controlForm.find('.entry:not(:last) .btn-add'
-	).removeClass('btn-add').addClass('btn-remove'
-	).html('<span class="glyphicon glyphicon-minus"></span>');
 }
 
 // Called when the remove button has been called
@@ -408,7 +383,7 @@ function onCollapseEntryClick(e)
     
     if (currEntry.oldLeft) {
         $(currEntry).animate({ left: currEntry.oldLeft }, "fast");
-		$(e.target).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+		$(e.target).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left"); // Somethings wrong with the changes for some reason
         currEntry.oldLeft = 0;
         //slide back should be constrained to the window.
     } else {
@@ -422,78 +397,6 @@ function onCollapseEntryClick(e)
         //-340px should be dependent on the size of Entry really
         //TODO change the glyphicon to right
     }
-    /*
-	// Variables
-	var	currEntry=	$(e.target).parents(".entry")[0];
-	var	listbox=	$(".sideListbox")[0];
-	
-	listbox.items.push(currEntry);
-	$(currEntry).hide();
-	updateListbox();
-    */
 }
-
-/*
-
-// Called when one of the listbox items clicked on the entry
-function uncollapseEntry(elem)
-{
-	// Variables
-	var	listbox=	$(".sideListbox")[0];
-	
-	for(var i= 0; i< listbox.items.length; i++)
-	{
-		if(listbox.items[i]=== $(elem).parents(".item")[0].refEntry)
-		{
-			$($(elem).parents(".item")[0].refEntry).show();
-			listbox.items=	removeFromArray(i, listbox.items);
-			updateListbox();
-			
-			return;
-		}
-	}
-}
-
-// Removes the given index from the array
-function removeFromArray(index, list)
-{
-	// Variables
-	var	result=	new Array();
-	
-	for(var i= 0; i< list.length; i++)
-	{
-		if(i!= index)
-			result.push(list[i]);
-	}
-	
-	return result;
-}
-
-// Updates the listbox of entries
-function updateListbox()
-{
-	// Variables
-	var	listbox=	$(".sideListbox")[0];
-	var	str=	"";
-	
-	if(listbox.items.length== 0)
-		$(listbox).hide();
-	else
-		$(listbox).show();
-	
-	for(var i= 0; i< listbox.items.length; i++)
-	{
-		str+=	"<div class='item' style='background-color: "+($(listbox.items[i]).find(".showColor").css("background-color"))+";'>";
-		str+=	"<span class='uncollapse' onclick='uncollapseEntry(this);'>";
-		str+=	"<span class='glyphicon glyphicon-menu-right'></span>";
-		str+=	"</span>";
-		str+=	"</div>";
-	}
-	$(listbox).html(str);
-	$(listbox).find(".item").each(function(index, elem)
-	{
-		elem.refEntry=	listbox.items[index];
-	});
-}*/
 
 // End of File
