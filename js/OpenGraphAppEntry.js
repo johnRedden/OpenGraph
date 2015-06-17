@@ -220,12 +220,11 @@ function onNewEntryClick(e)
 	// Variables
 	var	newEntry;
 	var	lastEntry=	null;
-	try{
+	
 	if($(".entry").length> 0)
 		lastEntry=	$($(".entry")[$(".entry").length-1]);
 	newEntry=	$(blankEntry.clone()).appendTo($(".myForm"));
 	constructNewEntry(newEntry, lastEntry);
-	}catch(e){$("#header").text(e.message);}
 }
 
 // Constructs the new entry
@@ -381,7 +380,7 @@ function onEntryKeyUp(e)
 	
 	if(e.keyCode=== 13)
 	{
-		$(currEntry).find(".btn-add").trigger("click");
+		onNewEntryClick(e);
 	}
 	
 	renderGraph(currEntry);
