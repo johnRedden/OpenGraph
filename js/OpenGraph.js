@@ -20,33 +20,15 @@ function onCollapseCollapser(e)
 	if(cc.style.visibility== "hidden")
 	{
 		cc.style.visibility=	"visible";
-		cc.style.display=	"table-cell";
-		if(parent.hasClass("dockable-left"))
-		{
-			$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
-		}
-		else if(parent.hasClass("dockable-right"))
-		{
-			$(this).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
-			parent.css({right: parent.val()[1]});
-		}
+		cc.style.display=	"block";
+		$(this).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
 	}
 	else
 	{
-		parent.val([parent.css("left"), parent.css("right"), parent.width(), parent.height()]);
 		cc.style.visibility=	"hidden";
 		cc.style.display=	"none";
-		parent.height(parent.val()[3]);
-		if(parent.hasClass("dockable-left"))
-		{
-			$(this).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right").css("line-height", parent.val()[3]+"px");
-			parent.css({left: "0px"});
-		}
-		else if(parent.hasClass("dockable-right"))
-		{
-			$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left").css("line-height", parent.val()[3]+"px");
-			parent.css({right: "0px"});
-		}
+		$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+		parent.css({right: "0px"});
 	}
 }
 

@@ -61,27 +61,7 @@
 	top: 50%;
 	transform: translateY(-55%);
 }
-/*  Use Bootstrap!
-.collapse-entry
-{
-	float:	right;
-	margin-left: 3px;
-	width:	24px;
-	height:	100%;
-	line-height:	78px;
-	text-align:	center;
-	border:	1px #cccccc solid;
 
-}
-
-.collapse-entry:hover
-{
-	cursor:	pointer;
-	background-color:	#e6e6e6;
-	border-color:	#adadad;
-   
-}
-    */
 .showColor{
 	float:right;
 	width: 12px;
@@ -103,6 +83,13 @@
 
 .btn-remove {
 	color: lightcoral;
+}
+.collapse-entry
+{
+	padding:	2px;
+	height:	100%;
+	width:	6%;
+	line-height:	75px;
 }
 /* end ENTRY css****************/
 
@@ -149,57 +136,7 @@ div.listbox .item textarea {
 	height: 32px;
 	clear: both;
 }
-/*
-.collapse-container
-{
-	min-width:	35px;
-	min-height:	48px;
-	position:	absolute;
-	right:	15px;
-	display:	table;
-	z-index:	1000;
-	user-select:	none;
-	-moz-user-select:	none;
-	-webkit-user-select:	none;
-	transition:	right 500ms, left 500ms;
-}
 
-.collapser
-{
-	background-color:	#ffffff;
-	border:	1px #cccccc solid;
-	width:	35px;
-	display:	table-cell;
-	z-index:	1000;
-}
-
-.collapser:hover
-{
-	background-color:	#e6e6e6;
-	cursor:	pointer;
-	border-color:	#adadad;
-}
-
-.collapser span.glyphicon
-{
-	width:	100%;
-	text-align:	center;
-	height:	48px;
-}
-
-.collapse-content
-{
-	background-color:	#dddddd;
-	border:	1px solid #cccccc;
-	display:	table-cell;
-	width:	auto;
-	transition:	width 1s;
-	padding:	4px;
-	z-index:	1000;
-}
-    */
-
-/* clean up */
 .sideListbox
 {
 	z-index:	10;
@@ -235,4 +172,9 @@ div.listbox .item textarea {
 	cursor:	pointer;
 	border-color:	#adadad;
 	background-color:	#e6e6e6;
+}
+
+.controlContainer
+{
+	height:	100%;
 }

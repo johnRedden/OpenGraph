@@ -3,6 +3,7 @@
 // Variables
 var	colors=	['SlateGray', 'RoyalBlue', 'SeaGreen', 'Violet', 'Coral'];
 var	n=	0;
+var	blankEntry;
 
 // Called when the page is loaded up
 $(document).ready(function()
@@ -12,6 +13,7 @@ $(document).ready(function()
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
+	blankEntry=	$(".entry");
 	$("#m-entry").graphRef; // not sure what this is for??
 	
 	entryFocusMath($(".entry")[0]);
@@ -218,19 +220,22 @@ function onNewEntryClick(e)
 	// Variables
 	var	newEntry;
 	
-	$(".entry").find(".btn-add").click();
-	newEntry=	$($($(".entry").find(".btn-add")[0]).parents(".entry")[0]);
-	constrainTo(newEntry, window);
+	if($(".entry").length!= 0)
+	{
+		$(".entry").find(".btn-add").click();
+		newEntry=	$($($(".entry").find(".btn-add")[0]).parents(".entry")[0]);
+		constrainTo(newEntry, window);
+	}
+	else
+	{
+		newEntry=	$(blankEntry.clone()).appendTo($(".myForm"));
+		constructNewEntry(newEntry);
+	}
 }
 
-// Called when the add button has been clicked
-function onAddClick(e)
+// Constructs the new entry
+function constructNewEntry(newEntry)
 {
-    // Variables
-	var controlForm=	$(".myForm");
-	var	currentEntry=	$(this).parents(".entry");
-	var	newEntry= 	$(currentEntry.clone()).appendTo(controlForm);
-	
 	if(newEntry.offset().top+newEntry.height()> $(window).height())
 	{
 		// Variables
@@ -245,6 +250,18 @@ function onAddClick(e)
 	newEntry.draggable({ disabled: true });  // TODO: change to mobile friendly
 	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus();
 	
+	return newEntry;
+}
+
+// Called when the add button has been clicked
+function onAddClick(e)
+{
+    // Variables
+	var controlForm=	$(".myForm");
+	var	currentEntry=	$(this).parents(".entry");
+	var	newEntry= 	$(currentEntry.clone()).appendTo(controlForm);
+	
+	newEntry=	constructNewEntry(newEntry);
 	
 	// change the button faces
 	controlForm.find('.entry:not(:last) .btn-add'
@@ -395,6 +412,7 @@ function onCollapseEntryClick(e)
     
     if (currEntry.oldLeft) {
         $(currEntry).animate({ left: currEntry.oldLeft }, "fast");
+		$(e.target).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
         currEntry.oldLeft = 0;
         //slide back should be constrained to the window.
     } else {
@@ -404,6 +422,7 @@ function onCollapseEntryClick(e)
 		else
 			currEntry.oldLeft=	1;
         $(currEntry).animate({ left: "-340px" }, "fast");
+		$(e.target).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
         //-340px should be dependent on the size of Entry really
         //TODO change the glyphicon to right
     }
