@@ -11,9 +11,9 @@
 /* ENTRY css *****************************/
 .myForm {
 	position:absolute;
-	top: 50px;
+	top: 85px;
 	left: 15px;
-	width:350px;
+	width:345px;
 }
 
 .entry:not(:first-of-type) {
@@ -61,7 +61,7 @@
 	top: 50%;
 	transform: translateY(-55%);
 }
-
+/*  Use Bootstrap!
 .collapse-entry
 {
 	float:	right;
@@ -81,7 +81,7 @@
 	border-color:	#adadad;
    
 }
-
+    */
 .showColor{
 	float:right;
 	width: 12px;
@@ -105,6 +105,8 @@
 	color: lightcoral;
 }
 /* end ENTRY css****************/
+
+
 .btn-group-sm{
 	padding-bottom:3px;
 	padding-top:3px;
@@ -147,7 +149,7 @@ div.listbox .item textarea {
 	height: 32px;
 	clear: both;
 }
-
+/*
 .collapse-container
 {
 	min-width:	35px;
@@ -195,7 +197,9 @@ div.listbox .item textarea {
 	padding:	4px;
 	z-index:	1000;
 }
+    */
 
+/* clean up */
 .sideListbox
 {
 	z-index:	10;

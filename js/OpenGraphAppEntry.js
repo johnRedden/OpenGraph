@@ -12,8 +12,8 @@ $(document).ready(function()
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
-	$("#m-entry").graphRef;
-	$(".sideListbox")[0].items=	new Array();
+	$("#m-entry").graphRef; // not sure what this is for??
+	$(".sideListbox")[0].items=	new Array(); // not sure we need this??
 	
 	entryFocusMath($(".entry")[0]);
 	displayColorToEntry($(".entry"));
@@ -22,15 +22,15 @@ $(document).ready(function()
 	).on("click", ".btn-remove", onRemoveClick
 	).on("click", ".map", onMapClick
 	).on("click", ".showColor", onShowColorClick
-    ).on("mouseover", ".grabber", makeDraggable
-    ).on("mouseout", ".grabber", makeUnDraggable
+    ).on("mouseover", ".grabber", makeDraggable // TODO: make touch friendly
+    ).on("mouseout", ".grabber", makeUnDraggable // TODO: make touch friendly
 	).on("click", ".dashed", onDashedClick
 	).on("click", ".mathinput", onMathInputClick
     ).on("click", ".drawer1", onDrawerClick
 	).on("keyup", ".entry", onEntryKeyUp
 	).on("click", ".collapse-entry", onCollapseEntryClick);
 	
-	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);
+	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
 
 // Gets the next color in the array of stored colors
@@ -77,6 +77,7 @@ function renderGraph(inputObj)
 	if (txt.indexOf(",") !== -1 ){
 	    // if there is a comma try to plot a point
 	    // try to render text ((3,2)) as an array [3,2] using the eval below
+        // TODO: streamline this
 	    var modifiedTxt = eval( txt.replace("((", "[").replace("))", "]") );
 	    try {
 	        if(JXG.isArray(modifiedTxt)){
@@ -135,6 +136,7 @@ function renderGraph(inputObj)
 }
 
 // Renders the graph for the mobile view
+// Mobile should use the same rendering function, why does it need to be different??
 function renderGraphMobile(inputObj)
 {
 	// Variables
@@ -321,7 +323,7 @@ function onMapClick(e)
 	if(currEntry[0].graphRef)
 		currEntry[0].gliderRefs.push(board.create("glider", [0, 0, currEntry[0].graphRef], {color: currEntry[0].color}));
 	else
-		currEntry.effect("shake", {times: 2}, 700);
+		currEntry.effect("shake", {times: 2}, 700);  // not sure this adds value
 }
 
 // Called whenever the user clicks on the textbox
@@ -353,6 +355,7 @@ function onEntryKeyUp(e)
 }
 
 // Called whenever there is a key detected on the mobile entry input
+// Streamline with one render graph function
 function onMobileEntryKeyUp(e)
 {
 	// Variables
