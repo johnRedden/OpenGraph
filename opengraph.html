@@ -42,9 +42,13 @@
    
     <div class="container-fluid noselect" style="top: 0px; background-color:black; opacity:0.5; "><h4 id="header" style="color:white"><em>placeholder</em></h4></div>
     
-    <div id="addNewEntry" class="btn btn-default" style="position: absolute; top: 45px; left:10px">
-        <span class="glyphicon glyphicon-plus"></span>
-        <!-- Trigger new entry -->
+    <div class="btn-group" style="position: absolute; top: 45px; left:10px">
+        <div id="deleteAll" class="btn btn-default" title="Delete All" >
+            <span class="glyphicon glyphicon-erase" style="color:mediumvioletred"></span>
+        </div>
+        <div id="addNewEntry" class="btn btn-default" title="Add Graph">
+            <span class="glyphicon glyphicon-plus" style="color:lightseagreen"></span>
+        </div>
     </div>
 
         <!-- Eliminate sideListbox ??-->
@@ -54,13 +58,10 @@
 
             <!-- Entry Object -->
             <div class="entry noselect">
-                <span class="collapse-entry btn btn-default pull-right spcLeft" title="Collapse Entry">
-                    <span class="glyphicon glyphicon-menu-left"></span>
-                </span>
-                <span class="showColor" title="Toggle Color"></span>
+ 
                 <span class="grabber"></span>
                 <span class="btn-group-vertical spcLeft">
-                    <span class="btn btn-default btn-remove"> <span class="glyphicon glyphicon-minus"></span> </span>
+                    <span class="btn btn-default btn-remove"> <span class="glyphicon glyphicon-remove"></span> </span>
                     <span class="btn btn-default drawer1" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span></span>
                 </span>
                 <span class="btn-group-vertical  spcLeft">
@@ -70,9 +71,12 @@
                 <span class="mathinput">
                     <span class="mathquill-editable"></span>
                 </span>
-
+                <span class="btn-group-vertical spcLeft">
+                    <span class="collapse-entry btn btn-default" title="Collapse Entry" ><span class="glyphicon glyphicon-menu-left"></span></span>
+                    <span class="showColor btn btn-default" title="Toggle Color"><span class="glyphicon glyphicon-tint"></span></span>
+                </span>
                 <span class="collapse hiddenRow">
-                    <span class="btn-group">
+                    <span class="btn-group" >
                         <span class="btn btn-default">Extras:</span>
                         <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>
                         <span class="btn btn-default"><span class="glyphicon glyphicon-flash"></span></span>

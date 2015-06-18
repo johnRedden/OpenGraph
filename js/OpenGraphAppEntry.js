@@ -48,7 +48,7 @@ function nextColor()
 // John Says - huh - you mean the color indicator ?
 function displayColorToEntry(entry)
 {
-    entry.find(".showColor").css({ 'background-color': entry[0].color });
+    entry.find(".showColor").css({ 'color': entry[0].color });
 }
 	
 // Focuses on mathquill's textarea

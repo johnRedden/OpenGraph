@@ -59,11 +59,7 @@
 	transform: translateY(-55%);
 }
 
-.showColor{
-	float:right;
-	width: 12px;
-	height:100%;
-}
+
 .spcLeft{
 	margin-left:2px;
 	float:left;
@@ -79,14 +75,15 @@
 }
 
 .btn-remove {
-	color: lightcoral;
+	color: mediumvioletred;
 }
 .collapse-entry
-{
+{/*
 	padding:	2px;
-	height:	100%;
+	
 	width:	6%;
-	line-height:	75px;
+    
+	line-height:	75px;*/
 }
 /* end ENTRY css****************/
 
