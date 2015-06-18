@@ -8,7 +8,7 @@ var	blankEntry;
 // Called when the page is loaded up
 $(document).ready(function()
 {
-	$(".entry")[0].graphRef;
+   	$(".entry")[0].graphRef;
 	$(".entry")[0].gliderRefs=	new Array();
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this
@@ -41,6 +41,7 @@ $(document).ready(function()
 
 // Called whenever there is a key detected on an entry input
 function onEntryKeyUp(e) {
+  
     // Variables
     var currEntry = $(e.target).parents(".entry")[0];
 
@@ -51,26 +52,30 @@ function onEntryKeyUp(e) {
     keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
     renderGraph(currEntry);  //does not change currEntry
 
-    if (currEntry.dashed) { // we can streamline using getAttribute 'dashed'
+    if (currEntry.dashed) { // we can streamline using JSXGraph getAttribute 'dashed'
         $(currEntry).find(".dashed").click().click();
     }
 }
 // special cases
 function keyUpSpecialCases(inputObj, key) {
+    //this is helpful: (  http://pythonhackers.com/p/Khan/mathquill  )
     var mathquillText = $(inputObj).find(".mathquill-editable").mathquill('text');
     var mathquillLatex = $(inputObj).find(".mathquill-editable").mathquill('latex');
     var m = mathquillLatex.length;
-    console.log(key);
+    //console.log(key);
+    //console.log("text1: " + mathquillText);
 
+    /*  this works but there has to be a better way!!!
     if (mathquillLatex.substring(m - 2, m) === "sq") {
         $(inputObj).find(".mathquill-editable").mathquill('latex', mathquillLatex.substring(0, m - 2));
         $(inputObj).find(".mathquill-editable").mathquill('cmd', '\\sqrt');
         entryFocusMath(inputObj);
     }
+    */
     //Todo: catch the case where sq is in a fraction and looks like {sq} 
 
-    console.log("text: " + mathquillText);
-    console.log("latex: " + mathquillLatex);
+    //console.log("text2: " + $(inputObj).find(".mathquill-editable").mathquill('text'));
+    //console.log("latex: " + $(inputObj).find(".mathquill-editable").mathquill('latex'));
 
 }
 // Renders the graph
@@ -82,6 +87,7 @@ function renderGraph(inputObj)
 	var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
 	txt = asciiMathfromMathQuill(txt).toLowerCase();
 	
+    // not sure where to do the following... also needs to be stramlined... (3,2) plot a point.
 	if (txt.indexOf(",") !== -1 ){
 	    // if there is a comma try to plot a point
 	    // try to render text ((3,2)) as an array [3,2] using the eval below
@@ -100,7 +106,7 @@ function renderGraph(inputObj)
 	        }
 	    
 	    } catch (e) {
-	        console.log("with comma " + e);
+	       // console.log("with comma " + e);
 	    }
 
 	} else if (txt.substring(0,7)==="l*i*n*e") {
@@ -125,6 +131,7 @@ function renderGraph(inputObj)
 
 	} else {
 	    try {
+            // javascript math conversion here using  mathjs.js 
 	        eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
 	        if (JXG.isFunction(userFunction)) {
 	            removeFromGraph(inputObj);
@@ -146,17 +153,19 @@ function asciiMathfromMathQuill(txt) {
     var n = txt.length;
 
     txt = txt.replace("**", "^");
+
+    // I think all this below can go???
     txt = txt.replace("s*i*n*", "sin");
     txt = txt.replace("c*o*s*", "cos");
     txt = txt.replace("cosh*", "cosh");
     txt = txt.replace("t*a*n*", "tan");
-    txt = txt.replace("tan*h", "tanh");
+    txt = txt.replace("tanh*", "tanh");
     //txt=	txt.replace("s*q*r", "\\(sqrt)&nbsp;");
     txt = txt.replace("p*i", "pi");
     txt = txt.replace("xcdot", "");
-
-    // this needs to return good asciiMath
-    console.log("asciiMath: " + txt);
+     
+    // this needs to return good asciiMath!
+    //console.log("asciiMath: " + txt);
     return txt;
 }
 
