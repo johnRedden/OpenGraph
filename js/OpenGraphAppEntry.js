@@ -11,7 +11,7 @@ $(document).ready(function()
 	$(".entry")[0].graphRef;
 	$(".entry")[0].gliderRefs=	new Array();
 	$(".entry")[0].color=	nextColor();
-	$(".entry")[0].dashed=	false;
+	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
 	blankEntry=	$(".entry");
 	$("#m-entry").graphRef; // not sure what this is for??
@@ -28,7 +28,11 @@ $(document).ready(function()
 	).on("click", ".mathinput", onMathInputClick
     ).on("click", ".drawer1", onDrawerClick
 	).on("keyup", ".entry", onEntryKeyUp
-	).on("click", ".collapse-entry", onCollapseEntryClick);
+	).on("click", ".collapse-entry", onCollapseEntryClick
+    ).on("click", ".thicknessPlus", onThicknessPlusClick
+    ).on("click", ".thicknessMinus", onThicknessMinusClick);
+
+
 	$("#addNewEntry").on("click", onNewEntryClick);
 	
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
@@ -36,11 +40,8 @@ $(document).ready(function()
 
 // Gets the next color in the array of stored colors
 function nextColor()
-{
-	n++;
-	if(n=== colors.length)
-		n=	0;
-	
+{   //n is a global variable used for the revolving color idea
+	n = (n === colors.length) ? 0 : n + 1;
 	return colors[n];
 }
 
@@ -132,8 +133,6 @@ function renderGraph(inputObj)
 	    catch (e) { console.log("caught " + e); }
 	}
 	
-	
-
 }
 
 // Renders the graph for the mobile view
@@ -179,8 +178,8 @@ function fixInput(txt, entry)
     }
     //Todo: catch the case where sq is in a fraction and looks like {sq}
 
-    console.log("text: " + mathquillText);
-    console.log("latex: " + mathquillLatex);
+    //console.log("text: " + mathquillText);
+   // console.log("latex: " + mathquillLatex);
 	
 	txt.toLowerCase();
 	
@@ -299,13 +298,28 @@ function onShowColorClick(e)
 }
 // Called whenever the drawer button is clicked
 function onDrawerClick(e) {
-    // Variables
-    console.log("hi");
     var currEntry = $(this).parents(".entry");
     currEntry.find(".collapse").collapse("toggle");
-
-    
 }
+function onThicknessPlusClick(e) {
+    var currEntry = $(this).parents(".entry");
+    if(currEntry[0].graphRef)
+    {
+        var n = parseInt((currEntry[0].graphRef).getAttribute('strokeWidth'));
+        n = (n > 10) ? n : n + 1;
+        // JSXgraph setProperty has been depreciated...TODO replace everywhere
+        (currEntry[0].graphRef).setAttribute({strokeWidth: n});
+    }
+};
+function onThicknessMinusClick(e) {
+    var currEntry = $(this).parents(".entry");
+    if (currEntry[0].graphRef) {
+        var n = parseInt((currEntry[0].graphRef).getAttribute('strokeWidth'));
+        n = (n > 1) ? n-1 : 1;
+        // JSXgraph setProperty has been depreciated...TODO replace everywhere
+        (currEntry[0].graphRef).setAttribute({ strokeWidth: n });
+    }
+};
 // enable entry dragging.
 function makeDraggable(e) {
     $(this).parents(".entry").draggable({ disabled: false });
