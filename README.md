@@ -11,7 +11,9 @@ JSXGraph Reference: http://jsxgraph.uni-bayreuth.de/docs/index.html
 JSXGraph Notes:
 // JSXgraph setProperty has been depreciated...TODO replace everywhere
 // Use setAttribute and getAttribute
+
 (currEntry[0].graphRef).setAttribute({ strokeWidth: n });
+
 (currEntry[0].graphRef).getAttribute('strokeWidth');
 
 --
