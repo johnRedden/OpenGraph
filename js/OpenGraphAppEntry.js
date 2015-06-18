@@ -74,7 +74,7 @@ function renderGraph(inputObj)
 	var	userFunction;
 	var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
 	txt = fixInput(txt, inputObj).toLowerCase();
-	console.log(txt.substring(0, 7));
+	
 	if (txt.indexOf(",") !== -1 ){
 	    // if there is a comma try to plot a point
 	    // try to render text ((3,2)) as an array [3,2] using the eval below
@@ -166,7 +166,21 @@ function renderGraphMobile(inputObj)
 function fixInput(txt, entry)
 {
 	// Variables
-	var	n=	txt.length;
+    var n = txt.length;
+    
+    var mathquillText = $(entry).find(".mathquill-editable").mathquill('text');
+    var mathquillLatex = $(entry).find(".mathquill-editable").mathquill('latex');
+    var m = mathquillLatex.length;
+
+    if (mathquillLatex.substring(m - 2, m) === "sq") {
+        $(entry).find(".mathquill-editable").mathquill('latex', mathquillLatex.substring(0,m - 2));
+        $(entry).find(".mathquill-editable").mathquill('cmd', '\\sqrt');
+        entryFocusMath(entry);
+    }
+    //Todo: catch the case where sq is in a fraction and looks like {sq}
+
+    console.log("text: " + mathquillText);
+    console.log("latex: " + mathquillLatex);
 	
 	txt.toLowerCase();
 	
@@ -177,26 +191,25 @@ function fixInput(txt, entry)
 		
 		switch(last3)
 		{
-			case "s*i*n":	case "c*o*s":	case "t*a*n":	case "q*r*t":
+			case "s*i*n":	case "c*o*s":	case "t*a*n":
 				$(entry).find(".mathquill-editable").mathquill("write", "\\left( x \\right)");
 				entryFocusMath(entry);
 				break;
 		}
 	}
 	
-	txt=	$(entry).find(".mathquill-editable").mathquill("text");
+	txt = $(entry).find(".mathquill-editable").mathquill("text");
+	
 	txt=	txt.replace("**", "^");
 	txt=	txt.replace("s*i*n*", "sin");
 	txt=	txt.replace("c*o*s*", "cos");
 	txt=	txt.replace("cosh*", "cosh");
 	txt=	txt.replace("t*a*n*", "tan");
 	txt=	txt.replace("tan*h", "tanh");
-	txt=	txt.replace("s*q*r*t", "sqrt");
+	//txt=	txt.replace("s*q*r", "\\(sqrt)&nbsp;");
 	txt=	txt.replace("p*i", "pi");
 	txt = txt.replace("xcdot", "");
 
-	
-	
 	return txt;
 }
 
