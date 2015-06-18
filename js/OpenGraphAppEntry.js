@@ -38,43 +38,49 @@ $(document).ready(function()
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
 
-// Gets the next color in the array of stored colors
-function nextColor()
-{   //n is a global variable used for the revolving color idea
-	n = (n === colors.length) ? 0 : n + 1;
-	return colors[n];
-}
 
-// Displays the color to the entry loader thingy mabober... NOTE: What is the official name to that thing?
-// John Says - huh - you mean the color indicator ?
-function displayColorToEntry(entry)
-{
-    entry.find(".showColor").css({ 'color': entry[0].color });
-}
-	
-// Focuses on mathquill's textarea
-function entryFocusMath(inputEntry)
-{
-	$(inputEntry).find(".mathquill-editable:first").addClass('hasCursor').focus();
-	$(inputEntry).find(".mathquill-editable:first").find('textarea').focus();
-}
+// Called whenever there is a key detected on an entry input
+function onEntryKeyUp(e) {
+    // Variables
+    var currEntry = $(e.target).parents(".entry")[0];
 
-// Removes the given object from the graph
-function removeFromGraph(inputObj)
-{
-	if(typeof inputObj=== "object")
-	{
-		board.removeObject(inputObj.graphRef);
-	}
-}
+    if (e.keyCode === 13) {
+        onNewEntryClick(e);
+    }
+    // catch special cases here before trying to render graph.
+    keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
+    renderGraph(currEntry);  //does not change currEntry
 
+    if (currEntry.dashed) { // we can streamline using getAttribute 'dashed'
+        $(currEntry).find(".dashed").click().click();
+    }
+}
+// special cases
+function keyUpSpecialCases(inputObj, key) {
+    var mathquillText = $(inputObj).find(".mathquill-editable").mathquill('text');
+    var mathquillLatex = $(inputObj).find(".mathquill-editable").mathquill('latex');
+    var m = mathquillLatex.length;
+    console.log(key);
+
+    if (mathquillLatex.substring(m - 2, m) === "sq") {
+        $(inputObj).find(".mathquill-editable").mathquill('latex', mathquillLatex.substring(0, m - 2));
+        $(inputObj).find(".mathquill-editable").mathquill('cmd', '\\sqrt');
+        entryFocusMath(inputObj);
+    }
+    //Todo: catch the case where sq is in a fraction and looks like {sq} 
+
+    console.log("text: " + mathquillText);
+    console.log("latex: " + mathquillLatex);
+
+}
 // Renders the graph
 function renderGraph(inputObj)
 {
+    // this function takes in an Entry, creates javascript math, and then associates a graph to the entry
 	// Variables
 	var	userFunction;
 	var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
-	txt = fixInput(txt, inputObj).toLowerCase();
+	txt = asciiMathfromMathQuill(txt).toLowerCase();
 	
 	if (txt.indexOf(",") !== -1 ){
 	    // if there is a comma try to plot a point
@@ -134,6 +140,25 @@ function renderGraph(inputObj)
 	}
 	
 }
+// Returns asciiMath from a MathQuill text string
+function asciiMathfromMathQuill(txt) {
+    // This function should take in an entry and return well formed asciiMath
+    var n = txt.length;
+
+    txt = txt.replace("**", "^");
+    txt = txt.replace("s*i*n*", "sin");
+    txt = txt.replace("c*o*s*", "cos");
+    txt = txt.replace("cosh*", "cosh");
+    txt = txt.replace("t*a*n*", "tan");
+    txt = txt.replace("tan*h", "tanh");
+    //txt=	txt.replace("s*q*r", "\\(sqrt)&nbsp;");
+    txt = txt.replace("p*i", "pi");
+    txt = txt.replace("xcdot", "");
+
+    // this needs to return good asciiMath
+    console.log("asciiMath: " + txt);
+    return txt;
+}
 
 // Renders the graph for the mobile view
 // Mobile should use the same rendering function, why does it need to be different??
@@ -161,56 +186,7 @@ function renderGraphMobile(inputObj)
 	catch(e)	{	console.log("caught "+e);	}
 }
 
-// Fixes up mathquill derp ups
-function fixInput(txt, entry)
-{
-	// Variables
-    var n = txt.length;
-    
-    var mathquillText = $(entry).find(".mathquill-editable").mathquill('text');
-    var mathquillLatex = $(entry).find(".mathquill-editable").mathquill('latex');
-    var m = mathquillLatex.length;
 
-    if (mathquillLatex.substring(m - 2, m) === "sq") {
-        $(entry).find(".mathquill-editable").mathquill('latex', mathquillLatex.substring(0,m - 2));
-        $(entry).find(".mathquill-editable").mathquill('cmd', '\\sqrt');
-        entryFocusMath(entry);
-    }
-    //Todo: catch the case where sq is in a fraction and looks like {sq}
-
-    //console.log("text: " + mathquillText);
-   // console.log("latex: " + mathquillLatex);
-	
-	txt.toLowerCase();
-	
-	if(n> 4)
-	{
-		// Variables
-		var	last3=	txt.substring(n-5, n);
-		
-		switch(last3)
-		{
-			case "s*i*n":	case "c*o*s":	case "t*a*n":
-				$(entry).find(".mathquill-editable").mathquill("write", "\\left( x \\right)");
-				entryFocusMath(entry);
-				break;
-		}
-	}
-	
-	txt = $(entry).find(".mathquill-editable").mathquill("text");
-	
-	txt=	txt.replace("**", "^");
-	txt=	txt.replace("s*i*n*", "sin");
-	txt=	txt.replace("c*o*s*", "cos");
-	txt=	txt.replace("cosh*", "cosh");
-	txt=	txt.replace("t*a*n*", "tan");
-	txt=	txt.replace("tan*h", "tanh");
-	//txt=	txt.replace("s*q*r", "\\(sqrt)&nbsp;");
-	txt=	txt.replace("p*i", "pi");
-	txt = txt.replace("xcdot", "");
-
-	return txt;
-}
 
 // Creates a new entry, despite clicking on the entry
 function onNewEntryClick(e)
@@ -296,6 +272,30 @@ function onShowColorClick(e)
 
 	displayColorToEntry(currEntry);
 }
+// Gets the next color in the array of stored colors
+function nextColor() {   //n is a global variable used for the revolving color idea
+    n = (n === colors.length) ? 0 : n + 1;
+    return colors[n];
+}
+
+// Displays the color to the entry loader thingy mabober... NOTE: What is the official name to that thing?
+// John Says - huh - you mean the color indicator ?
+function displayColorToEntry(entry) {
+    entry.find(".showColor").css({ 'color': entry[0].color });
+}
+
+// Focuses on mathquill's textarea
+function entryFocusMath(inputEntry) {
+    $(inputEntry).find(".mathquill-editable:first").addClass('hasCursor').focus();
+    $(inputEntry).find(".mathquill-editable:first").find('textarea').focus();
+}
+
+// Removes the given object from the graph
+function removeFromGraph(inputObj) {
+    if (typeof inputObj === "object") {
+        board.removeObject(inputObj.graphRef);
+    }
+}
 // Called whenever the drawer button is clicked
 function onDrawerClick(e) {
     var currEntry = $(this).parents(".entry");
@@ -374,24 +374,7 @@ function onMathInputClick(e)
 	entryFocusMath(currEntry);
 }
 
-// Called whenever there is a key detected on an entry input
-function onEntryKeyUp(e)
-{
-	// Variables
-	var	currEntry=	$(e.target).parents(".entry")[0];
-	
-	if(e.keyCode=== 13)
-	{
-		onNewEntryClick(e);
-	}
-	
-	renderGraph(currEntry);
-	
-	if(currEntry.dashed)
-	{
-		$(currEntry).find(".dashed").click().click();
-	}
-}
+
 
 // Called whenever there is a key detected on the mobile entry input
 // Streamline with one render graph function
