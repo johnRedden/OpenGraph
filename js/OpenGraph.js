@@ -8,6 +8,9 @@ $(document).ready(function()
 		updateEntry($(".entry")[0], location.hash.substring(1));
 		
 	$("#dockButton").click(onCollapseCollapser);
+
+    //inititalize all Bootstrap tooltips
+	$('[data-toggle="tooltip"]').tooltip();
 });
 
 // Called when the collapser has collapsed a collapsible collapser
