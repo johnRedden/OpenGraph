@@ -2,8 +2,6 @@
 /// <reference path="jsxgraphcore.js" />
 // Variables
 var board;
-var resizeTimer;
-var bMobile;
 var movement = new function () { };
 
 movement.x = null;
@@ -86,40 +84,10 @@ function resizeBoard() {
 
     board.resizeContainer($(window).width(), $(window).height(), false, true); //the true = do not call setBoundingBox
     board.setBoundingBox(bb, false);  //false = keep aspect ratio and same bb as coming in
-    
-    $("#m-entry").css("display", "none");
 }
 
-// Resizes the graphing board for mobile viewage
-function resizeBoardMobile() {
-    var bb = board.getBoundingBox();
-
-    board.resizeContainer($(window).width(), $(window).height() * 0.75);
-    board.setBoundingBox(bb, false);
-
-    //show input box mobile
-    $("#m-entry").css("display", "block"
-	).css("top", $(window).height() * 0.75
-	).css("width", $(window).width()
-	).css("height", $(window).height() * 0.25);
-}
-
-// Called when the window has been resized
-$(window).resize(function () {
-    bMobile = (navigator.appVersion.toLowerCase().indexOf("android"))!= -1; // Looks for only android
-
-    if (!bMobile) {
-        resizeBoard();/* Don't know why you need a timer (efficiency??)
-		clearTimeout(resizeTimer);
-		resizeTimer=	setTimeout(function()
-		{
-			resizeBoard();
-		}, 200);*/
-    }
-    else {
-        resizeBoardMobile();
-    }
-});
+// Calls the resizeBoard function when the window has been resizes
+$(window).resize(resizeBoard);
 
 // Gets the mouse coordinates
 function getMouseCoords(e, i) {
@@ -134,9 +102,6 @@ function getMouseCoords(e, i) {
 
 // Called whenever there is a touch detected
 function onMobileDown(e) {
-    if (!bMobile)
-        return;
-
     // Variables
     var mPos = getMouseCoords(e, 0);
 
@@ -147,8 +112,6 @@ function onMobileDown(e) {
 
 // Called whenever there is a touched movement detected
 function onMobileMovement(e) {
-    if (!bMobile)
-        return;
     if (!movement.down)
         return;
 

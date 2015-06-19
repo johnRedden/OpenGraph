@@ -4,6 +4,7 @@
 var	colors=	['SlateGray', 'RoyalBlue', 'SeaGreen', 'Violet', 'Coral'];
 var	n=	0;
 var	blankEntry;
+var	mtext=	"";
 
 // Called when the page is loaded up
 $(document).ready(function()
@@ -14,7 +15,6 @@ $(document).ready(function()
 	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
 	blankEntry=	$(".entry");
-	$("#m-entry").graphRef; // not sure what this is for??
 	
 	entryFocusMath($(".entry")[0]);
 	displayColorToEntry($(".entry"));
@@ -34,8 +34,6 @@ $(document).ready(function()
 
 
 	$("#addNewEntry").on("click", onNewEntryClick);
-	
-	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
 
 
@@ -61,7 +59,9 @@ function keyUpSpecialCases(inputObj, key) {
     //this is helpful: (  http://pythonhackers.com/p/Khan/mathquill  )
     var mathquillText = $(inputObj).find(".mathquill-editable").mathquill('text');
     var mathquillLatex = $(inputObj).find(".mathquill-editable").mathquill('latex');
+	var	mqe=	$(inputObj).find(".mathquill-editable");
     var m = mathquillLatex.length;
+	
     //console.log(key);
     //console.log("text1: " + mathquillText);
 
@@ -169,32 +169,6 @@ function asciiMathfromMathQuill(txt) {
     return txt;
 }
 
-// Renders the graph for the mobile view
-// Mobile should use the same rendering function, why does it need to be different??
-function renderGraphMobile(inputObj)
-{
-	// Variables
-	var	userFunction;
-	var	txt=	$(inputObj).find("textarea").val().toLowerCase();
-	var	convertedMath=	mathjs(txt);
-	
-	try
-	{
-		eval("userFunction= function(x) { with(Math) return "+convertedMath+" }");
-		if(JXG.isFunction(userFunction))
-		{
-			removeFromGraph(inputObj);
-			inputObj.graphRef=	board.create("functiongraph", userFunction,
-			{
-				visible:	true,
-				strokeWidth:	2,
-				strokeColor:	"blue"
-			});
-		}
-	}
-	catch(e)	{	console.log("caught "+e);	}
-}
-
 
 
 // Creates a new entry, despite clicking on the entry
@@ -264,6 +238,11 @@ function onShowColorClick(e)
 {
 	// Variables
 	var	currEntry=	$(this).parents(".entry");
+	
+	if(currEntry== null)
+		return;
+	if(currEntry[0]== null)
+		return;
 	
 	currEntry[0].color=	nextColor();
 	if (currEntry[0].graphRef)
@@ -381,18 +360,6 @@ function onMathInputClick(e)
 	var	currEntry=	$(e.target).parents(".entry")[0];
 	
 	entryFocusMath(currEntry);
-}
-
-
-
-// Called whenever there is a key detected on the mobile entry input
-// Streamline with one render graph function
-function onMobileEntryKeyUp(e)
-{
-	// Variables
-	var	currEntry=	$(e.target).parents("#m-entry")[0];
-	
-	renderGraphMobile(currEntry);
 }
 
 // Called whenever the collapse entry button has been clicked
