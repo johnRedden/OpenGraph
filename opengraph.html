@@ -6,17 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <!-- (John Redden: jtredden@gmail.com ) and ( Paul Gonzalez-Becerra: <pgonzbecer@gmail.com> )-->
+    <!-- (John Redden: jtredden@gmail.com  and Paul too ( ?? )-->
     <title>Open Graphing Calculator Alpha</title>
 
-    <!-- CSS -->
+    <!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet" />
     <link href="css/jsxgraph.css" rel="stylesheet" />
     <link href="css/mathquill.css" rel="stylesheet" />
     <link href="css/jquery-ui.min.css" rel="stylesheet" />
 	<link href="css/opengraph.css" rel="stylesheet" />
 
-    <!-- JS TODO: eliminate jquery UI??-->
+
     <script type="text/javascript" src="js/mathjs.js"></script>
     <script type="text/javascript" src="js/jsxgraphcore.js"></script>
     <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
@@ -40,16 +40,13 @@
     
     <div id="myBox" class="jxgbox" style="position:absolute; width:100px; height:100px;"></div>
    
-    <div class="container-fluid noselect" style="top: 0px; background-color:black; opacity:0.5; ">
-        <div class="pull-right" style="color:white; vertical-align:middle" title="About"><span class="glyphicon glyphicon-question-sign "></span></div>
-        <h4 class="pull-left" id="header" style="color:white"><em>placeholder</em></h4>
-    </div>
+    <div class="container-fluid noselect" style="top: 0px; background-color:black; opacity:0.5; "><h4 id="header" style="color:white"><em>placeholder</em></h4></div>
     
     <div class="btn-group" style="position: absolute; top: 45px; left:10px">
-        <div id="deleteAll" class="btn btn-default" data-toggle="tooltip" title="Delete All">
+        <div id="deleteAll" class="btn btn-default" title="Delete All" >
             <span class="glyphicon glyphicon-erase" style="color:mediumvioletred"></span>
         </div>
-        <div id="addNewEntry" class="btn btn-default" data-toggle="tooltip" title="Add Graph">
+        <div id="addNewEntry" class="btn btn-default" title="Add Graph">
             <span class="glyphicon glyphicon-plus" style="color:lightseagreen"></span>
         </div>
     </div>
@@ -64,7 +61,7 @@
  
                 <span class="grabber"></span>
                 <span class="btn-group-vertical spcLeft">
-                    <span class="btn btn-default btn-remove" title="Remove Graph"> <span class="glyphicon glyphicon-remove"></span> </span>
+                    <span class="btn btn-default btn-remove"> <span class="glyphicon glyphicon-remove"></span> </span>
                     <span class="btn btn-default drawer1" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span></span>
                 </span>
                 <span class="btn-group-vertical  spcLeft">
@@ -94,33 +91,29 @@
 
         <!-- Paper Zoom Controls uses Bootstrap Buttons-->
         <div id="graphPaperButtons" class="controlContainer" style="position: absolute; top: 45px; right:10px; height:142px; background-color:#e1e1e1; z-index: 1000; padding:2px; border-radius:5px">
-            <div id="dockButton" class="btn btn-default pull-left" data-toggle="tooltip" title="Dock Right" style="height: 100%;">
+            <div id="dockButton" class="btn btn-default pull-left" title="Dock Right" style="height: 100%;">
                 <span class="glyphicon glyphicon-menu-right" style="line-height: 142px;"></span>
             </div>
             <div class="buttons pull-right">
                 <div class="btn-group" style="width:100%">
-                    <div id="resetHome" class="btn btn-default" data-toggle="tooltip" title="Reset Home" style="width:50%"><div class="glyphicon glyphicon-screenshot"></div></div>
-                    <div id="resetZoom" class="btn btn-default" data-toggle="tooltip" title="Reset Zoom" style="width:50%"><div class="glyphicon glyphicon-fullscreen"></div></div>
+                    <div id="resetHome" class="btn btn-default" title="Reset Home" style="width:50%"><div class="glyphicon glyphicon-screenshot"></div></div>
+                    <div id="resetZoom" class="btn btn-default" title="Reset Zoom" style="width:50%"><div class="glyphicon glyphicon-fullscreen"></div></div>
                 </div>
                 <br />
-                <div id="toggleZoomType" class="btn btn-default" data-toggle="tooltip" title="Toggle Zoom Type" style="width:100%">
+                <div id="toggleZoomType" class="btn btn-default" title="Toggle Zoom Type" style="width:100%">
                     <span class="glyphicon glyphicon-zoom-in"></span>
                     <span id="zoomType" style="font-family:'Courier New', Courier, monospace">xy</span>
                 </div>
                 <br />
                 <div class="btn-group" style="width:100%">
-                    <div id="zoomIn" class="btn btn-default" data-toggle="tooltip" title="Zoom in" style="width:50%"><span class="glyphicon glyphicon-zoom-in"></span></div>
-                    <div id="zoomOut" class="btn btn-default" data-toggle="tooltip" title="Zoom out" style="width:50%"><span class="glyphicon glyphicon-zoom-out"></span></div>
+                    <div id="zoomIn" class="btn btn-default" title="Zoom in" style="width:50%"><span class="glyphicon glyphicon-zoom-in"></span></div>
+                    <div id="zoomOut" class="btn btn-default" title="Zoom out" style="width:50%"><span class="glyphicon glyphicon-zoom-out"></span></div>
                 </div>
                 <br />
-                <div class="btn-group" style="width:100%">
-                    <div id="print" class="btn btn-default" data-toggle="tooltip" title="Print" style="width:50%">
-                        <span class="glyphicon glyphicon-print"></span>
-                    </div>
-                    <div id="print" class="btn btn-default" data-toggle="tooltip" title="Share" style="width:50%">
-                        <span class="glyphicon glyphicon-share"></span>
-                    </div>
+                <div id="print" class="btn btn-default" title="print" style="width:100%">
+                    <span class="glyphicon glyphicon-print"></span>
                 </div>
+            </div>
         </div>
         <!--End Paper Zoom controls-->
 
