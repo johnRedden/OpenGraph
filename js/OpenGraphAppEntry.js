@@ -31,7 +31,9 @@ $(document).ready(function()
 	).on("keyup", ".entry", onEntryKeyUp
 	).on("click", ".collapse-entry", onCollapseEntryClick
     ).on("click", ".thicknessPlus", onThicknessPlusClick
-    ).on("click", ".thicknessMinus", onThicknessMinusClick);
+    ).on("click", ".thicknessMinus", onThicknessMinusClick
+    ).on("click", ".tangentLine", onTangentLineClick
+    ).on("click", ".derivative", onDerivativeClick);
 
 
 	$("#addNewEntry").on("click", onNewEntryClick);
@@ -431,4 +433,39 @@ function onCollapseEntryClick(e)
     }
 }
 
+// Calculus
+function onTangentLineClick(e) {
+    
+    var currEntry = $(e.target).parents(".entry");
+    if (currEntry[0].graphRef) {
+        var n = currEntry[0].graphRef.getAttribute('strokeWidth');
+
+        var p1 = board.create("glider", [1, 1, currEntry[0].graphRef], { color: '#888888', name: '' });
+        board.create('tangent', [p1], { color: '#888888', strokeWidth: n-1 });
+    }
+
+};
+
+function onDerivativeClick(e) {
+
+    var currEntry = $(e.target).parents(".entry");
+    if (currEntry[0].graphRef) {
+        var n = currEntry[0].graphRef.getAttribute('strokeWidth');
+
+        // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+        // so redo it from mathquill
+        var userFunction;
+        var txt = $(e.target).parents(".entry").find(".mathquill-editable").mathquill("text");
+        txt = asciiMathfromMathQuill(txt).toLowerCase();
+
+        // javascript math conversion here using  mathjs.js 
+        eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+        if (JXG.isFunction(userFunction)) {
+           // create and then add it as a child to the graph
+            currEntry[0].graphRef.addChild(board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: '#888888', strokeWidth: n - 1 }));
+        }
+
+    }
+
+};
 // End of File
