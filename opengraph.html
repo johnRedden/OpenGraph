@@ -15,6 +15,20 @@
     <link href="css/mathquill.css" rel="stylesheet" />
     <link href="css/jquery-ui.min.css" rel="stylesheet" />
 	<link href="css/opengraph.css" rel="stylesheet" />
+    <style>
+        #graphPaperButtons{
+            position: absolute; 
+            top: 45px; 
+            right:10px; 
+            height:142px; 
+            background-color:white; 
+            z-index: 1000; 
+            padding:2px; 
+            border:thin solid lightgray;
+            border-radius:2px;
+        }
+
+    </style>
 
     <!-- Js-->
     <script type="text/javascript" src="js/mathjs.js"></script>
@@ -51,6 +65,9 @@
         </div>
         <div id="addNewEntry" class="btn btn-default" title="Add Graph">
             <span class="glyphicon glyphicon-plus" style="color:lightseagreen"></span>
+        </div>
+        <div id="dockRight" class="btn btn-default" title="Dock Right">
+            <span class="glyphicon glyphicon-menu-left"></span>
         </div>
     </div>
 
@@ -93,9 +110,9 @@
         </div>
 
         <!-- Paper Zoom Controls uses Bootstrap Buttons-->
-        <div id="graphPaperButtons" class="controlContainer" style="position: absolute; top: 45px; right:10px; height:142px; background-color:#e1e1e1; z-index: 1000; padding:2px; border-radius:5px">
+        <div id="graphPaperButtons" class="controlContainer" >
             <div id="dockButton" class="btn btn-default pull-left" title="Dock Right" style="height: 100%;">
-                <span class="glyphicon glyphicon-menu-right" style="line-height: 142px;"></span>
+                <span class="glyphicon glyphicon-menu-right" ></span>
             </div>
             <div class="buttons pull-right">
                 <div class="btn-group" style="width:100%">
@@ -113,8 +130,9 @@
                     <div id="zoomOut" class="btn btn-default" title="Zoom out" style="width:50%"><span class="glyphicon glyphicon-zoom-out"></span></div>
                 </div>
                 <br />
-                <div id="print" class="btn btn-default" title="print" style="width:100%">
-                    <span class="glyphicon glyphicon-print"></span>
+                <div class="btn-group" style="width:100%">
+                    <div id="print" class="btn btn-default" title="Print" style="width:50%"><span class="glyphicon glyphicon-print"></span></div>
+                    <div id="share" class="btn btn-default" title="Share" style="width:50%"><span class="glyphicon glyphicon-share"></span></div>
                 </div>
             </div>
         </div>

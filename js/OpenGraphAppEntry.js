@@ -8,8 +8,9 @@ var	blankEntry;
 // Called when the page is loaded up
 $(document).ready(function()
 {
-   	$(".entry")[0].graphRef;
-	$(".entry")[0].gliderRefs=	new Array();
+    $(".entry")[0].graphRef;
+    // I believe map point gliders are children of graphRef
+	//$(".entry")[0].gliderRefs=	new Array();
 	$(".entry")[0].color=	nextColor();
 	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
@@ -47,10 +48,11 @@ function onEntryKeyUp(e) {
 
     if (e.keyCode === 13) {
         onNewEntryClick(e);
+    }else{
+        // catch special cases here before trying to render graph.
+        keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
+        renderGraph(currEntry);  //does not change currEntry
     }
-    // catch special cases here before trying to render graph.
-    keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
-    renderGraph(currEntry);  //does not change currEntry
 
     if (currEntry.dashed) { // we can streamline using JSXGraph getAttribute 'dashed'
         $(currEntry).find(".dashed").click().click();
@@ -267,13 +269,22 @@ function onShowColorClick(e)
 	
 	currEntry[0].color=	nextColor();
 	if (currEntry[0].graphRef)
-	    (currEntry[0].graphRef).setProperty({ strokeColor: currEntry[0].color });
+	    (currEntry[0].graphRef).setAttribute({ strokeColor: currEntry[0].color });
 	    if (JXG.isPoint(currEntry[0].graphRef))
-	        (currEntry[0].graphRef).setProperty({ fillColor: currEntry[0].color });
+	        (currEntry[0].graphRef).setAttribute({ fillColor: currEntry[0].color });
 	    
-	try{
-	    for(var i= 0; i< currEntry[0].gliderRefs.length; i++)
-	        currEntry[0].gliderRefs[i].setProperty({color: currEntry[0].color});
+    try {
+        // get reference to child map points
+        var d = (currEntry[0].graphRef).childElements;
+        for (el in d) {
+            //console.log(d[el]); // Got them - the freakin kids (2 hours for this)!!!!!
+            d[el].setAttribute({ fillColor: currEntry[0].color, strokeColor: currEntry[0].color });
+        }
+        // PAUL --> no need for extra array to hold child references  (Erase when you see this)
+        //(currEntry[0].graphRef).removeDescendants();
+        // NO... get all children of graph using graphRef
+	    //for(var i= 0; i< currEntry[0].gliderRefs.length; i++)
+	        //currEntry[0].gliderRefs[i].setProperty({color: currEntry[0].color});
 	} catch (e) {
         // sometimes there are not any gliders and length is undefined.
 	    //console.log(e);
@@ -368,10 +379,12 @@ function onMapClick(e)
 	// Variables
 	var	currEntry=	$(this).parents(".entry");
 	
-	if(currEntry[0].graphRef)
-		currEntry[0].gliderRefs.push(board.create("glider", [0, 0, currEntry[0].graphRef], {color: currEntry[0].color}));
-	else
-		currEntry.effect("shake", {times: 2}, 700);  // not sure this adds value
+	if (currEntry[0].graphRef) {
+	    board.create("glider", [0, 0, currEntry[0].graphRef], { color: currEntry[0].color });
+	    //console.log(currEntry[0].graphRef.countChildren() + "hmm" + currEntry[0].graphRef.descendants);
+	    //currEntry[0].gliderRefs.push(board.create("glider", [0, 0, currEntry[0].graphRef], {color: currEntry[0].color}));
+	} else
+	    currEntry.effect("shake", { times: 2 }, 700);  // not sure this adds value
 }
 
 // Called whenever the user clicks on the textbox
