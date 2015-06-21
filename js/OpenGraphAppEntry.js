@@ -475,10 +475,12 @@ function onTangentLineClick(e) {
     
     var currEntry = $(e.target).parents(".entry");
     if (currEntry[0].graphRef) {
-        var n = currEntry[0].graphRef.getAttribute('strokeWidth');
+        var szeFn = function () { return currEntry[0].graphRef.getAttribute('strokeWidth') - 1 };
+        var graphColor =  currEntry[0].graphRef.getAttribute('strokeColor');
 
-        var p1 = board.create("glider", [1, 1, currEntry[0].graphRef], { color: '#888888', name: '' });
-        board.create('tangent', [p1], { color: '#888888', strokeWidth: n-1 });
+        var p1 = board.create("glider", [1, 1, currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
+        //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
+        board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn }) ;
     }
 
 };
