@@ -246,19 +246,24 @@ function constructNewEntry(newEntry, lastEntry)
 // Called when the remove button has been called
 function onRemoveClick(e)
 {
+	removeEntry($(e.target).parents(".entry"));
+}
+
+// Removes the given entry from the whole shabang
+function removeEntry(entry)
+{
 	// Variables
-	var	currEntry=	$(this).parents(".entry");
 	var	locations=	new Array();
 	
-	removeFromGraph(currEntry[0]);
+	removeFromGraph(entry[0]);
 	$(".entry").each(function(index, elem)
 	{
-		if(elem=== currEntry[0])
+		if(elem=== entry[0])
 			return;
 		
 		locations.push($(elem).offset());
 	});
-	currEntry.remove();
+	entry.remove();
 	$(".entry").each(function(index, elem)
 	{
 		$(elem).offset(locations[index]);
@@ -435,30 +440,10 @@ function onCollapseEntryClick(e)
     }
 }
 function clearAll() {
-    // TODO: eliminate the Entries too
-    JXG.JSXGraph.freeBoard(board);
-    // this init occurs in two places (also in openGraphappPaper)... maybe make a function out of this.
-    board = JXG.JSXGraph.initBoard('myBox',
-    {
-        boundingbox: [-10, 12, 10, -10],
-        axis: { ticks: { drawLabels: true }, firstArrow: true, strokeColor: 'black' },
-        grid: { strokeWidth: 0.75 },
-        showCopyright: false,
-        showNavigation: false,
-        keepaspectratio: true, //square graph coming in
-        zoom:
-        {
-            wheel: true,
-            needshift: false
-        },
-        pan:
-        {
-            enabled: true,   // Allow panning
-            needTwoFingers: false, // panningis done with two fingers on touch devices
-            needshift: false // mouse panning needs pressing of the shift key
-        }
-    });
-    centerOrigin(); // init center
+	$(".entry").each(function(index, elem)
+	{
+		removeEntry($(elem));
+	});
 }
 
 // Calculus
