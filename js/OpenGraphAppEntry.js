@@ -64,11 +64,13 @@ function onEntryKeyUp(e) {
 }
 // special cases
 function keyUpSpecialCases(inputObj, key) {
-    //this is helpful: (  http://pythonhackers.com/p/Khan/mathquill  )
-    var mathquillText = $(inputObj).find(".mathquill-editable").mathquill('text');
-    var mathquillLatex = $(inputObj).find(".mathquill-editable").mathquill('latex');
-    var m = mathquillLatex.length;
-    //console.log(key);
+    //this is helpful: (  https://github.com/Khan/mathquill)
+    console.log(MathQuill($(inputObj).find(".math-field")[0]).latex());
+    console.log(MathQuill($(inputObj).find(".math-field")[0]).text());
+   // var mathquillText = $(inputObj).find(".mathquill-editable").mathquill('text');
+    //var mathquillLatex = $(inputObj).find(".mathquill-editable").mathquill('latex');
+   // var m = mathquillLatex.length;
+    
     //console.log("text1: " + mathquillText);
 
     /*  this works but there has to be a better way!!!

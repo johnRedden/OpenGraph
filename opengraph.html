@@ -12,7 +12,7 @@
     <!-- CSS -->
     <link href="css/bootstrap.css" rel="stylesheet" />
     <link href="css/jsxgraph.css" rel="stylesheet" />
-    <link href="css/mathquill.css" rel="stylesheet" />
+    <link href="css/mathquill-basic.css" rel="stylesheet" />
     <link href="css/jquery-ui.min.css" rel="stylesheet" />
 	<link href="css/opengraph.css" rel="stylesheet" />
     <style>
@@ -35,7 +35,7 @@
     <script type="text/javascript" src="js/jsxgraphcore.js"></script>
     <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="js/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/mathquill.js"></script>
+    <script type="text/javascript" src="js/mathquill-basic.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
 
     <!-- Our Files /-->
@@ -89,7 +89,7 @@
                     <span class="dashed btn btn-default" title="Dashed" style="color:LightGray;"><span class="glyphicon glyphicon-option-horizontal"></span></span>
                 </span>
                 <span class="mathinput">
-                    <span class="mathquill-editable"></span>
+                    <span class="math-field"></span>
                 </span>
                 <span class="btn-group-vertical spcLeft">
                     <span class="collapse-entry btn btn-default" title="Collapse Entry" ><span class="glyphicon glyphicon-menu-left"></span></span>
@@ -138,10 +138,19 @@
             </div>
         </div>
         <!--End Paper Zoom controls-->
-
+        
+        <!--
         <div id="m-entry" class="listbox">
             <div class="item"><span>y =</span><textarea></textarea></div>
         </div>
+            -->
+    <script>
+    
+        $('.math-field').each(function () { MathQuill.MathField(this); });
+        MathQuill.addAutoCommands('pi theta sqrt sum');
+
+    </script>
+
 
 </body>
 </html>

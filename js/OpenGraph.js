@@ -5,7 +5,7 @@ $(document).ready(function()
 	detectMobile();
 	$(window).resize(detectMobile);
 	if(location.hash!= "")
-		updateEntry($(".entry")[0], location.hash.substring(1));
+		//updateEntry($(".entry")[0], location.hash.substring(1));
 		
 	$("#dockButton").click(onCollapseCollapser);
 });
@@ -33,6 +33,7 @@ function onCollapseCollapser(e)
 }
 
 // Writes into the given entry with the given string
+/*
 function updateEntry(entry, str)
 {
 	// Variables
@@ -48,6 +49,7 @@ function updateEntry(entry, str)
 	$("#m-entry").find("textarea").val(str);
 	renderGraphMobile($("#m-entry")[0]);
 }
+*/
 
 // Changes the header of the page
 function changeHeader(str)
