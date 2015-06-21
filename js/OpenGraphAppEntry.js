@@ -33,10 +33,12 @@ $(document).ready(function()
     ).on("click", ".thicknessPlus", onThicknessPlusClick
     ).on("click", ".thicknessMinus", onThicknessMinusClick
     ).on("click", ".tangentLine", onTangentLineClick
-    ).on("click", ".derivative", onDerivativeClick);
+    ).on("click", ".derivative", onDerivativeClick
+    ).on("click", ".roots", onRootsClick);
 
 
 	$("#addNewEntry").on("click", onNewEntryClick);
+	$("#deleteAll").on("click", clearAll);
 	
 	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
@@ -432,8 +434,58 @@ function onCollapseEntryClick(e)
         //TODO change the glyphicon to right
     }
 }
+function clearAll() {
+    // TODO: eliminate the Entries too
+    JXG.JSXGraph.freeBoard(board);
+    // this init occurs in two places (also in openGraphappPaper)... maybe make a function out of this.
+    board = JXG.JSXGraph.initBoard('myBox',
+    {
+        boundingbox: [-10, 12, 10, -10],
+        axis: { ticks: { drawLabels: true }, firstArrow: true, strokeColor: 'black' },
+        grid: { strokeWidth: 0.75 },
+        showCopyright: false,
+        showNavigation: false,
+        keepaspectratio: true, //square graph coming in
+        zoom:
+        {
+            wheel: true,
+            needshift: false
+        },
+        pan:
+        {
+            enabled: true,   // Allow panning
+            needTwoFingers: false, // panningis done with two fingers on touch devices
+            needshift: false // mouse panning needs pressing of the shift key
+        }
+    });
+    centerOrigin(); // init center
+}
 
 // Calculus
+function onRootsClick(e) {
+    var currEntry = $(e.target).parents(".entry");
+    var interval = new Array(-10,-5);
+    
+    if (currEntry[0].graphRef) {
+
+        // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+        // so redo it from mathquill
+        var userFunction;
+        var txt = $(e.target).parents(".entry").find(".mathquill-editable").mathquill("text");
+        txt = asciiMathfromMathQuill(txt).toLowerCase();
+
+        // javascript math conversion here using  mathjs.js 
+        eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+
+        if (JXG.isFunction(userFunction)) {
+            // create and then add it as a child to the graph
+            //console.log(JXG.Math.Numerics.fzero(userFunction, -10));
+            // Still Working on it!
+            // I think I should use intersection but not sure
+            
+        }
+    }
+}
 function onTangentLineClick(e) {
     
     var currEntry = $(e.target).parents(".entry");
