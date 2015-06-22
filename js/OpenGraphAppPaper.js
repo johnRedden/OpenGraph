@@ -1,14 +1,9 @@
 
 /// <reference path="jsxgraphcore.js" />
+
 // Variables
 var board;
 var resizeTimer;
-var bMobile;
-var movement = new function () { };
-
-movement.x = null;
-movement.y = null;
-movement.down = false;
 
 // Called when the page is ready and loaded
 $(document).ready(function () {
@@ -35,9 +30,7 @@ $(document).ready(function () {
     board.resizeContainer($(window).width(), $(window).height()); //init resize
     centerOrigin(); // init center
    
-    board.on("down", onMobileDown);
-    board.on("up", function () { movement.down = false; });
-    board.on("move", onMobileMovement);
+    board.on("move", onBoardMovement);
 
     $("#resetHome").click(function () {
         centerOrigin();
@@ -86,42 +79,13 @@ function resizeBoard() {
 
     board.resizeContainer($(window).width(), $(window).height(), false, true); //the true = do not call setBoundingBox
     board.setBoundingBox(bb, false);  //false = keep aspect ratio and same bb as coming in
-    
-    $("#m-entry").css("display", "none");
 }
 
-// Resizes the graphing board for mobile viewage
-function resizeBoardMobile() {
-    var bb = board.getBoundingBox();
-
-    board.resizeContainer($(window).width(), $(window).height() * 0.75);
-    board.setBoundingBox(bb, false);
-
-    //show input box mobile
-    $("#m-entry").css("display", "block"
-	).css("top", $(window).height() * 0.75
-	).css("width", $(window).width()
-	).css("height", $(window).height() * 0.25);
-}
-
-// Called when the window has been resized
-$(window).resize(function () {
-    bMobile = (navigator.appVersion.toLowerCase().indexOf("android"))!= -1; // Looks for only android
-
-    if (!bMobile) {
-        resizeBoard();/* Don't know why you need a timer (efficiency??)
-		clearTimeout(resizeTimer);
-		resizeTimer=	setTimeout(function()
-		{
-			resizeBoard();
-		}, 200);*/
-    }
-    else {
-        resizeBoardMobile();
-    }
-});
+// Resizes the board when the window has been resized
+$(window).resize(resizeBoard);
 
 // Gets the mouse coordinates
+// Do you think we still need this??
 function getMouseCoords(e, i) {
     // Variables
     var cPos = board.getCoordsTopLeftCorner(e, i);  //always 0,0 ??
@@ -132,28 +96,9 @@ function getMouseCoords(e, i) {
     return [dx, dy];//new JXG.Coords(JXG.COORDS_BY_SCREEN, [dx, dy], board);
 }
 
-// Called whenever there is a touch detected
-function onMobileDown(e) {
-    if (!bMobile)
-        return;
-
-    // Variables
-    var mPos = getMouseCoords(e, 0);
-
-    movement.x = mPos[0];
-    movement.y = mPos[1];
-    movement.down = true;
-}
-
-// Called whenever there is a touched movement detected
-function onMobileMovement(e) {
-    if (!bMobile)
-        return;
-    if (!movement.down)
-        return;
-
-    board.update();  // need this to force mobile to update... that's all!  How many hours wasted?
-
+// Called whenever there is a movement detected
+function onBoardMovement(e) {
+    board.update();
 }
 
 // End of File

@@ -15,7 +15,6 @@ $(document).ready(function()
 	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this
 	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
 	blankEntry=	$(".entry");
-	$("#m-entry").graphRef; // not sure what this is for??
 	
 	entryFocusMath($(".entry")[0]);
 	displayColorToEntry($(".entry"));
@@ -39,8 +38,6 @@ $(document).ready(function()
 
 	$("#addNewEntry").on("click", onNewEntryClick);
 	$("#deleteAll").on("click", clearAll);
-	
-	$("#m-entry").on("keyup", "textarea", onMobileEntryKeyUp);  // redesign?? tow onkeyups will be cumbersome
 });
 
 
@@ -54,7 +51,7 @@ function onEntryKeyUp(e) {
         onNewEntryClick(e);
     }else{
         // catch special cases here before trying to render graph.
-        keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
+       // keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
         renderGraph(currEntry);  //does not change currEntry
     }
 
@@ -63,6 +60,7 @@ function onEntryKeyUp(e) {
     }
 }
 // special cases
+// Don't know if we really need this or not anymore
 function keyUpSpecialCases(inputObj, key) {
     //this is helpful: (  https://github.com/Khan/mathquill)
     console.log(MathQuill($(inputObj).find(".math-field")[0]).latex());
@@ -86,8 +84,41 @@ function keyUpSpecialCases(inputObj, key) {
     //console.log("latex: " + $(inputObj).find(".mathquill-editable").mathquill('latex'));
 
 }
+
 // Renders the graph
-function renderGraph(inputObj)
+function renderGraph(entry)
+{
+	// Variables
+	var	userFunction;
+	var	mqtxt=	MathQuill($(entry).find(".math-field")[0]).text();
+	
+	// JOHN>> Looks like it is a little neccessary to change things up a bit for the render function, but good news
+	// there isn't much to really change now! The new MathQuill takes care of a lot really. Just need some fixes for
+	// sin, cos, and tan, and anything else that I cannot really think of at the moment
+	mqtxt=	mqtxt.replace(/\*\*\*/g, "^").replace(/cdot\s/g, "*").replace(
+		/\\s\*i\*n\s\*/g, "sin").replace(/\\c\*o\*s\s\*/g, "cos").replace(
+		/\\t\*a\*n\s\*/g, "tan");
+	$("#header").text(mqtxt);
+	
+	try {
+		// javascript math conversion here using  mathjs.js 
+		eval("userFunction= function(x) { with(Math) return " + mathjs(mqtxt) + " }");
+		if (JXG.isFunction(userFunction)) {
+			removeFromGraph(entry);
+			entry.graphRef = board.create("functiongraph", userFunction,
+			{
+				visible: true,
+				strokeWidth: 2,
+				strokeColor: entry.color
+			});
+		}
+	}
+	catch (e) { console.log("caught " + e); }
+}
+
+// Renders the graph
+// Ruins of the old renderer, delete later, keep now for reference?
+function old_renderGraph(inputObj)
 {
     // this function takes in an Entry, creates javascript math, and then associates a graph to the entry
 	// Variables
@@ -156,11 +187,12 @@ function renderGraph(inputObj)
 	
 }
 // Returns asciiMath from a MathQuill text string
+// Delete??
 function asciiMathfromMathQuill(txt) {
     // This function should take in an entry and return well formed asciiMath
     var n = txt.length;
 
-    txt = txt.replace("**", "^");
+    txt = txt.replace("***", "^");
 
     // I think all this below can go???
     txt = txt.replace("s*i*n*", "sin");
@@ -176,34 +208,6 @@ function asciiMathfromMathQuill(txt) {
     //console.log("asciiMath: " + txt);
     return txt;
 }
-
-// Renders the graph for the mobile view
-// Mobile should use the same rendering function, why does it need to be different??
-function renderGraphMobile(inputObj)
-{
-	// Variables
-	var	userFunction;
-	var	txt=	$(inputObj).find("textarea").val().toLowerCase();
-	var	convertedMath=	mathjs(txt);
-	
-	try
-	{
-		eval("userFunction= function(x) { with(Math) return "+convertedMath+" }");
-		if(JXG.isFunction(userFunction))
-		{
-			removeFromGraph(inputObj);
-			inputObj.graphRef=	board.create("functiongraph", userFunction,
-			{
-				visible:	true,
-				strokeWidth:	2,
-				strokeColor:	"blue"
-			});
-		}
-	}
-	catch(e)	{	console.log("caught "+e);	}
-}
-
-
 
 // Creates a new entry, despite clicking on the entry
 function onNewEntryClick(e)
@@ -236,11 +240,11 @@ function constructNewEntry(newEntry, lastEntry)
 		//newEntry.find(".collapse-entry").find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
 	}
 	newEntry[0].color= nextColor();
-	newEntry.find('.mathquill-editable').html("&nbsp;").mathquill('editable');
+	MathQuill(newEntry.find('.math-field')[0]).latex("");
 	displayColorToEntry(newEntry);
 	newEntry.find('.dashed').css({ color: "LightGray" });
 	newEntry.draggable({ disabled: true, containment:'document' });  // TODO: change to mobile friendly
-	newEntry.find(".mathquill-editable:first").addClass('hasCursor').find('textarea').focus();
+	MathQuill(newEntry.find(".math-field")[0]).focus();
 	
 	return newEntry;
 }
@@ -254,22 +258,8 @@ function onRemoveClick(e)
 // Removes the given entry from the whole shabang
 function removeEntry(entry)
 {
-	// Variables
-	var	locations=	new Array();
-	
 	removeFromGraph(entry[0]);
-	$(".entry").each(function(index, elem)
-	{
-		if(elem=== entry[0])
-			return;
-		
-		locations.push($(elem).offset());
-	});
 	entry.remove();
-	$(".entry").each(function(index, elem)
-	{
-		$(elem).offset(locations[index]);
-	});
 }
 
 // Called whenever the user changes the color of the equation
@@ -287,19 +277,17 @@ function onShowColorClick(e)
     try {
         // get reference to child map points
         var d = (currEntry[0].graphRef).childElements;
+		
         for (el in d) {
             //console.log(d[el]); // Got them - the freakin kids (2 hours for this)!!!!!
             d[el].setAttribute({ fillColor: currEntry[0].color, strokeColor: currEntry[0].color });
         }
-        // PAUL --> no need for extra array to hold child references  (Erase when you see this)
-        //(currEntry[0].graphRef).removeDescendants();
-        // NO... get all children of graph using graphRef
-	    //for(var i= 0; i< currEntry[0].gliderRefs.length; i++)
-	        //currEntry[0].gliderRefs[i].setProperty({color: currEntry[0].color});
 	} catch (e) {
         // sometimes there are not any gliders and length is undefined.
 	    //console.log(e);
 	}
+	
+	board.update();
 
 	displayColorToEntry(currEntry);
 }
@@ -309,22 +297,22 @@ function nextColor() {   //n is a global variable used for the revolving color i
     return colors[n];
 }
 
-// Displays the color to the entry loader thingy mabober... NOTE: What is the official name to that thing?
+// Displays the color to the entry's function
 // John Says - huh - you mean the color indicator ?
+// Paul Responds - I meant the entry, but I guess we stuck with the name ENTRY
 function displayColorToEntry(entry) {
     entry.find(".showColor").css({ 'color': entry[0].color });
 }
 
 // Focuses on mathquill's textarea
-function entryFocusMath(inputEntry) {
-    $(inputEntry).find(".mathquill-editable:first").addClass('hasCursor').focus();
-    $(inputEntry).find(".mathquill-editable:first").find('textarea').focus();
+function entryFocusMath(entry) {
+	$(entry).find(".math-field").focus();
 }
 
 // Removes the given object from the graph
-function removeFromGraph(inputObj) {
-    if (typeof inputObj === "object") {
-        board.removeObject(inputObj.graphRef);
+function removeFromGraph(entry) {
+    if (typeof entry === "object") {
+        board.removeObject(entry.graphRef);
     }
 }
 // Called whenever the drawer button is clicked
@@ -407,18 +395,6 @@ function onMathInputClick(e)
 	entryFocusMath(currEntry);
 }
 
-
-
-// Called whenever there is a key detected on the mobile entry input
-// Streamline with one render graph function
-function onMobileEntryKeyUp(e)
-{
-	// Variables
-	var	currEntry=	$(e.target).parents("#m-entry")[0];
-	
-	renderGraphMobile(currEntry);
-}
-
 // Called whenever the collapse entry button has been clicked
 function onCollapseEntryClick(e)
 {
@@ -441,6 +417,8 @@ function onCollapseEntryClick(e)
         //TODO change the glyphicon to right
     }
 }
+
+// Removes all the entries on the screen
 function clearAll() {
 	$(".entry").each(function(index, elem)
 	{
@@ -458,7 +436,7 @@ function onRootsClick(e) {
         // Do not know how to get the function from graphRef... should be able to  TODO: find out??
         // so redo it from mathquill
         var userFunction;
-        var txt = $(e.target).parents(".entry").find(".mathquill-editable").mathquill("text");
+        var txt = MathQuill($(e.target).parents(".entry").find(".mathquill-editable")[0]).text();
         txt = asciiMathfromMathQuill(txt).toLowerCase();
 
         // javascript math conversion here using  mathjs.js 
@@ -474,13 +452,14 @@ function onRootsClick(e) {
     }
 }
 function onTangentLineClick(e) {
-    
+    // Variables
     var currEntry = $(e.target).parents(".entry");
     if (currEntry[0].graphRef) {
+		// Variables
         var szeFn = function () { return currEntry[0].graphRef.getAttribute('strokeWidth') - 1 };
         var graphColor =  currEntry[0].graphRef.getAttribute('strokeColor');
-
         var p1 = board.create("glider", [1, 1, currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
+		
         //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
         board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn }) ;
     }
@@ -488,15 +467,17 @@ function onTangentLineClick(e) {
 };
 
 function onDerivativeClick(e) {
-
+	// Variables
     var currEntry = $(e.target).parents(".entry");
+	
     if (currEntry[0].graphRef) {
+		// Variables
         var n = currEntry[0].graphRef.getAttribute('strokeWidth');
 
         // Do not know how to get the function from graphRef... should be able to  TODO: find out??
         // so redo it from mathquill
         var userFunction;
-        var txt = $(e.target).parents(".entry").find(".mathquill-editable").mathquill("text");
+        var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
         txt = asciiMathfromMathQuill(txt).toLowerCase();
 
         // javascript math conversion here using  mathjs.js 

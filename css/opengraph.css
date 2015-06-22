@@ -172,3 +172,15 @@ div.listbox .item textarea {
 {
 	height:	100%;
 }
+
+#graphPaperButtons{
+	position: absolute; 
+	top: 45px; 
+	right:10px; 
+	height:142px; 
+	background-color:white; 
+	z-index: 1000; 
+	padding:2px; 
+	border:thin solid lightgray;
+	border-radius:2px;
+}

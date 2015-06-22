@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <!-- (John Redden: jtredden@gmail.com  and Paul too ( ?? )-->
+    <!-- (John Redden: jtredden@gmail.com  and Paul Gonzalez-Becerra: pgonzbecer@gmail.com)-->
     <title>Open Graphing Calculator Alpha</title>
 
     <!-- CSS -->
@@ -15,20 +15,6 @@
     <link href="css/mathquill-basic.css" rel="stylesheet" />
     <link href="css/jquery-ui.min.css" rel="stylesheet" />
 	<link href="css/opengraph.css" rel="stylesheet" />
-    <style>
-        #graphPaperButtons{
-            position: absolute; 
-            top: 45px; 
-            right:10px; 
-            height:142px; 
-            background-color:white; 
-            z-index: 1000; 
-            padding:2px; 
-            border:thin solid lightgray;
-            border-radius:2px;
-        }
-
-    </style>
 
     <!-- Js-->
     <script type="text/javascript" src="js/mathjs.js"></script>
@@ -70,9 +56,6 @@
             <span class="glyphicon glyphicon-menu-left"></span>
         </div>
     </div>
-
-        <!-- Eliminate sideListbox ??-->
-        <!--<div class="sideListbox"></div>/-->
 
         <div class="myForm">
 
@@ -138,12 +121,7 @@
             </div>
         </div>
         <!--End Paper Zoom controls-->
-        
-        <!--
-        <div id="m-entry" class="listbox">
-            <div class="item"><span>y =</span><textarea></textarea></div>
-        </div>
-            -->
+		
     <script>
     
         $('.math-field').each(function () { MathQuill.MathField(this); });
