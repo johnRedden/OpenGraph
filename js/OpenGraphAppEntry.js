@@ -5,48 +5,6 @@ var	colors=	['SlateGray', 'RoyalBlue', 'SeaGreen', 'Violet', 'Coral'];
 var	n=	0;
 var	blankEntry,template;
 
-// Called when the page is loaded up
-$(document).ready(function()
-{
-    // opengraph.js on ready runs first!
-
-    $(".entry")[0].graphRef;
-	$(".entry")[0].color=	nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
-	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this.. TODO: eliminate this variable
-	$(".entry").draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
-
-	blankEntry = $(".entry");
-	//or
-	template = $(".entry")[0]; 
-
-	console.log($(".entry"));
-	console.log($(".entry")[0]);
-
-	entryFocusMath($(".entry")[0]);  // what is more efficient?  pass $('.entry') or $(".entry")[0] ??
-	displayColorToEntry($(".entry"));  // same issue should be consistent when passing arguments.
-	
-	$(".myForm").on("click", ".btn-remove", onRemoveClick
-	).on("click", ".map", onMapClick
-	).on("click", ".showColor", onShowColorClick
-    ).on("mouseover", ".grabber", makeDraggable // TODO: make touch friendly
-    ).on("mouseout", ".grabber", makeUnDraggable // TODO: make touch friendly
-	).on("click", ".dashed", onDashedClick
-	).on("click", ".mathinput", onMathInputClick
-    ).on("click", ".drawer1", onDrawerClick
-	).on("keyup", ".entry", onEntryKeyUp
-	).on("click", ".collapse-entry", onCollapseEntryClick
-    ).on("click", ".thicknessPlus", onThicknessPlusClick
-    ).on("click", ".thicknessMinus", onThicknessMinusClick
-    ).on("click", ".tangentLine", onTangentLineClick
-    ).on("click", ".derivative", onDerivativeClick
-    ).on("click", ".roots", onRootsClick);
-
-
-	$("#addNewEntry").on("click", onNewEntryClick);
-	$("#deleteAll").on("click", clearAll);
-});
-
-
 // Called whenever there is a key detected on an entry input
 function onEntryKeyUp(e) {
   
