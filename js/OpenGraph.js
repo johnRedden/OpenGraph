@@ -7,7 +7,10 @@ $(document).ready(function()
 		
 	$("#dockButton").click(onCollapseCollapser);
 	$("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.15</sub></em>");
-	//$("#header").text($(".entry").find("mathquill-field").text());
+    //Init MathQuill
+	$('.math-field').each(function () { MathQuill.MathField(this); });
+	MathQuill.addAutoCommands('pi theta sqrt sum');
+	
 });
 
 // Called when the collapser has collapsed a collapsible collapser
@@ -38,7 +41,10 @@ function updateEntry(entry, str)
 	try{
 	MathQuill($(entry).find(".math-field")[0]).typedText(str);
 	renderGraph(entry);
-	}catch(e){$("#header").text(e.message+" :: "+MathQuill($(".math-field")[0]));}
+	} catch (e) {
+        // use console.log()
+	    //$("#header").text(e.message + " :: " + MathQuill($(".math-field")[0]));
+	}
 }
 
 // End of File

@@ -3,21 +3,27 @@
 // Variables
 var	colors=	['SlateGray', 'RoyalBlue', 'SeaGreen', 'Violet', 'Coral'];
 var	n=	0;
-var	blankEntry;
+var	blankEntry,template;
 
 // Called when the page is loaded up
 $(document).ready(function()
 {
+    // opengraph.js on ready runs first!
+
     $(".entry")[0].graphRef;
-    // I believe map point gliders are children of graphRef
-	//$(".entry")[0].gliderRefs=	new Array();
-	$(".entry")[0].color=	nextColor();
-	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this
-	$(".entry").draggable({ disabled: true, containment:'document' }); // only want to drag in grabber.
-	blankEntry=	$(".entry");
-	
-	entryFocusMath($(".entry")[0]);
-	displayColorToEntry($(".entry"));
+	$(".entry")[0].color=	nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
+	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this.. TODO: eliminate this variable
+	$(".entry").draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
+
+	blankEntry = $(".entry");
+	//or
+	template = $(".entry")[0]; 
+
+	console.log($(".entry"));
+	console.log($(".entry")[0]);
+
+	entryFocusMath($(".entry")[0]);  // what is more efficient?  pass $('.entry') or $(".entry")[0] ??
+	displayColorToEntry($(".entry"));  // same issue should be consistent when passing arguments.
 	
 	$(".myForm").on("click", ".btn-remove", onRemoveClick
 	).on("click", ".map", onMapClick
@@ -65,23 +71,6 @@ function keyUpSpecialCases(inputObj, key) {
     //this is helpful: (  https://github.com/Khan/mathquill)
     console.log(MathQuill($(inputObj).find(".math-field")[0]).latex());
     console.log(MathQuill($(inputObj).find(".math-field")[0]).text());
-   // var mathquillText = $(inputObj).find(".mathquill-editable").mathquill('text');
-    //var mathquillLatex = $(inputObj).find(".mathquill-editable").mathquill('latex');
-   // var m = mathquillLatex.length;
-    
-    //console.log("text1: " + mathquillText);
-
-    /*  this works but there has to be a better way!!!
-    if (mathquillLatex.substring(m - 2, m) === "sq") {
-        $(inputObj).find(".mathquill-editable").mathquill('latex', mathquillLatex.substring(0, m - 2));
-        $(inputObj).find(".mathquill-editable").mathquill('cmd', '\\sqrt');
-        entryFocusMath(inputObj);
-    }
-    */
-    //Todo: catch the case where sq is in a fraction and looks like {sq} 
-
-    //console.log("text2: " + $(inputObj).find(".mathquill-editable").mathquill('text'));
-    //console.log("latex: " + $(inputObj).find(".mathquill-editable").mathquill('latex'));
 
 }
 
@@ -94,11 +83,12 @@ function renderGraph(entry)
 	
 	// JOHN>> Looks like it is a little neccessary to change things up a bit for the render function, but good news
 	// there isn't much to really change now! The new MathQuill takes care of a lot really. Just need some fixes for
-	// sin, cos, and tan, and anything else that I cannot really think of at the moment
+    // sin, cos, and tan, and anything else that I cannot really think of at the moment
+    // PAUL>> I really think we can do this in the special cases function or somewhere else...  renderGraph should just do that if it can... otherwise throw an error message
 	mqtxt=	mqtxt.replace(/\*\*\*/g, "^").replace(/cdot\s/g, "*").replace(
 		/\\s\*i\*n\s\*/g, "sin").replace(/\\c\*o\*s\s\*/g, "cos").replace(
 		/\\t\*a\*n\s\*/g, "tan");
-	$("#header").text(mqtxt);
+	//$("#header").text(mqtxt); // use console.log
 	
 	try {
 		// javascript math conversion here using  mathjs.js 
@@ -244,7 +234,7 @@ function constructNewEntry(newEntry, lastEntry)
 	displayColorToEntry(newEntry);
 	newEntry.find('.dashed').css({ color: "LightGray" });
 	newEntry.draggable({ disabled: true, containment:'document' });  // TODO: change to mobile friendly
-	MathQuill(newEntry.find(".math-field")[0]).focus();
+	MathQuill(newEntry.find(".math-field")[0]).focus(); // use the focus method
 	
 	return newEntry;
 }
@@ -306,7 +296,8 @@ function displayColorToEntry(entry) {
 
 // Focuses on mathquill's textarea
 function entryFocusMath(entry) {
-	$(entry).find(".math-field").focus();
+    var blankEntry = $(".entry").find(".math-field")[0];
+    MathQuill(blankEntry).focus();
 }
 
 // Removes the given object from the graph
