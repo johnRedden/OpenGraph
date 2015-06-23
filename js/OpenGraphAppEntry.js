@@ -9,16 +9,20 @@ var blankEntry;
 function constructNewEntry() {
     // newEntry and lastEntry are to be mathQuillified JQuery Entry objects
     
-    var newEntry = blankEntry.clone();
+    var newEntry = blankEntry.clone().appendTo('.myForm');
     var lastEntry = null;
+  
+    console.log(newEntry.find(".math-field"));
+    MathQuill.MathField(newEntry.find('.math-field')[0]).focus();
+
 
     if ($(".entry").length > 0)
         lastEntry = $($(".entry")[$(".entry").length - 1]);
     
-    newEntry.appendTo($(".myForm"));
+    //newEntry.appendTo($(".myForm"));
 
     if (lastEntry == null) {
-        console.log(newEntry.find(".math-field")[0]);
+        //console.log(newEntry.find(".math-field")[0]);
         newEntry[0].graphRef = null;
         newEntry[0].color = nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
         newEntry[0].dashed = false;  // can use getAttribute instead of this.. TODO: eliminate this variable

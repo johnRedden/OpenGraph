@@ -105,11 +105,12 @@ $(document).ready(function()
     // 2. Construct first entry in the form
 
     //MathQuillify the math-field and set global mathquill behavior
-    MathQuill.MathField($('.math-field')[0]); 
+    
     MathQuill.addAutoCommands('pi theta sqrt sum');
 
     blankEntry = $(".entry"); // initial **MathQuillified** entry (global jquery Object constant)
     blankEntry.remove();
+    //console.log(blankEntry);
     constructNewEntry();
 	
 });
