@@ -66,28 +66,27 @@ $(document).ready(function()
                 break;
         }
     });
+    // -----------------------------------
+    // --- OpenGraph.js Initialization ---
+    // -----------------------------------
+
+    // Also OpenGraph's on load function gets called first, because it was positioned before the entry one
+
+    //if(location.hash!= "")
+    //updateEntry($(".entry")[0], location.hash.substring(1));
+    // Page Buttons
+    $("#dockButton").click(onCollapseCollapser);
+    $("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.15</sub></em>");
+    $("#addNewEntry").on("click", onNewEntryClick);
+    $("#deleteAll").on("click", clearAll);
 	
 	// -------------------------------------------
 	// --- OpenGraphAppEntry.js Initialization ---
 	// -------------------------------------------
 	
-
-    $(".entry")[0].graphRef;
-	$(".entry")[0].color=	nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
-	$(".entry")[0].dashed=	false;  // can use getAttribute instead of this.. TODO: eliminate this variable
-	$(".entry").draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
-
-	blankEntry = $(".entry");
-	//or
-	template = $(".entry")[0]; 
-
-	console.log($(".entry"));
-	console.log($(".entry")[0]);
-
-	entryFocusMath($(".entry")[0]);  // what is more efficient?  pass $('.entry') or $(".entry")[0] ??
-	displayColorToEntry($(".entry"));  // same issue should be consistent when passing arguments.
-	
-	$(".myForm").on("click", ".btn-remove", onRemoveClick
+    // 1. add event listeners to the form
+    $(".myForm"
+    ).on("click", ".btn-remove", onRemoveClick
 	).on("click", ".map", onMapClick
 	).on("click", ".showColor", onShowColorClick
     ).on("mouseover", ".grabber", makeDraggable // TODO: make touch friendly
@@ -103,24 +102,14 @@ $(document).ready(function()
     ).on("click", ".derivative", onDerivativeClick
     ).on("click", ".roots", onRootsClick);
 
+    // 2. Construct first entry in the form
 
-	$("#addNewEntry").on("click", onNewEntryClick);
-	$("#deleteAll").on("click", clearAll);
-	
-	// -----------------------------------
-	// --- OpenGraph.js Initialization ---
-	// -----------------------------------
-	
-	// Also OpenGraph's on load function gets called first, because it was positioned before the entry one
-	
-	//if(location.hash!= "")
-		//updateEntry($(".entry")[0], location.hash.substring(1));
-		
-	$("#dockButton").click(onCollapseCollapser);
-	$("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.15</sub></em>");
-    //Init MathQuill
-	$('.math-field').each(function () { MathQuill.MathField(this); });
-	MathQuill.addAutoCommands('pi theta sqrt sum');
+    //MathQuillify the math-field and set global mathquill behavior
+    MathQuill.MathField($('.math-field')[0]); 
+    MathQuill.addAutoCommands('pi theta sqrt sum');
+
+    blankEntry = $(".entry"); // initial **MathQuillified** entry (global jquery Object constant)
+    constructNewEntry(blankEntry, null);
 	
 });
 

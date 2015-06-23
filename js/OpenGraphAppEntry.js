@@ -3,7 +3,53 @@
 // Variables
 var	colors=	['SlateGray', 'RoyalBlue', 'SeaGreen', 'Violet', 'Coral'];
 var	n=	0;
-var	blankEntry,template;
+var blankEntry;
+
+// Constructs the new entry
+function constructNewEntry(newEntry, lastEntry) {
+    // newEntry and lastEntry are to be mathQuillified JQuery Entry objects
+
+    if (lastEntry == null) {
+        
+        newEntry[0].graphRef = null;
+        newEntry[0].color = nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
+        newEntry[0].dashed = false;  // can use getAttribute instead of this.. TODO: eliminate this variable
+        newEntry.draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
+
+        MathQuill(newEntry.find(".math-field")[0]).latex(""); // reset math-field
+        MathQuill(newEntry.find(".math-field")[0]).focus();
+    }
+
+
+
+
+    if (lastEntry != null)
+        newEntry.offset({ top: lastEntry.offset().top + lastEntry.height() + 36, left: lastEntry.offset().left });
+    if (newEntry.offset().top + newEntry.height() > $(window).height()) {
+        // Variables
+        var offset = newEntry.offset();
+
+        newEntry.offset({ top: 85, left: offset.left + 64, right: offset.right, bottom: offset.bottom });
+    }
+    if (newEntry.offset().left < 0) {
+        newEntry.offset({ left: 1 });
+        //newEntry.find(".collapse-entry").find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+    }
+    newEntry[0].color = nextColor();
+    MathQuill(newEntry.find('.math-field')[0]).latex("");
+    displayColorToEntry(newEntry);
+    newEntry.find('.dashed').css({ color: "LightGray" });
+    newEntry.draggable({ disabled: true, containment: 'document' });  // TODO: change to mobile friendly
+    MathQuill(newEntry.find(".math-field")[0]).focus(); // use the focus method
+    /*
+
+    entryFocusMath($(".entry")[0]);  // what is more efficient?  pass $('.entry') or $(".entry")[0] ??
+    displayColorToEntry($(".entry"));  // same issue should be consistent when passing arguments.
+
+    */
+
+    return newEntry;
+}
 
 // Called whenever there is a key detected on an entry input
 function onEntryKeyUp(e) {
@@ -170,32 +216,7 @@ function onNewEntryClick(e)
 	constructNewEntry(newEntry, lastEntry);
 }
 
-// Constructs the new entry
-function constructNewEntry(newEntry, lastEntry)
-{
-	if(lastEntry!= null)
-		newEntry.offset({top: lastEntry.offset().top+lastEntry.height()+36, left: lastEntry.offset().left});
-	if(newEntry.offset().top+newEntry.height()> $(window).height())
-	{
-		// Variables
-		var	offset=	newEntry.offset();
-		
-		newEntry.offset({top: 85, left: offset.left+64, right: offset.right, bottom: offset.bottom});
-	}
-	if(newEntry.offset().left< 0)
-	{
-		newEntry.offset({left: 1});
-		//newEntry.find(".collapse-entry").find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
-	}
-	newEntry[0].color= nextColor();
-	MathQuill(newEntry.find('.math-field')[0]).latex("");
-	displayColorToEntry(newEntry);
-	newEntry.find('.dashed').css({ color: "LightGray" });
-	newEntry.draggable({ disabled: true, containment:'document' });  // TODO: change to mobile friendly
-	MathQuill(newEntry.find(".math-field")[0]).focus(); // use the focus method
-	
-	return newEntry;
-}
+
 
 // Called when the remove button has been called
 function onRemoveClick(e)
