@@ -6,22 +6,31 @@ var	n=	0;
 var blankEntry;
 
 // Constructs the new entry
-function constructNewEntry(newEntry, lastEntry) {
+function constructNewEntry() {
     // newEntry and lastEntry are to be mathQuillified JQuery Entry objects
+    
+    var newEntry = blankEntry.clone();
+    var lastEntry = null;
+
+    if ($(".entry").length > 0)
+        lastEntry = $($(".entry")[$(".entry").length - 1]);
+    
+    newEntry.appendTo($(".myForm"));
 
     if (lastEntry == null) {
-        
+        console.log(newEntry.find(".math-field")[0]);
         newEntry[0].graphRef = null;
         newEntry[0].color = nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
         newEntry[0].dashed = false;  // can use getAttribute instead of this.. TODO: eliminate this variable
         newEntry.draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
-
-        MathQuill(newEntry.find(".math-field")[0]).latex(""); // reset math-field
+        //console.log(newEntry.find(".math-field"));
+        MathQuill(newEntry.find(".math-field")[0]).write("-1"); // reset math-field
+        //entryFocusMath(newEntry);
+        //newEntry.find(".math-field").focus();
         MathQuill(newEntry.find(".math-field")[0]).focus();
     }
 
-
-
+    /*
 
     if (lastEntry != null)
         newEntry.offset({ top: lastEntry.offset().top + lastEntry.height() + 36, left: lastEntry.offset().left });
@@ -41,7 +50,7 @@ function constructNewEntry(newEntry, lastEntry) {
     newEntry.find('.dashed').css({ color: "LightGray" });
     newEntry.draggable({ disabled: true, containment: 'document' });  // TODO: change to mobile friendly
     MathQuill(newEntry.find(".math-field")[0]).focus(); // use the focus method
-    /*
+    
 
     entryFocusMath($(".entry")[0]);  // what is more efficient?  pass $('.entry') or $(".entry")[0] ??
     displayColorToEntry($(".entry"));  // same issue should be consistent when passing arguments.
@@ -49,6 +58,19 @@ function constructNewEntry(newEntry, lastEntry) {
     */
 
     return newEntry;
+}
+
+// Creates a new entry, despite clicking on the entry
+function onNewEntryClick(e) {
+    constructNewEntry();
+}
+
+// Focuses on mathquill's textarea
+function entryFocusMath(entry) {
+   
+    //var temp = entry.find(".math-field");
+    //console.log(temp[0]);
+    //MathQuill(temp[0]).focus();
 }
 
 // Called whenever there is a key detected on an entry input
@@ -203,18 +225,7 @@ function asciiMathfromMathQuill(txt) {
     return txt;
 }
 
-// Creates a new entry, despite clicking on the entry
-function onNewEntryClick(e)
-{
-	// Variables
-	var	newEntry;
-	var	lastEntry=	null;
-	
-	if($(".entry").length> 0)
-		lastEntry=	$($(".entry")[$(".entry").length-1]);
-	newEntry=	$(blankEntry.clone()).appendTo($(".myForm"));
-	constructNewEntry(newEntry, lastEntry);
-}
+
 
 
 
@@ -227,7 +238,9 @@ function onRemoveClick(e)
 // Removes the given entry from the whole shabang
 function removeEntry(entry)
 {
-	removeFromGraph(entry[0]);
+    removeFromGraph(entry[0]);
+    // https://api.jquery.com/remove/  
+    // reference to it remains??
 	entry.remove();
 }
 
@@ -273,11 +286,6 @@ function displayColorToEntry(entry) {
     entry.find(".showColor").css({ 'color': entry[0].color });
 }
 
-// Focuses on mathquill's textarea
-function entryFocusMath(entry) {
-    var blankEntry = $(".entry").find(".math-field")[0];
-    MathQuill(blankEntry).focus();
-}
 
 // Removes the given object from the graph
 function removeFromGraph(entry) {
