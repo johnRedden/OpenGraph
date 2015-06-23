@@ -77,7 +77,7 @@ $(document).ready(function()
     // Page Buttons
     $("#dockButton").click(onCollapseCollapser);
     $("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.15</sub></em>");
-    $("#addNewEntry").on("click", onNewEntryClick);
+    $("#addNewEntry").on("click", constructNewEntry);
     $("#deleteAll").on("click", clearAll);
 	
 	// -------------------------------------------
@@ -104,13 +104,12 @@ $(document).ready(function()
 
     // 2. Construct first entry in the form
 
-    //MathQuillify the math-field and set global mathquill behavior
-    
+    //set global mathquill behavior    
     MathQuill.addAutoCommands('pi theta sqrt sum');
 
-    blankEntry = $(".entry"); // initial **MathQuillified** entry (global jquery Object constant)
+    blankEntry = $(".entry"); // initial entry (global jquery Object constant)
     blankEntry.remove();
-    //console.log(blankEntry);
+    
     constructNewEntry();
 	
 });

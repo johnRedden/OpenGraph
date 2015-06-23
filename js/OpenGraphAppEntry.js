@@ -7,34 +7,20 @@ var blankEntry;
 
 // Constructs the new entry
 function constructNewEntry() {
-    // newEntry and lastEntry are to be mathQuillified JQuery Entry objects
-    
-    var newEntry = blankEntry.clone().appendTo('.myForm');
+
     var lastEntry = null;
-  
-    console.log(newEntry.find(".math-field"));
-    MathQuill.MathField(newEntry.find('.math-field')[0]).focus();
-
-
     if ($(".entry").length > 0)
         lastEntry = $($(".entry")[$(".entry").length - 1]);
     
-    //newEntry.appendTo($(".myForm"));
+    var newEntry = blankEntry.clone().appendTo('.myForm');
 
-    if (lastEntry == null) {
-        //console.log(newEntry.find(".math-field")[0]);
-        newEntry[0].graphRef = null;
-        newEntry[0].color = nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
-        newEntry[0].dashed = false;  // can use getAttribute instead of this.. TODO: eliminate this variable
-        newEntry.draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
-        //console.log(newEntry.find(".math-field"));
-        MathQuill(newEntry.find(".math-field")[0]).write("-1"); // reset math-field
-        //entryFocusMath(newEntry);
-        //newEntry.find(".math-field").focus();
-        MathQuill(newEntry.find(".math-field")[0]).focus();
-    }
-
-    /*
+    newEntry[0].graphRef = null;
+    newEntry[0].color = nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
+    newEntry[0].dashed = false;  // can use getAttribute instead of this.. TODO: eliminate this variable
+    newEntry.draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
+  
+    // mathquillify the math-field and focus it
+    MathQuill.MathField(newEntry.find('.math-field')[0]).focus();
 
     if (lastEntry != null)
         newEntry.offset({ top: lastEntry.offset().top + lastEntry.height() + 36, left: lastEntry.offset().left });
@@ -48,6 +34,8 @@ function constructNewEntry() {
         newEntry.offset({ left: 1 });
         //newEntry.find(".collapse-entry").find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
     }
+    /*
+
     newEntry[0].color = nextColor();
     MathQuill(newEntry.find('.math-field')[0]).latex("");
     displayColorToEntry(newEntry);
@@ -60,21 +48,8 @@ function constructNewEntry() {
     displayColorToEntry($(".entry"));  // same issue should be consistent when passing arguments.
 
     */
-
+    // not sure we need a return here??
     return newEntry;
-}
-
-// Creates a new entry, despite clicking on the entry
-function onNewEntryClick(e) {
-    constructNewEntry();
-}
-
-// Focuses on mathquill's textarea
-function entryFocusMath(entry) {
-   
-    //var temp = entry.find(".math-field");
-    //console.log(temp[0]);
-    //MathQuill(temp[0]).focus();
 }
 
 // Called whenever there is a key detected on an entry input
@@ -84,7 +59,7 @@ function onEntryKeyUp(e) {
     var currEntry = $(e.target).parents(".entry")[0];
 
     if (e.keyCode === 13) {
-        onNewEntryClick(e);
+        constructNewEntry();
     }else{
         // catch special cases here before trying to render graph.
        // keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
