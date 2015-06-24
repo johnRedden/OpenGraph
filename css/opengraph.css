@@ -53,7 +53,7 @@
 	
 	background-color: oldlace;
 }
-.mathquill-editable{
+.math-field{
 	position: relative;
 	top: 50%;
 	transform: translateY(-55%);

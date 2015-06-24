@@ -11,8 +11,8 @@
  */
 @font-face {
   font-family: Symbola;
-  src: url(/fonts/Symbola.eot);
-  src: local("Symbola Regular"), local("Symbola"), url(/fonts/Symbola.ttf) format("truetype"), url(/fonts/Symbola.woff) format("woff");
+  src: url(font/Symbola.eot);
+  src: local("Symbola Regular"), local("Symbola"), url(font/Symbola.ttf) format("truetype"), url(font/Symbola.woff) format("woff");
 }
 .mq-editable-field {
   display: -moz-inline-box;
@@ -50,14 +50,17 @@
 }
 .mq-editable-field .mq-root-block,
 .mq-math-mode .mq-editable-field .mq-root-block {
-  border: 1px solid gray;
+  /*border: 1px solid gray;*/
   padding: 2px;
 }
 .mq-editable-field .mq-root-block.mq-focused,
 .mq-math-mode .mq-editable-field .mq-root-block.mq-focused {
+    /*
   -webkit-box-shadow: #8bd 0 0 1px 2px, inset #6ae 0 0 2px 0;
   -moz-box-shadow: #8bd 0 0 1px 2px, inset #6ae 0 0 2px 0;
   box-shadow: #8bd 0 0 1px 2px, inset #6ae 0 0 2px 0;
+
+    */
   border-color: #709AC0;
   border-radius: 1px;
 }

@@ -106,6 +106,7 @@ $(document).ready(function()
 
     //set global mathquill behavior    
     MathQuill.addAutoCommands('pi theta sqrt sum');
+    
 
     blankEntry = $(".entry"); // initial entry (global jquery Object constant)
     blankEntry.remove();
