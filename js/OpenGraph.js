@@ -113,6 +113,8 @@ $(document).ready(function()
     
     constructNewEntry();
 	
+	if(location.hash!= "")
+		updateEntry($(".entry")[0], location.hash.substring(1));
 });
 
 // Called when the collapser has collapsed a collapsible collapser
@@ -140,13 +142,13 @@ function onCollapseCollapser(e)
 // Writes into the given entry with the given string
 function updateEntry(entry, str)
 {
-	try{
 	MathQuill($(entry).find(".math-field")[0]).typedText(str);
-	renderGraph(entry);
-	} catch (e) {
-        // use console.log()
-	    //$("#header").text(e.message + " :: " + MathQuill($(".math-field")[0]));
-	}
+	// Simulates a key up to render the graph
+	onEntryKeyUp(
+	{
+		target:	$(entry).find(".math-field")[0],
+		keyCode:	0
+	});
 }
 
 // End of File

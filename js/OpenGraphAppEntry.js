@@ -56,11 +56,12 @@ function onEntryKeyUp(e) {
 function catchEntryText(entry, key) {
 	
 	// Variables
-	var	txt=	MathQuill(entry.find(".math-field")[0]).text();
+	var	txt=	"";
 	var	bGraph=	false;
 	
 	try
 	{
+		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		// Gets hyperbolic functions by default
 		txt = txt.toLowerCase()
 				.replace(/\*\*\*/g, "^")
@@ -159,8 +160,7 @@ function renderGraph(entry, txt)
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color')
 			});
-			// Set attributes to entry
-			entry[0].graphRef.setAttribute({dash: attr.dash});
+			entry[0].graphRef.setAttribute({dash: attr.dash}); // Dashed attribute just didn't want to go into the board options
 		}
 	}
 	catch (e) { console.log("caught " + e); }
