@@ -376,7 +376,6 @@ function onRootsClick(e) {
 			
 			if(!isNaN(root) && userFunction(root)== 0)
 				board.create("point", [root, 0]);
-			alert(userFunction(root));
         }
     }
 }
