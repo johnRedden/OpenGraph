@@ -45,9 +45,12 @@ function onEntryKeyUp(e) {
     if (e.keyCode === 13) {  //enter
         constructNewEntry();
     }else{
-        // catch special cases here before trying to render graph.
-        keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
-        renderGraph(currEntry);  //does not change currEntry
+		// Variables
+		var	obj=	catchEntryText(currEntry, e.keyCode);
+		
+		// I could not think of a way to make it just the entry go through
+		if(obj.canGraph)
+			renderGraph(currEntry, obj.text);
     }
 
     if (currEntry.dashed) { // we can streamline using JSXGraph getAttribute 'dashed'
@@ -55,24 +58,93 @@ function onEntryKeyUp(e) {
     }
 }
 // special cases
-function keyUpSpecialCases(entry, key) {
-    //this is helpful: (  https://github.com/Khan/mathquill)
-    //console.log(MathQuill($(inputObj).find(".math-field")[0]).latex());
-    // console.log(MathQuill($(inputObj).find(".math-field")[0]).text());
-    // dont try to graph if the string is not good.
-    // Maybe catch pont and line here??  Code at bottom for reference.
-
+function catchEntryText(entry, key) {
+	
+	// Variables
+	var	txt=	MathQuill(entry.find(".math-field")[0]).text();
+	var	bGraph=	false;
+	
+	try
+	{
+		// Gets hyperbolic functions by default
+		txt = txt.toLowerCase()
+				.replace(/\*\*\*/g, "^")
+				.replace(/cdot\s/g, "*")
+				.replace(/\\s\*i\*n[\s]*[\*]?/g, "sin")
+				.replace(/\\c\*s\*c[\s]*[\*]?/g, "csc")
+				.replace(/\\c\*o\*s[\s]*[\*]?/g, "cos")
+				.replace(/\\s\*e\*c[\s]*[\*]?/g, "sec")
+				.replace(/\\t\*a\*n[\s]*[\*]?/g, "tan")
+				.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
+				.replace(/\s\*/g, ""); // Had to take this out, messed things up
+		
+		// In order for the hyperbolic functions to be compatible and easy to use, I had to detect the h key before
+		// Although this system isn't perfect, it works nicely. And the trig functions are unable to be caught if behind parenthesis
+		// or fractions or things of the sort
+		if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
+		{
+			switch(txt.substring(txt.length-7))
+			{ // If any of the given snippets have h in them, then transform them into the hyperbolic form
+				case "sin(h)":
+				//case "csc(h)": // Gets weird results
+				case "cos(h)":
+				//case "sec(h)": // Gets weird results
+				case "tan(h)":
+				case "cot(h)":
+					MathQuill(entry.find(".math-field")[0]).latex(""); // Deletes everything on the entry
+					txt=	txt.substring(0, txt.length-3)+"h("; // Formulates everything to make it hyperbolic
+					MathQuill(entry.find(".math-field")[0]).typedText(txt); // Rewrites everything back on
+					break;
+			}
+		}
+		else if(txt.length>= 3 && key!= 8 && key!= 127) // Else if they are not pressing backspace or delete, so there is no fighting
+		{
+			switch(txt.substring(txt.length-3))
+			{
+				case "sin":
+				case "csc":
+				case "cos":
+				case "sec":
+				case "tan":
+				case "cot":
+					MathQuill(entry.find(".math-field")[0]).typedText("("); // Acts as if the user typed in a parenthesis instead
+					break;
+			}
+		}
+		
+		// Finds if it is graphable, unsure if we should detect here, or in the render function
+		try
+		{
+			// Variables
+			var	userFunction;
+			eval("userFunction= function(x) { with(Math) return "+mathjs(txt)+" }");
+			if(JXG.isFunction(userFunction))
+				bGraph=	true;
+		}catch(e){console.log("caught "+e);}
+		
+		// JOHN >> I know you want to use the console.log() method, but I put this here so you are able to have a live demonstration
+		// of what is going on with the text in the entry
+		$("#header").text("ENTRY Text: "+txt);
+	}
+	catch(e)
+	{
+		console.log("caught "+e);
+		bGraph=	false;
+	}
+	
+	return {
+		text:	txt,
+		canGraph:	bGraph
+	};
 }
 
 // Renders the graph
-function renderGraph(entry)
+function renderGraph(entry, txt)
 {
 	// Variables
     var userFunction;
-    //TODO: look for a LaTex to AsciiMath converter (or LaTex to jsMath would be better.)
-    // current scheme: *** mqMath => asciiMath => jsMath ***  (somehow simplify this??)
-    var txt = asciiMathfromMathQuill(MathQuill(entry.find(".math-field")[0]).text());
 	
+	// Not too sure if the check should still be here
 	try {
 		// javascript math conversion here using  mathjs.js 
 		eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
@@ -87,21 +159,6 @@ function renderGraph(entry)
 		}
 	}
 	catch (e) { console.log("caught " + e); }
-}
-
-function asciiMathfromMathQuill(txt) {
-    // This function should take in MQ text and return well formed asciiMath
-    //console.log("MQ text: " + txt);
-    txt = txt.replace("***", "^");
-    
-    txt = txt.replace(/\*\*\*/g, "^")
-                .replace(/cdot\s/g, "*")
-                .replace(/\\s\*i\*n\s\*/g, "sin")
-                .replace(/\\c\*o\*s\s\*/g, "cos")
-                .replace(/\\t\*a\*n\s\*/g, "tan");
-
-    //console.log("asciiMath: " + txt);
-    return txt;
 }
 
 // Called when the remove button has been called
