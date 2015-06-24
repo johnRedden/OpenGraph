@@ -78,7 +78,7 @@ function catchEntryText(entry, key) {
 		// or fractions or things of the sort
 		if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
 		{
-			switch(txt.substring(txt.length-7))
+			switch(txt.substring(txt.length-6))
 			{ // If any of the given snippets have h in them, then transform them into the hyperbolic form
 				case "sin(h)":
 				//case "csc(h)": // Gets weird results
@@ -143,6 +143,8 @@ function renderGraph(entry, txt)
 	if(entry[0].graphRef)
 	{
 		attr.dash=	(entry[0].graphRef).getAttribute("dash");
+		attr.strokeColor=	(entry[0].graphRef).getAttribute("strokeColor");
+		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
 	}
 	
 	// Not too sure if the check should still be here
@@ -154,8 +156,8 @@ function renderGraph(entry, txt)
 			entry[0].graphRef = board.create("functiongraph", userFunction,
 			{
 				visible: true,
-				strokeWidth: 2,
-				strokeColor: entry.find(".showColor").css('color')
+				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color')
 			});
 			// Set attributes to entry
 			entry[0].graphRef.setAttribute({dash: attr.dash});
