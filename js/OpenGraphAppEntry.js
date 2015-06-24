@@ -66,19 +66,18 @@ function filterText(txt, entry, key)
 			.replace(/\\s\*e\*c[\s]*[\*]?/g, "sec")
 			.replace(/\\t\*a\*n[\s]*[\*]?/g, "tan")
 			.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
+			.replace(/\\operatorname\{c\*s\*c\*h}[\*]?/g, "csch")
+			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech")
 			.replace(/\s\*/g, ""); // Had to take this out, messed things up
 	
-	// In order for the hyperbolic functions to be compatible and easy to use, I had to detect the h key before
-	// Although this system isn't perfect, it works nicely. And the trig functions are unable to be caught if behind parenthesis
-	// or fractions or things of the sort
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
 	{
 		switch(txt.substring(txt.length-6))
-		{ // If any of the given snippets have h in them, then transform them into the hyperbolic form
+		{
 			case "sin(h)":
-			//case "csc(h)": // Gets weird results
+			case "csc(h)":
 			case "cos(h)":
-			//case "sec(h)": // Gets weird results
+			case "sec(h)":
 			case "tan(h)":
 			case "cot(h)":
 				MathQuill(entry.find(".math-field")[0]).latex(""); // Deletes everything on the entry
@@ -127,8 +126,7 @@ function catchEntryText(entry, key) {
 				bGraph=	true;
 		}catch(e){console.log("caught "+e);}
 		
-		// JOHN >> I know you want to use the console.log() method, but I put this here so you are able to have a live demonstration
-		// of what is going on with the text in the entry
+		// Live debugger, really helpful, delete me later though
 		$("#header").text("ENTRY Text: "+txt);
 	}
 	catch(e)
@@ -159,6 +157,7 @@ function renderGraph(entry, txt)
 	
 	// Not too sure if the check should still be here
 	try {
+		
 		// javascript math conversion here using  mathjs.js 
 		eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
 		if (JXG.isFunction(userFunction)) {
