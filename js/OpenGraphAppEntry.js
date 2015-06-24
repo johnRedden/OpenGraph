@@ -225,7 +225,7 @@ function onShowColorClick(e)
 
 // Gets the next color in the array of stored colors
 function nextColor() {   //n is a global variable used for the revolving color idea
-    n = (n === colors.length) ? 0 : n + 1;
+    n = (n === colors.length-1) ? 0 : n + 1;
     return colors[n];
 }
 
