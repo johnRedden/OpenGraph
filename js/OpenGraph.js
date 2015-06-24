@@ -115,6 +115,19 @@ $(document).ready(function()
 	
 	if(location.hash!= "")
 		updateEntry($(".entry")[0], location.hash.substring(1));
+	else if(location.search!= "")
+	{
+		// Variables
+		var	sterms=	location.search.substring(1);
+		var	temp=	sterms.split('&');
+		
+		for(var i= 0; i< temp.length; i++)
+		{
+			if(i< temp.length-1)
+				constructNewEntry();
+			updateEntry($(".entry")[i], temp[i].split('=')[1]);
+		}
+	}
 });
 
 // Called when the collapser has collapsed a collapsible collapser
