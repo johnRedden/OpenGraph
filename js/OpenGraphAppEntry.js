@@ -15,10 +15,10 @@ function constructNewEntry() {
     var newEntry = blankEntry.clone().appendTo('.myForm');
 
     newEntry[0].graphRef = null;
-    newEntry[0].color = nextColor(); // can use color getAttribute the eliminate this variable too (requires a bit of redesign)
     newEntry[0].dashed = false;  // can use getAttribute instead of this.. TODO: eliminate this variable
     newEntry.draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
-  
+    newEntry.find(".showColor").css({ 'color': nextColor() });
+    
     // mathquillify the math-field and focus it
     MathQuill.MathField(newEntry.find('.math-field')[0]).focus();
 
@@ -34,35 +34,19 @@ function constructNewEntry() {
         newEntry.offset({ left: 1 });
         //newEntry.find(".collapse-entry").find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
     }
-    /*
 
-    newEntry[0].color = nextColor();
-    MathQuill(newEntry.find('.math-field')[0]).latex("");
-    displayColorToEntry(newEntry);
-    newEntry.find('.dashed').css({ color: "LightGray" });
-    newEntry.draggable({ disabled: true, containment: 'document' });  // TODO: change to mobile friendly
-    MathQuill(newEntry.find(".math-field")[0]).focus(); // use the focus method
-    
-
-    entryFocusMath($(".entry")[0]);  // what is more efficient?  pass $('.entry') or $(".entry")[0] ??
-    displayColorToEntry($(".entry"));  // same issue should be consistent when passing arguments.
-
-    */
-    // not sure we need a return here??
-    return newEntry;
 }
 
 // Called whenever there is a key detected on an entry input
 function onEntryKeyUp(e) {
   
-    // Variables
-    var currEntry = $(e.target).parents(".entry")[0];
+    var currEntry = $(e.target).parents(".entry");
 
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13) {  //enter
         constructNewEntry();
     }else{
         // catch special cases here before trying to render graph.
-       // keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
+        keyUpSpecialCases(currEntry, e.keyCode);  //can change currEntry
         renderGraph(currEntry);  //does not change currEntry
     }
 
@@ -71,11 +55,12 @@ function onEntryKeyUp(e) {
     }
 }
 // special cases
-// Don't know if we really need this or not anymore
-function keyUpSpecialCases(inputObj, key) {
+function keyUpSpecialCases(entry, key) {
     //this is helpful: (  https://github.com/Khan/mathquill)
-    console.log(MathQuill($(inputObj).find(".math-field")[0]).latex());
-    console.log(MathQuill($(inputObj).find(".math-field")[0]).text());
+    //console.log(MathQuill($(inputObj).find(".math-field")[0]).latex());
+    // console.log(MathQuill($(inputObj).find(".math-field")[0]).text());
+    // dont try to graph if the string is not good.
+    // Maybe catch pont and line here??  Code at bottom for reference.
 
 }
 
@@ -83,130 +68,41 @@ function keyUpSpecialCases(inputObj, key) {
 function renderGraph(entry)
 {
 	// Variables
-	var	userFunction;
-	var	mqtxt=	MathQuill($(entry).find(".math-field")[0]).text();
-	
-	// JOHN>> Looks like it is a little neccessary to change things up a bit for the render function, but good news
-	// there isn't much to really change now! The new MathQuill takes care of a lot really. Just need some fixes for
-    // sin, cos, and tan, and anything else that I cannot really think of at the moment
-    // PAUL>> I really think we can do this in the special cases function or somewhere else...  renderGraph should just do that if it can... otherwise throw an error message
-	mqtxt=	mqtxt.replace(/\*\*\*/g, "^").replace(/cdot\s/g, "*").replace(
-		/\\s\*i\*n\s\*/g, "sin").replace(/\\c\*o\*s\s\*/g, "cos").replace(
-		/\\t\*a\*n\s\*/g, "tan");
-	//$("#header").text(mqtxt); // use console.log
+    var userFunction;
+    //TODO: look for a LaTex to AsciiMath converter (or LaTex to jsMath would be better.)
+    // current scheme: *** mqMath => asciiMath => jsMath ***  (somehow simplify this??)
+    var txt = asciiMathfromMathQuill(MathQuill(entry.find(".math-field")[0]).text());
 	
 	try {
 		// javascript math conversion here using  mathjs.js 
-		eval("userFunction= function(x) { with(Math) return " + mathjs(mqtxt) + " }");
+		eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
 		if (JXG.isFunction(userFunction)) {
 			removeFromGraph(entry);
-			entry.graphRef = board.create("functiongraph", userFunction,
+			entry[0].graphRef = board.create("functiongraph", userFunction,
 			{
 				visible: true,
 				strokeWidth: 2,
-				strokeColor: entry.color
+				strokeColor: entry.find(".showColor").css('color')
 			});
 		}
 	}
 	catch (e) { console.log("caught " + e); }
 }
 
-// Renders the graph
-// Ruins of the old renderer, delete later, keep now for reference?
-function old_renderGraph(inputObj)
-{
-    // this function takes in an Entry, creates javascript math, and then associates a graph to the entry
-	// Variables
-	var	userFunction;
-	var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
-	txt = asciiMathfromMathQuill(txt).toLowerCase();
-	
-    // not sure where to do the following... also needs to be stramlined... (3,2) plot a point.
-	if (txt.indexOf(",") !== -1 ){
-	    // if there is a comma try to plot a point
-	    // try to render text ((3,2)) as an array [3,2] using the eval below
-        // TODO: streamline this
-	    var modifiedTxt = eval( txt.replace("((", "[").replace("))", "]") );
-	    try {
-	        if(JXG.isArray(modifiedTxt)){
-	            removeFromGraph(inputObj);
-	            inputObj.graphRef = board.create("point", modifiedTxt,
-                {
-                    visible: true,
-                    strokeColor: inputObj.color,
-                    fillColor: inputObj.color,
-                    fixed: true
-                });
-	        }
-	    
-	    } catch (e) {
-	       // console.log("with comma " + e);
-	    }
-
-	} else if (txt.substring(0,7)==="l*i*n*e") {
-	    //console.log(txt[8] + "," + txt[10]);
-
-	    try {
-	        var pt1 = board.select(txt[8].toUpperCase());
-	        var pt2 = board.select(txt[10].toUpperCase());
-	       
-	        if (JXG.isPoint(pt1) && JXG.isPoint(pt2)) {
-	            removeFromGraph(inputObj);
-	            inputObj.graphRef = board.create("line", [pt1,pt2],
-                {
-                    visible: true,
-                    strokeWidth: 2,
-                    strokeColor: inputObj.color
-                });
-	        }
-	    }
-	    catch (e) { console.log("caught " + e); }
-
-
-	} else {
-	    try {
-            // javascript math conversion here using  mathjs.js 
-	        eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-	        if (JXG.isFunction(userFunction)) {
-	            removeFromGraph(inputObj);
-	            inputObj.graphRef = board.create("functiongraph", userFunction,
-                {
-                    visible: true,
-                    strokeWidth: 2,
-                    strokeColor: inputObj.color
-                });
-	        }
-	    }
-	    catch (e) { console.log("caught " + e); }
-	}
-	
-}
-// Returns asciiMath from a MathQuill text string
-// Delete??
 function asciiMathfromMathQuill(txt) {
-    // This function should take in an entry and return well formed asciiMath
-    var n = txt.length;
-
+    // This function should take in MQ text and return well formed asciiMath
+    console.log("MQ text: " + txt);
     txt = txt.replace("***", "^");
+    
+    txt = txt.replace(/\*\*\*/g, "^")
+                .replace(/cdot\s/g, "*")
+                .replace(/\\s\*i\*n\s\*/g, "sin")
+                .replace(/\\c\*o\*s\s\*/g, "cos")
+                .replace(/\\t\*a\*n\s\*/g, "tan");
 
-    // I think all this below can go???
-    txt = txt.replace("s*i*n*", "sin");
-    txt = txt.replace("c*o*s*", "cos");
-    txt = txt.replace("cosh*", "cosh");
-    txt = txt.replace("t*a*n*", "tan");
-    txt = txt.replace("tanh*", "tanh");
-    //txt=	txt.replace("s*q*r", "\\(sqrt)&nbsp;");
-    txt = txt.replace("p*i", "pi");
-    txt = txt.replace("xcdot", "");
-     
-    // this needs to return good asciiMath!
-    //console.log("asciiMath: " + txt);
+    console.log("asciiMath: " + txt);
     return txt;
 }
-
-
-
-
 
 // Called when the remove button has been called
 function onRemoveClick(e)
@@ -217,31 +113,37 @@ function onRemoveClick(e)
 // Removes the given entry from the whole shabang
 function removeEntry(entry)
 {
-    removeFromGraph(entry[0]);
-    // https://api.jquery.com/remove/  
-    // reference to it remains??
-	entry.remove();
+    removeFromGraph(entry);  // remove from board
+    // https://api.jquery.com/remove/  // reference to it remains??
+	entry.remove();  // remove from DOM
+}
+// Removes the given object from the board
+function removeFromGraph(entry) {
+    if (typeof entry === "object") {
+        board.removeObject(entry[0].graphRef);
+    }
 }
 
 // Called whenever the user changes the color of the equation
 function onShowColorClick(e)
 {
-	// Variables
-	var	currEntry=	$(this).parents(".entry");
+    // Variables
+    var thisCol = nextColor();
+    var currEntry = $(this).parents(".entry");
+    currEntry.find(".showColor").css({ 'color': thisCol });
 	
-	currEntry[0].color=	nextColor();
 	if (currEntry[0].graphRef)
-	    (currEntry[0].graphRef).setAttribute({ strokeColor: currEntry[0].color });
+	    (currEntry[0].graphRef).setAttribute({ strokeColor: thisCol });
 	    if (JXG.isPoint(currEntry[0].graphRef))
-	        (currEntry[0].graphRef).setAttribute({ fillColor: currEntry[0].color });
+	        (currEntry[0].graphRef).setAttribute({ fillColor: thisCol });
 	    
     try {
-        // get reference to child map points
+        // get reference to children
         var d = (currEntry[0].graphRef).childElements;
 		
         for (el in d) {
             //console.log(d[el]); // Got them - the freakin kids (2 hours for this)!!!!!
-            d[el].setAttribute({ fillColor: currEntry[0].color, strokeColor: currEntry[0].color });
+            d[el].setAttribute({ fillColor: thisCol, strokeColor: thisCol });
         }
 	} catch (e) {
         // sometimes there are not any gliders and length is undefined.
@@ -250,28 +152,14 @@ function onShowColorClick(e)
 	
 	board.update();
 
-	displayColorToEntry(currEntry);
 }
+
 // Gets the next color in the array of stored colors
 function nextColor() {   //n is a global variable used for the revolving color idea
     n = (n === colors.length) ? 0 : n + 1;
     return colors[n];
 }
 
-// Displays the color to the entry's function
-// John Says - huh - you mean the color indicator ?
-// Paul Responds - I meant the entry, but I guess we stuck with the name ENTRY
-function displayColorToEntry(entry) {
-    entry.find(".showColor").css({ 'color': entry[0].color });
-}
-
-
-// Removes the given object from the graph
-function removeFromGraph(entry) {
-    if (typeof entry === "object") {
-        board.removeObject(entry.graphRef);
-    }
-}
 // Called whenever the drawer button is clicked
 function onDrawerClick(e) {
     var currEntry = $(this).parents(".entry");
@@ -333,12 +221,11 @@ function onDashedClick(e)
 function onMapClick(e)
 {
 	// Variables
-	var	currEntry=	$(this).parents(".entry");
+    var currEntry = $(this).parents(".entry");
+    var currColor = currEntry.find(".showColor").css('color');
 	
 	if (currEntry[0].graphRef) {
-	    board.create("glider", [0, 0, currEntry[0].graphRef], { color: currEntry[0].color });
-	    //console.log(currEntry[0].graphRef.countChildren() + "hmm" + currEntry[0].graphRef.descendants);
-	    //currEntry[0].gliderRefs.push(board.create("glider", [0, 0, currEntry[0].graphRef], {color: currEntry[0].color}));
+	    board.create("glider", [0, 1, currEntry[0].graphRef], { color: currColor });
 	} else
 	    currEntry.effect("shake", { times: 2 }, 700);  // not sure this adds value
 }
@@ -346,32 +233,33 @@ function onMapClick(e)
 // Called whenever the user clicks on the textbox
 function onMathInputClick(e)
 {
-	// Variables
-	var	currEntry=	$(e.target).parents(".entry")[0];
-	
-	entryFocusMath(currEntry);
+	var	currEntry=	$(e.target).parents(".entry");
+	MathQuill.MathField(currEntry.find('.math-field')[0]).focus();
 }
 
 // Called whenever the collapse entry button has been clicked
 function onCollapseEntryClick(e)
 {
-    var currEntry = $(e.target).parents(".entry")[0];
+    var currEntry = $(e.target).parents(".entry");
     
-    if (currEntry.oldLeft) {
-        $(currEntry).animate({ left: currEntry.oldLeft }, "fast");
-		$(e.target).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left"); // Somethings wrong with the changes for some reason
-        currEntry.oldLeft = 0;
+    if (currEntry[0].oldLeft) {
+        //slide back out right
+        currEntry.animate({ left: currEntry[0].oldLeft }, "fast");
+        currEntry.find(".collapse-entry .glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
+		currEntry[0].oldLeft = 0;
         //slide back should be constrained to the window.
+        //focus on mathinput
+		MathQuill.MathField(currEntry.find('.math-field')[0]).focus();
     } else {
-        console.log($(currEntry).offset().left);
-		if($(currEntry).offset().left> 0)
-			currEntry.oldLeft = $(currEntry).offset().left;
+        // slide away left 
+		if(currEntry.offset().left> 0)
+			currEntry[0].oldLeft = currEntry.offset().left;
 		else
-			currEntry.oldLeft=	1;
-        $(currEntry).animate({ left: "-340px" }, "fast");
-		$(e.target).find(".glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
+		    currEntry[0].oldLeft = 1;
+		currEntry.find(".collapse-entry .glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
+        currEntry.animate({ left: "-340px" }, "fast");
+		
         //-340px should be dependent on the size of Entry really
-        //TODO change the glyphicon to right
     }
 }
 
@@ -448,3 +336,77 @@ function onDerivativeClick(e) {
 
 };
 // End of File
+
+/*
+/// For reference
+
+// Renders the graph
+// Ruins of the old renderer, delete later, keep now for reference?
+function old_renderGraph(inputObj) {
+    // this function takes in an Entry, creates javascript math, and then associates a graph to the entry
+    // Variables
+    var userFunction;
+    var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
+    txt = asciiMathfromMathQuill(txt).toLowerCase();
+
+    // not sure where to do the following... also needs to be stramlined... (3,2) plot a point.
+    if (txt.indexOf(",") !== -1) {
+        // if there is a comma try to plot a point
+        // try to render text ((3,2)) as an array [3,2] using the eval below
+        // TODO: streamline this
+        var modifiedTxt = eval(txt.replace("((", "[").replace("))", "]"));
+        try {
+            if (JXG.isArray(modifiedTxt)) {
+                removeFromGraph(inputObj);
+                inputObj.graphRef = board.create("point", modifiedTxt,
+                {
+                    visible: true,
+                    strokeColor: inputObj.color,
+                    fillColor: inputObj.color,
+                    fixed: true
+                });
+            }
+
+        } catch (e) {
+            // console.log("with comma " + e);
+        }
+
+    } else if (txt.substring(0, 7) === "l*i*n*e") {
+        //console.log(txt[8] + "," + txt[10]);
+
+        try {
+            var pt1 = board.select(txt[8].toUpperCase());
+            var pt2 = board.select(txt[10].toUpperCase());
+
+            if (JXG.isPoint(pt1) && JXG.isPoint(pt2)) {
+                removeFromGraph(inputObj);
+                inputObj.graphRef = board.create("line", [pt1, pt2],
+                {
+                    visible: true,
+                    strokeWidth: 2,
+                    strokeColor: inputObj.color
+                });
+            }
+        }
+        catch (e) { console.log("caught " + e); }
+
+
+    } else {
+        try {
+            // javascript math conversion here using  mathjs.js 
+            eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+            if (JXG.isFunction(userFunction)) {
+                removeFromGraph(inputObj);
+                inputObj.graphRef = board.create("functiongraph", userFunction,
+                {
+                    visible: true,
+                    strokeWidth: 2,
+                    strokeColor: inputObj.color
+                });
+            }
+        }
+        catch (e) { console.log("caught " + e); }
+    }
+
+}
+*/
