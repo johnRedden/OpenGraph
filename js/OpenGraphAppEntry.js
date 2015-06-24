@@ -15,7 +15,6 @@ function constructNewEntry() {
     var newEntry = blankEntry.clone().appendTo('.myForm');
 
     newEntry[0].graphRef = null;
-    newEntry[0].dashed = false;  // can use getAttribute instead of this.. TODO: eliminate this variable
     newEntry.draggable({ disabled: true, containment: 'document' }); // only want to drag in grabber: TODO: Make mobile friendly
     newEntry.find(".showColor").css({ 'color': nextColor() });
     
@@ -39,9 +38,9 @@ function constructNewEntry() {
 
 // Called whenever there is a key detected on an entry input
 function onEntryKeyUp(e) {
-  
+	// Variables
     var currEntry = $(e.target).parents(".entry");
-
+	
     if (e.keyCode === 13) {  //enter
         constructNewEntry();
     }else{
@@ -51,10 +50,6 @@ function onEntryKeyUp(e) {
 		// I could not think of a way to make it just the entry go through
 		if(obj.canGraph)
 			renderGraph(currEntry, obj.text);
-    }
-
-    if (currEntry.dashed) { // we can streamline using JSXGraph getAttribute 'dashed'
-        $(currEntry).find(".dashed").click().click();
     }
 }
 // special cases
@@ -143,6 +138,12 @@ function renderGraph(entry, txt)
 {
 	// Variables
     var userFunction;
+	var	attr=	{};
+	
+	if(entry[0].graphRef)
+	{
+		attr.dash=	(entry[0].graphRef).getAttribute("dash");
+	}
 	
 	// Not too sure if the check should still be here
 	try {
@@ -156,6 +157,8 @@ function renderGraph(entry, txt)
 				strokeWidth: 2,
 				strokeColor: entry.find(".showColor").css('color')
 			});
+			// Set attributes to entry
+			entry[0].graphRef.setAttribute({dash: attr.dash});
 		}
 	}
 	catch (e) { console.log("caught " + e); }
@@ -259,15 +262,15 @@ function onDashedClick(e)
 	
 	if(currEntry[0].graphRef)
 	{
-		if(currEntry[0].dashed)
+		if(currEntry[0].graphRef.getAttribute("dash"))
 		{
-			(currEntry[0].graphRef).setProperty({dash: 0});
+			(currEntry[0].graphRef).setAttribute({dash: 0});
 			currEntry[0].dashed=	false;
 			currEntry.find(".dashed").css({color: "LightGray"});
 		}
 		else
 		{
-			(currEntry[0].graphRef).setProperty({dash: 2});
+			(currEntry[0].graphRef).setAttribute({dash: 2});
 			currEntry[0].dashed=	true;
 			currEntry.find(".dashed").css({color: "Black"});
 		}
