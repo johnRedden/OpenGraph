@@ -76,7 +76,7 @@ $(document).ready(function()
     //updateEntry($(".entry")[0], location.hash.substring(1));
     // Page Buttons
     $("#dockButton").click(onCollapseCollapser);
-    $("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.15</sub></em>");
+    $("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.20</sub></em>");
     $("#addNewEntry").on("click", constructNewEntry);
     $("#deleteAll").on("click", clearAll);
 	

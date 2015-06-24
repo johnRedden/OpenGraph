@@ -91,7 +91,7 @@ function renderGraph(entry)
 
 function asciiMathfromMathQuill(txt) {
     // This function should take in MQ text and return well formed asciiMath
-    console.log("MQ text: " + txt);
+    //console.log("MQ text: " + txt);
     txt = txt.replace("***", "^");
     
     txt = txt.replace(/\*\*\*/g, "^")
@@ -100,7 +100,7 @@ function asciiMathfromMathQuill(txt) {
                 .replace(/\\c\*o\*s\s\*/g, "cos")
                 .replace(/\\t\*a\*n\s\*/g, "tan");
 
-    console.log("asciiMath: " + txt);
+    //console.log("asciiMath: " + txt);
     return txt;
 }
 
@@ -143,7 +143,9 @@ function onShowColorClick(e)
 		
         for (el in d) {
             //console.log(d[el]); // Got them - the freakin kids (2 hours for this)!!!!!
-            d[el].setAttribute({ fillColor: thisCol, strokeColor: thisCol });
+            d[el].setAttribute({strokeColor: thisCol });
+            if(JXG.isPoint(d[el]))
+                d[el].setAttribute({ fillColor: thisCol });
         }
 	} catch (e) {
         // sometimes there are not any gliders and length is undefined.
@@ -171,7 +173,7 @@ function onThicknessPlusClick(e) {
     {
         var n = parseInt((currEntry[0].graphRef).getAttribute('strokeWidth'));
         n = (n > 10) ? n : n + 1;
-        // JSXgraph setProperty has been depreciated...TODO replace everywhere
+        // JSXgraph setProperty has been depreciated.
         (currEntry[0].graphRef).setAttribute({strokeWidth: n});
     }
 };
@@ -184,7 +186,7 @@ function onThicknessMinusClick(e) {
         (currEntry[0].graphRef).setAttribute({ strokeWidth: n });
     }
 };
-// enable entry dragging.
+// enable entry dragging.  TODO: make touch friendly
 function makeDraggable(e) {
     $(this).parents(".entry").draggable({ disabled: false });
 }
@@ -299,40 +301,62 @@ function onRootsClick(e) {
 function onTangentLineClick(e) {
     // Variables
     var currEntry = $(e.target).parents(".entry");
-    if (currEntry[0].graphRef) {
-		// Variables
-        var szeFn = function () { return currEntry[0].graphRef.getAttribute('strokeWidth') - 1 };
-        var graphColor =  currEntry[0].graphRef.getAttribute('strokeColor');
-        var p1 = board.create("glider", [1, 1, currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
-		
-        //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
-        board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn }) ;
+
+    if (currEntry[0].isTangentDisplayed) {
+        board.removeObject(currEntry[0].isTangentDisplayed);
+        currEntry[0].isTangentDisplayed = null;
+    } else {
+        if (currEntry[0].graphRef) {
+            var szeFn = function () {
+                var n = currEntry[0].graphRef.getAttribute('strokeWidth');
+                return (n > 1) ? n - 1 : 1;
+            };
+            var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
+
+            var p1 = board.create("glider", [1, 0, currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
+            currEntry[0].isTangentDisplayed = p1;
+
+            //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
+            board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn });
+        }
     }
+
+
+
 
 };
 
 function onDerivativeClick(e) {
 	// Variables
     var currEntry = $(e.target).parents(".entry");
-	
-    if (currEntry[0].graphRef) {
-		// Variables
-        var n = currEntry[0].graphRef.getAttribute('strokeWidth');
 
-        // Do not know how to get the function from graphRef... should be able to  TODO: find out??
-        // so redo it from mathquill
-        var userFunction;
-        var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
-        txt = asciiMathfromMathQuill(txt).toLowerCase();
+    if (currEntry[0].isDerivDisplayed) {
+        board.removeObject(currEntry[0].isDerivDisplayed);
+        currEntry[0].isDerivDisplayed = null;
+    } else {
+        if (currEntry[0].graphRef) {
+            var szeFn = function () {
+                var n = currEntry[0].graphRef.getAttribute('strokeWidth');
+                return (n > 1) ? n - 1 : 1;
+            };
+            var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
 
-        // javascript math conversion here using  mathjs.js 
-        eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-        if (JXG.isFunction(userFunction)) {
-           // create and then add it as a child to the graph
-            currEntry[0].graphRef.addChild(board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: '#888888', strokeWidth: n - 1 }));
+            // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+            // so redo it from mathquill
+            var userFunction;
+            var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
+            txt = asciiMathfromMathQuill(txt).toLowerCase();
+
+            // javascript math conversion here using  mathjs.js 
+            eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+            if (JXG.isFunction(userFunction)) {
+                // create and then add it as a child to the graph (it's color should change??
+                currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
+                currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
+            }
         }
-
     }
+	
 
 };
 // End of File
