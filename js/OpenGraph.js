@@ -120,12 +120,19 @@ $(document).ready(function()
 		// Variables
 		var	sterms=	location.search.substring(1);
 		var	temp=	sterms.split('&');
+		var	k=	0;
 		
 		for(var i= 0; i< temp.length; i++)
 		{
 			if(i< temp.length-1)
+			{
 				constructNewEntry();
-			updateEntry($(".entry")[i], temp[i].split('=')[1]);
+			}
+			if(temp[i].indexOf("=")!= -1)
+				updateEntry($(".entry")[k], temp[i].split('=')[1].trim());
+			else
+				updateEntry($(".entry")[k], temp[i].trim());
+			k++;
 		}
 	}
 });
@@ -153,9 +160,9 @@ function onCollapseCollapser(e)
 }
 
 // Writes into the given entry with the given string
-function updateEntry(entry, str)
+function updateEntry(entry, str, usesLatex)
 {
-	MathQuill($(entry).find(".math-field")[0]).typedText(str);
+	MathQuill($(entry).find(".math-field")[0]).latex(str);
 	// Simulates a key up to render the graph
 	onEntryKeyUp(
 	{
