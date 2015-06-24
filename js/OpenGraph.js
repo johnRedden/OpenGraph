@@ -128,10 +128,7 @@ $(document).ready(function()
 			{
 				constructNewEntry();
 			}
-			if(temp[i].indexOf("=")!= -1)
-				updateEntry($(".entry")[k], temp[i].split('=')[1].trim());
-			else
-				updateEntry($(".entry")[k], temp[i].trim());
+			updateEntry($(".entry")[k], temp[i].trim());
 			k++;
 		}
 	}
