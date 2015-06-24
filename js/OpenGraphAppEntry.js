@@ -52,6 +52,59 @@ function onEntryKeyUp(e) {
 			renderGraph(currEntry, obj.text);
     }
 }
+
+// Filters the given text from messed up syntax
+function filterText(txt, entry, key)
+{
+	// Gets hyperbolic functions by default
+	txt = txt.toLowerCase()
+			.replace(/\*\*\*/g, "^")
+			.replace(/cdot\s/g, "*")
+			.replace(/\\s\*i\*n[\s]*[\*]?/g, "sin")
+			.replace(/\\c\*s\*c[\s]*[\*]?/g, "csc")
+			.replace(/\\c\*o\*s[\s]*[\*]?/g, "cos")
+			.replace(/\\s\*e\*c[\s]*[\*]?/g, "sec")
+			.replace(/\\t\*a\*n[\s]*[\*]?/g, "tan")
+			.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
+			.replace(/\s\*/g, ""); // Had to take this out, messed things up
+	
+	// In order for the hyperbolic functions to be compatible and easy to use, I had to detect the h key before
+	// Although this system isn't perfect, it works nicely. And the trig functions are unable to be caught if behind parenthesis
+	// or fractions or things of the sort
+	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
+	{
+		switch(txt.substring(txt.length-6))
+		{ // If any of the given snippets have h in them, then transform them into the hyperbolic form
+			case "sin(h)":
+			//case "csc(h)": // Gets weird results
+			case "cos(h)":
+			//case "sec(h)": // Gets weird results
+			case "tan(h)":
+			case "cot(h)":
+				MathQuill(entry.find(".math-field")[0]).latex(""); // Deletes everything on the entry
+				txt=	txt.substring(0, txt.length-3)+"h("; // Formulates everything to make it hyperbolic
+				MathQuill(entry.find(".math-field")[0]).typedText(txt); // Rewrites everything back on
+				break;
+		}
+	}
+	else if(txt.length>= 3 && key!= 8 && key!= 127) // Else if they are not pressing backspace or delete, so there is no fighting
+	{
+		switch(txt.substring(txt.length-3))
+		{
+			case "sin":
+			case "csc":
+			case "cos":
+			case "sec":
+			case "tan":
+			case "cot":
+				MathQuill(entry.find(".math-field")[0]).typedText("("); // Acts as if the user typed in a parenthesis instead
+				break;
+		}
+	}
+	
+	return txt;
+}
+
 // special cases
 function catchEntryText(entry, key) {
 	
@@ -62,51 +115,7 @@ function catchEntryText(entry, key) {
 	try
 	{
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
-		// Gets hyperbolic functions by default
-		txt = txt.toLowerCase()
-				.replace(/\*\*\*/g, "^")
-				.replace(/cdot\s/g, "*")
-				.replace(/\\s\*i\*n[\s]*[\*]?/g, "sin")
-				.replace(/\\c\*s\*c[\s]*[\*]?/g, "csc")
-				.replace(/\\c\*o\*s[\s]*[\*]?/g, "cos")
-				.replace(/\\s\*e\*c[\s]*[\*]?/g, "sec")
-				.replace(/\\t\*a\*n[\s]*[\*]?/g, "tan")
-				.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
-				.replace(/\s\*/g, ""); // Had to take this out, messed things up
-		
-		// In order for the hyperbolic functions to be compatible and easy to use, I had to detect the h key before
-		// Although this system isn't perfect, it works nicely. And the trig functions are unable to be caught if behind parenthesis
-		// or fractions or things of the sort
-		if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
-		{
-			switch(txt.substring(txt.length-6))
-			{ // If any of the given snippets have h in them, then transform them into the hyperbolic form
-				case "sin(h)":
-				//case "csc(h)": // Gets weird results
-				case "cos(h)":
-				//case "sec(h)": // Gets weird results
-				case "tan(h)":
-				case "cot(h)":
-					MathQuill(entry.find(".math-field")[0]).latex(""); // Deletes everything on the entry
-					txt=	txt.substring(0, txt.length-3)+"h("; // Formulates everything to make it hyperbolic
-					MathQuill(entry.find(".math-field")[0]).typedText(txt); // Rewrites everything back on
-					break;
-			}
-		}
-		else if(txt.length>= 3 && key!= 8 && key!= 127) // Else if they are not pressing backspace or delete, so there is no fighting
-		{
-			switch(txt.substring(txt.length-3))
-			{
-				case "sin":
-				case "csc":
-				case "cos":
-				case "sec":
-				case "tan":
-				case "cot":
-					MathQuill(entry.find(".math-field")[0]).typedText("("); // Acts as if the user typed in a parenthesis instead
-					break;
-			}
-		}
+		txt=	filterText(txt, entry, key);
 		
 		// Finds if it is graphable, unsure if we should detect here, or in the render function
 		try
@@ -316,8 +325,8 @@ function onCollapseEntryClick(e)
 		MathQuill.MathField(currEntry.find('.math-field')[0]).focus();
     } else {
         // slide away left 
-		if(currEntry.offset().left> 0)
-			currEntry[0].oldLeft = currEntry.offset().left;
+		if(currEntry.position().left> 0)
+			currEntry[0].oldLeft = currEntry.position().left;
 		else
 		    currEntry[0].oldLeft = 1;
 		currEntry.find(".collapse-entry .glyphicon").removeClass("glyphicon-menu-left").addClass("glyphicon-menu-right");
@@ -345,8 +354,9 @@ function onRootsClick(e) {
         // Do not know how to get the function from graphRef... should be able to  TODO: find out??
         // so redo it from mathquill
         var userFunction;
-        var txt = MathQuill($(e.target).parents(".entry").find(".mathquill-editable")[0]).text();
-        txt = asciiMathfromMathQuill(txt).toLowerCase();
+        var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
+		
+		txt=	filterText(txt, $(e.target).parents(".entry"), 0);
 
         // javascript math conversion here using  mathjs.js 
         eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
@@ -355,11 +365,22 @@ function onRootsClick(e) {
             // create and then add it as a child to the graph
             //console.log(JXG.Math.Numerics.fzero(userFunction, -10));
             // Still Working on it!
-            // I think I should use intersection but not sure
-            
+            console.log(userFunction(0));
+			
+			// Variables
+			var	root=	JXG.Math.Numerics.root(userFunction,
+				board.getBoundingBox()[0]+((board.getBoundingBox()[2]-board.getBoundingBox()[0])/2) // Gets the middle of the screen
+			);
+			
+			// So here is a general root finder, it doesn't work well, but we could probably look it up or do the intermediate-value theorem
+			
+			if(!isNaN(root) && userFunction(root)== 0)
+				board.create("point", [root, 0]);
+			alert(userFunction(root));
         }
     }
 }
+
 function onTangentLineClick(e) {
     // Variables
     var currEntry = $(e.target).parents(".entry");
