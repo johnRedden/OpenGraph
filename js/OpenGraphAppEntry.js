@@ -125,9 +125,6 @@ function catchEntryText(entry, key) {
 			if(JXG.isFunction(userFunction))
 				bGraph=	true;
 		}catch(e){console.log("caught "+e);}
-		
-		// Live debugger, really helpful, delete me later though
-		$("#header").text("ENTRY Text: "+txt);
 	}
 	catch(e)
 	{
@@ -343,6 +340,14 @@ function clearAll() {
 	});
 }
 
+function collapseAll() {
+	$(".entry").each(function(index, elem)
+	{
+		if(!elem.oldLeft)
+			onCollapseEntryClick({target: $(elem).find(".collapse-entry")[0]});
+	});
+}
+
 // Calculus
 function onRootsClick(e) {
     var currEntry = $(e.target).parents(".entry");
@@ -426,7 +431,8 @@ function onDerivativeClick(e) {
             // so redo it from mathquill
             var userFunction;
             var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
-            txt = asciiMathfromMathQuill(txt).toLowerCase();
+			
+			txt=	filterText(txt, $(e.target).parents(".entry"), 0);
 
             // javascript math conversion here using  mathjs.js 
             eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
@@ -440,6 +446,26 @@ function onDerivativeClick(e) {
 	
 
 };
+
+function onIntegralClick(e)
+{
+	// Variables
+	var	currEntry=	$(e.target).parents(".entry");
+	
+	if(currEntry[0].isIntegralDisplayed)
+	{
+		board.removeObject(currEntry[0].isIntegralDisplayed);
+		currEntry[0].isIntegralDisplayed=	null;
+	}
+	else
+	{
+		if(currEntry[0].graphRef)
+		{
+			currEntry[0].isIntegralDisplayed=	board.create("integral", [[-10, 10], currEntry[0].graphRef]);
+			//currEntry[0].graphRef.addChild(currEntry[0].isIntegralDisplayed);
+		}
+	}
+}
 // End of File
 
 /*

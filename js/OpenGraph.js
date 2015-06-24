@@ -79,6 +79,7 @@ $(document).ready(function()
     $("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.20</sub></em>");
     $("#addNewEntry").on("click", constructNewEntry);
     $("#deleteAll").on("click", clearAll);
+	$("#dockRight").on("click", collapseAll);
 	
 	// -------------------------------------------
 	// --- OpenGraphAppEntry.js Initialization ---
@@ -100,7 +101,8 @@ $(document).ready(function()
     ).on("click", ".thicknessMinus", onThicknessMinusClick
     ).on("click", ".tangentLine", onTangentLineClick
     ).on("click", ".derivative", onDerivativeClick
-    ).on("click", ".roots", onRootsClick);
+    ).on("click", ".roots", onRootsClick
+	).on("click", ".integral", onIntegralClick);
 
     // 2. Construct first entry in the form
 
