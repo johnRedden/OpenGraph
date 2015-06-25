@@ -66,6 +66,25 @@ $(document).ready(function()
                 break;
         }
     });
+    $("#print").click(function () {
+        board.renderer.svgRoot.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        var svg = board.renderer.svgRoot;
+        var svgData = new XMLSerializer().serializeToString(svg);
+
+        // having trouble changing this to PNG
+        // need to create a canvas or something
+        // http://jsxgraph.uni-bayreuth.de/wp/2012/11/02/howto-export-jsxgraph-constructions/ 
+        var w = window.open();
+        w.document.write("<h1>Your Graph</h1>");
+        //console.log(svgData);
+        w.document.write(svgData);
+        //w.document.write("<img src="+png+">");
+
+
+    });
+
+
+
     // -----------------------------------
     // --- OpenGraph.js Initialization ---
     // -----------------------------------
