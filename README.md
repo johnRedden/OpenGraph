@@ -1,14 +1,18 @@
 # OpenGraph
-Current copy here:
+Current testing here: https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html
 
-https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html
+Dependencies
+-------
 
-This project is based on JSXGraph: 
-http://jsxgraph.uni-bayreuth.de/wp/
+JSXGraph: http://jsxgraph.uni-bayreuth.de/wp/
 
-JSXGraph Reference: http://jsxgraph.uni-bayreuth.de/docs/index.html
+Bootstrap: http://getbootstrap.com/
+
+Khan/MathQuill: https://github.com/Khan/mathquill
 
 
-License: MIT
+License
+-------
 
---
+OpenGraph is free software:  MIT License
+
