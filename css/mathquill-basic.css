@@ -17,12 +17,15 @@
 .mq-editable-field {
   display: -moz-inline-box;
   display: inline-block;
+
 }
 .mq-editable-field .mq-root-block {
   display: -moz-inline-box;
   display: inline-block;
   width: 100%;
+
   white-space: pre;
+
   overflow: hidden;
   vertical-align: middle;
 }
@@ -296,9 +299,12 @@
 .mq-math-mode .mq-denominator {
   border-top: 1px solid;
   float: right;
+  width:100%;
   padding: .1em .1em 0 .1em;
   margin-right: -0.1em;
   margin-left: -0.1em;
+  white-space:nowrap;
+  
 }
 .mq-math-mode .mq-sqrt-prefix {
   padding-top: 0;
