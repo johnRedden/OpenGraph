@@ -83,6 +83,16 @@ $(document).ready(function()
 
     });
 
+        $('#help').on('click', function () {
+            $('#helpModal').modal('show');
+        })
+        $('#info').on('click', function () {
+            window.open('about.html', '_blank');
+        })
+
+      
+ 
+
 
 
     // -----------------------------------

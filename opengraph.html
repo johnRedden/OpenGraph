@@ -28,8 +28,6 @@
     <script type="text/javascript" src="js/OpenGraphAppPaper.js"></script>
     <script type="text/javascript" src="js/OpenGraph.js"></script>
     <script type="text/javascript" src="js/OpenGraphAppEntry.js"></script>
-    
-    
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -44,7 +42,9 @@
    
     <div class="container-fluid noselect" style="top: 0px; background-color:black; opacity:0.5; ">
         <h4 id="header" class="pull-left" style="color:white"><em>placeholder</em></h4>
-        <div id="about" class="glyphicon glyphicon-question-sign pull-right" style="color:white;top:10px" title="About"></div>
+        <div id="info" class="glyphicon glyphicon-info-sign pull-right" style="color:white;top:10px" title="Info"></div>
+        <div id="help" class="glyphicon glyphicon-question-sign pull-right" style="color:white;top:10px" title="Help">&nbsp;</div>
+        
     </div>
     
     <div class="btn-group" style="position: absolute; top: 45px; left:10px">
@@ -124,9 +124,47 @@
             </div>
         </div>
         <!--End Paper Zoom controls-->
+
+    <!-- About Modal-->
+    <!-- Modal -->
+    <div class="modal fade" id="helpModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Help</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="text-info well">
+                        Instructions: (More capabilities coming soon.)
+                        <ul>
+                            <li>Drag to Pan</li>
+                            <li>Mouse Wheel to Zoom</li>
+                            <li>Type (3,2) to plot a point</li>
+                            <li>Type <em>lineAB</em> to graph a line through points A and B.</li>
+                            <li>Type <em>circleAB</em> to graph a circle with center A through B.</li>
+                        </ul>
+
+                    </div>
+                    <p>
+                    <strong><em>Open Graphing Calculator</em></strong> is an open source project, feel free to fork the source on GitHub, submit issues, and contribute.
+                    </p>
+                    <div class="text-center center-block">
+                        <a class="btn btn-default" href="https://github.com/johnRedden/OpenGraph" target="_blank">Source On GitHub</a>
+                        <a class="btn btn-default" href="https://github.com/johnRedden/OpenGraph/issues" target="_blank">Submit an Issue</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
 		
     <script>
-    
  
 
     </script>
