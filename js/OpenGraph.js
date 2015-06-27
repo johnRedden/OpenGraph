@@ -67,18 +67,33 @@ $(document).ready(function()
         }
     });
     $("#print").click(function () {
-        board.renderer.svgRoot.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        var svg = board.renderer.svgRoot;
+        // clone the root svg and add a veiwBox attribute       
+        var svg = board.renderer.svgRoot.cloneNode(true);
+        var ww = parseInt(svg.style.width);
+        var hh = parseInt(svg.style.height);
+        var view = "0, 0, " +  ww + ", " + hh;
+        svg.setAttribute("viewBox", view);
+        
         var svgData = new XMLSerializer().serializeToString(svg);
 
-        // having trouble changing this to PNG
-        // need to create a canvas or something
+        // The instructions linked below (viewBox seems to be important!!)
         // http://jsxgraph.uni-bayreuth.de/wp/2012/11/02/howto-export-jsxgraph-constructions/ 
         var w = window.open();
         w.document.write("<h1>Your Graph</h1>");
-        //console.log(svgData);
-        w.document.write(svgData);
-        //w.document.write("<img src="+png+">");
+
+        var canvas = w.document.createElement("canvas");
+        canvas.width = ww;
+        canvas.height = hh;
+        var ctx = canvas.getContext("2d");
+
+        var img = w.document.createElement("img");
+        img.setAttribute("src", "data:image/svg+xml;base64," + btoa(svgData));
+
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0);
+            var png = canvas.toDataURL("image/png");
+            w.document.write("<img src= "+png+" width='50%'>")
+        };
 
 
     });
