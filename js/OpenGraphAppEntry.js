@@ -357,6 +357,7 @@ function clearAll() {
 	});
 }
 
+// Collapses all the entries TODO: Make it uncollapse all when all are docked
 function collapseAll() {
 	$(".entry").each(function(index, elem)
 	{
@@ -483,6 +484,19 @@ function onIntegralClick(e)
 		}
 	}
 }
+
+// Called when the entry has gained focus somehow TODO: Continue working on the focusing entries
+function onEntryFocus(e)
+{
+	$(e.target).parents(".entry").css("z-index", 11);
+}
+
+// Called when the entry has lost focus somehow
+function onEntryBlur(e)
+{
+	$(e.target).parents(".entry").css("z-index", 10);
+}
+
 // End of File
 
 /*

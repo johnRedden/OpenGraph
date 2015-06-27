@@ -30,7 +30,7 @@
 	font-size: larger;
 	height: 78px;
 	width:108%;
-	z-index: 1000;
+	z-index: 10;
 	transition: opacity 800ms, visibility 800ms;
 
 }

@@ -131,7 +131,9 @@ $(document).ready(function()
     ).on("click", ".tangentLine", onTangentLineClick
     ).on("click", ".derivative", onDerivativeClick
     ).on("click", ".roots", onRootsClick
-	).on("click", ".integral", onIntegralClick);
+	).on("click", ".integral", onIntegralClick
+	).on("focus", ".entry", onEntryFocus
+	).on("blur", ".entry", onEntryBlur);
 
     // 2. Construct first entry in the form
 
