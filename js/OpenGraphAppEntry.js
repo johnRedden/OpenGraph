@@ -68,6 +68,8 @@ function filterText(txt, entry, key)
 			.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
 			.replace(/\\operatorname\{c\*s\*c\*h}[\*]?/g, "csch")
 			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech")
+			.replace(/\\l\*o\*g[\s]*[\*]?/g, "log")
+			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
 			.replace(/\s\*/g, ""); // Had to take this out, messed things up
 	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
@@ -86,20 +88,35 @@ function filterText(txt, entry, key)
 				break;
 		}
 	}
-	else if(txt.length>= 3 && key!= 8 && key!= 127) // Else if they are not pressing backspace or delete, so there is no fighting
+	else if(key!= 8 && key!= 127) // Else if they are not pressing backspace or delete, so there is no fighting
 	{
-		switch(txt.substring(txt.length-3))
+		if(txt.length>= 3)
 		{
-			case "sin":
-			case "csc":
-			case "cos":
-			case "sec":
-			case "tan":
-			case "cot":
-				MathQuill(entry.find(".math-field")[0]).typedText("("); // Acts as if the user typed in a parenthesis instead
-				break;
+			switch(txt.substring(txt.length-3))
+			{
+				case "sin":
+				case "csc":
+				case "cos":
+				case "sec":
+				case "tan":
+				case "cot":
+				case "log":
+					MathQuill(entry.find(".math-field")[0]).typedText("("); // Acts as if the user typed in a parenthesis instead
+					break;
+			}
+		}
+		if(txt.length>= 2)
+		{
+			switch(txt.substring(txt.length-2))
+			{
+				case "ln":
+					MathQuill(entry.find(".math-field")[0]).typedText("(");
+					break;
+			}
 		}
 	}
+	
+	$("#header").text(txt);
 	
 	return txt;
 }
