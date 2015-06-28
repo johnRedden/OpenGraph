@@ -95,17 +95,46 @@
                     </span>
                     <span class="collapse hiddenRow calc">
                         <span class="btn-group">
-                            <span class="btn btn-default disabled">Toggle:</span>
-                            <span class="btn btn-default tangentLine" title="Toggle Tangent"><span class="">d/dx</span></span>
-                            <span class="btn btn-default derivative" title="Toggle Derivative"><span class="">f '</span></span>
-                            <span class="btn btn-default integral" title="Toggle Integral"><span class="">&int; f</span></span>
+                            <span class="btn btn-default disabled">Toggles:</span>
+                            <span class="btn btn-default tangentLine" title="Tangent Line"><span class="">d/dx</span></span>
+                            <span class="btn btn-default derivative" title="Derivative"><span class="">f '</span></span>
+                            <span class="btn btn-default integral" title="Integral"><span class="">&int; f</span></span>
+                            <span class="btn btn-default rSum" title="Riemann Sum"><span class=""> &sum; f</span> </span>
+                            <div class="dropdown btn-group" style="display:inline">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="endpointMnu" data-toggle="dropdown">
+                                    <span id="menuTxt">right</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu endpointMnu" role="menu" aria-labelledby="endpointMnu">
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">right</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">left</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">middle</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">trapezoidal</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">lower</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">upper</a></li>
+                                </ul>
+                            </div>
+
                         </span>
-                        <span class="input-group">
-                            <span class="input-group-addon">a</span>
-                            <input class="form-control numA" type="text" value="-1" />
-                            <span class="input-group-addon">b</span>
-                            <input class="form-control numB" type="text" value="2"   />
+
+                        <span class="calc">
+                            <span class="row">
+                                <span class="input-group col-xs-3 pull-left">
+                                    <span class="input-group-addon">a</span>
+                                    <input class="form-control numA" type="text" value="-1" />
+                                </span>
+                                <span class="input-group col-xs-3 pull-left spcLeft">
+                                    <span class="input-group-addon">b</span>
+                                    <input class="form-control numB" type="text" value="2" />
+                                </span>
+                                <span class="rangeGroup pull-left spcLeft" >
+                                    <span class="pull-left "> n </span>
+                                    <input type="range" class="range1" min="1" max="100" step="1" value="10" style="width:120px; display:inline" />
+                                </span>
+                            </span>
+               
                         </span>
+                        
                     </span>
                 </span>
             </div>
