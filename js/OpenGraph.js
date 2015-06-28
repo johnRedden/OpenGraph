@@ -98,12 +98,15 @@ $(document).ready(function()
 
     });
 
+		$("#share").on("click", function() {
+			$("#shareModal").modal("show");
+		});
         $('#help').on('click', function () {
             $('#helpModal').modal('show');
-        })
+        });
         $('#info').on('click', function () {
             window.open('about.html', '_blank');
-        })
+        });
 
       
  
@@ -114,10 +117,6 @@ $(document).ready(function()
     // --- OpenGraph.js Initialization ---
     // -----------------------------------
 
-    // Also OpenGraph's on load function gets called first, because it was positioned before the entry one
-
-    //if(location.hash!= "")
-    //updateEntry($(".entry")[0], location.hash.substring(1));
     // Page Buttons
     $("#dockButton").click(onCollapseCollapser);
     $("#header").html("<em>OpenGraphingCalculator <sub>&alpha; 0.20</sub></em>");
