@@ -430,7 +430,11 @@ function onTangentLineClick(e) {
             };
             var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
 
-            var p1 = board.create("glider", [1, 0, currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
+            var d1 = parseFloat(currEntry.find('.numA').val());
+            if(isNaN(d1)){d1=1.0}
+            
+            // p1 will be the closest point on the graph to (d1,0)
+            var p1 = board.create("glider", [d1, 0, currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
             currEntry[0].isTangentDisplayed = p1;
 
             //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
@@ -494,7 +498,11 @@ function onIntegralClick(e)
 	{
 		if(currEntry[0].graphRef)
 		{
-		    currEntry[0].isIntegralDisplayed = board.create("integral", [[-1, 2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2 });
+		    var d1 = parseFloat(currEntry.find('.numA').val());
+		    if (isNaN(d1)) { d1 = 1.0 }
+		    var d2 = parseFloat(currEntry.find('.numB').val());
+		    if (isNaN(d2)) { d2 = 2.0 }
+		    currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2 });
 			//currEntry[0].graphRef.addChild(currEntry[0].isIntegralDisplayed);
 		}
 	}
