@@ -42,19 +42,19 @@
    
     <div class="container-fluid noselect" style="top: 0px; background-color:black; opacity:0.5; ">
         <h4 id="header" class="pull-left" style="color:white"><em>placeholder</em></h4>
-        <div id="info" class="glyphicon glyphicon-info-sign pull-right" style="color:white;top:10px" title="Info"></div>
-        <div id="help" class="glyphicon glyphicon-question-sign pull-right" style="color:white;top:10px" title="Help">&nbsp;</div>
+        <div id="info" class="glyphicon glyphicon-info-sign pull-right" style="color:white;top:10px" title="Info" data-toggle="tooltip" data-placement="bottom"></div>
+        <div id="help" class="glyphicon glyphicon-question-sign pull-right" style="color:white;top:10px" title="Help" data-toggle="tooltip" data-placement="bottom">&nbsp;</div>
         
     </div>
     
     <div class="btn-group" style="position: absolute; top: 45px; left:10px">
-        <div id="deleteAll" class="btn btn-default" title="Delete All" >
+        <div id="deleteAll" class="btn btn-default" title="Delete All" data-toggle="tooltip" data-placement="bottom">
             <span class="glyphicon glyphicon-erase" style="color:mediumvioletred"></span>
         </div>
-        <div id="addNewEntry" class="btn btn-default" title="Add Graph">
+        <div id="addNewEntry" class="btn btn-default" title="Add Graph" data-toggle="tooltip" data-placement="bottom">
             <span class="glyphicon glyphicon-plus" style="color:lightseagreen"></span>
         </div>
-        <div id="dockRight" class="btn btn-default" title="Dock Right">
+        <div id="dockRight" class="btn btn-default" title="Dock All" data-toggle="tooltip" data-placement="bottom">
             <span class="glyphicon glyphicon-menu-left"></span>
         </div>
     </div>
@@ -66,7 +66,7 @@
  
                 <span class="grabber"></span>
                 <span class="btn-group-vertical spcLeft">
-                    <span class="btn btn-default btn-remove"> <span class="glyphicon glyphicon-remove"></span> </span>
+                    <span class="btn btn-default btn-remove" title="Remove"> <span class="glyphicon glyphicon-remove"></span> </span>
                     <span class="btn btn-default drawer1" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span></span>
                 </span>
                 <span class="btn-group-vertical  spcLeft">
@@ -142,28 +142,28 @@
 
         <!-- Paper Zoom Controls uses Bootstrap Buttons-->
         <div id="graphPaperButtons" class="controlContainer" >
-            <div id="dockButton" class="btn btn-default pull-left" title="Dock Right" style="height: 100%;">
-                <span class="glyphicon glyphicon-menu-right" ></span>
+            <div id="dockButton" class="btn btn-default pull-left" title="Dock Right" style="height: 100%;" data-toggle="tooltip" data-placement="bottom">
+                <span class="glyphicon glyphicon-menu-right"></span>
             </div>
             <div class="buttons pull-right">
                 <div class="btn-group" style="width:100%">
-                    <div id="resetHome" class="btn btn-default" title="Reset Home" style="width:50%"><div class="glyphicon glyphicon-screenshot"></div></div>
-                    <div id="resetZoom" class="btn btn-default" title="Reset Zoom" style="width:50%"><div class="glyphicon glyphicon-fullscreen"></div></div>
+                    <div id="resetHome" class="btn btn-default" title="Reset Home" style="width:50%" data-toggle="tooltip" data-placement="bottom"><div class="glyphicon glyphicon-screenshot"></div></div>
+                    <div id="resetZoom" class="btn btn-default" title="Reset Zoom" style="width:50%" data-toggle="tooltip" data-placement="bottom"><div class="glyphicon glyphicon-fullscreen"></div></div>
                 </div>
                 <br />
-                <div id="toggleZoomType" class="btn btn-default" title="Toggle Zoom Type" style="width:100%">
-                    <span class="glyphicon glyphicon-zoom-in"></span>
+                <div id="toggleZoomType" class="btn btn-default" title="Toggle Zoom Type" style="width:100%" data-toggle="tooltip" data-placement="bottom">
+                    <span class="glyphicon glyphicon-zoom-in" title="zoom type"></span>
                     <span id="zoomType" style="font-family:'Courier New', Courier, monospace">xy</span>
                 </div>
                 <br />
                 <div class="btn-group" style="width:100%">
-                    <div id="zoomIn" class="btn btn-default" title="Zoom in" style="width:50%"><span class="glyphicon glyphicon-zoom-in"></span></div>
-                    <div id="zoomOut" class="btn btn-default" title="Zoom out" style="width:50%"><span class="glyphicon glyphicon-zoom-out"></span></div>
+                    <div id="zoomIn" class="btn btn-default" title="Zoom in" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-zoom-in"></span></div>
+                    <div id="zoomOut" class="btn btn-default" title="Zoom out" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-zoom-out"></span></div>
                 </div>
                 <br />
                 <div class="btn-group" style="width:100%">
-                    <div id="print" class="btn btn-default" title="Print" style="width:50%"><span class="glyphicon glyphicon-print"></span></div>
-                    <div id="share" class="btn btn-default" title="Share" style="width:50%"><span class="glyphicon glyphicon-share"></span></div>
+                    <div id="print" class="btn btn-default" title="Print" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-print"></span></div>
+                    <div id="share" class="btn btn-default" title="Share" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-share"></span></div>
                 </div>
             </div>
         </div>

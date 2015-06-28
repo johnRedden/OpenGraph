@@ -108,3 +108,6 @@
 	border:thin solid lightgray;
 	border-radius:2px;
 }
+#info, #help{
+    cursor:pointer;
+}

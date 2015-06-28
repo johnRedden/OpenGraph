@@ -43,6 +43,9 @@ $(document).ready(function()
     $("#zoomOut").click(function () {
         board.zoomOut();
     });
+    //bootstrap tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+
     // Called when the zoom type / toggle zoom type button has been clicked
     $("#toggleZoomType").click(function () {
         // Variables
@@ -65,6 +68,10 @@ $(document).ready(function()
                 board.attr.zoom.factory = 1.25;
                 break;
         }
+
+ 
+       
+
     });
     $("#print").click(function () {
         // clone the root svg and add a veiwBox attribute       
