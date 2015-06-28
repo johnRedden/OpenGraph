@@ -311,7 +311,18 @@ function onMapClick(e)
     var currColor = currEntry.find(".showColor").css('color');
 	
 	if (currEntry[0].graphRef) {
-	    board.create("glider", [0, 1, currEntry[0].graphRef], { color: currColor });
+	    board.create("glider", [0, 1, currEntry[0].graphRef], { color: currColor }).on('up', function (e) {
+	        // map point on down stuff here
+            // TODO: add touch capabilties
+	        //console.log(e.which);
+	        if (e.which === 3)
+	            try{
+	                board.removeObject(this);
+	            } catch (err) {
+	                //console.log(err);
+	            }
+	        
+	    });
 	} else
 	    currEntry.effect("shake", { times: 2 }, 700);  // not sure this adds value
 }
