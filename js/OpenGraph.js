@@ -97,9 +97,27 @@ $(document).ready(function()
 
 
     });
-
-		$("#share").on("click", function() {
-			$("#shareModal").modal("show");
+		
+		$("#share").on("click", function(e) {
+			// Variables
+			var	str=	"https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html?";
+			
+			if($(".entry")[0]=== null)
+				return;
+			
+			$(".entry").each(function(index, elem)
+			{
+				if(MathQuill($(elem).find(".math-field")[0]).latex()=== "")
+					return;
+				if(index!= 0)
+					str+=	"&";
+				
+				str+=	MathQuill($(elem).find(".math-field")[0]).latex();
+			});
+			if(str=== "https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html?")
+				return;
+			
+			$("#shareModal").modal("show").find("input#urlbox").val(str);
 		});
         $('#help').on('click', function () {
             $('#helpModal').modal('show');
