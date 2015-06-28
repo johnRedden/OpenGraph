@@ -116,8 +116,6 @@ function filterText(txt, entry, key)
 		}
 	}
 	
-	$("#header").text(txt);
-	
 	return txt;
 }
 
