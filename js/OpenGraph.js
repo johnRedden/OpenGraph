@@ -139,6 +139,7 @@ $(document).ready(function()
 	).on("click", ".dashed", onDashedClick
 	).on("click", ".mathinput", onMathInputClick
     ).on("click", ".drawer1", onDrawerClick
+    ).on("click", ".drawer2", onDrawer2Click
 	).on("keyup", ".entry", onEntryKeyUp
 	).on("click", ".collapse-entry", onCollapseEntryClick
     ).on("click", ".thicknessPlus", onThicknessPlusClick

@@ -247,7 +247,11 @@ function nextColor() {   //n is a global variable used for the revolving color i
 // Called whenever the drawer button is clicked
 function onDrawerClick(e) {
     var currEntry = $(this).parents(".entry");
-    currEntry.find(".collapse").collapse("toggle");
+    currEntry.find(".collapse.basic").collapse("toggle");
+}
+function onDrawer2Click(e) {
+    var currEntry = $(this).parents(".entry");
+    currEntry.find(".collapse.calc").collapse("toggle");
 }
 function onThicknessPlusClick(e) {
     var currEntry = $(this).parents(".entry");
@@ -481,14 +485,16 @@ function onIntegralClick(e)
 	
 	if(currEntry[0].isIntegralDisplayed)
 	{
-		board.removeObject(currEntry[0].isIntegralDisplayed);
+	    board.removeObject(currEntry[0].isIntegralDisplayed.curveLeft);
+	    board.removeObject(currEntry[0].isIntegralDisplayed.curveRight);
+	    board.removeObject(currEntry[0].isIntegralDisplayed);
 		currEntry[0].isIntegralDisplayed=	null;
 	}
 	else
 	{
 		if(currEntry[0].graphRef)
 		{
-			currEntry[0].isIntegralDisplayed=	board.create("integral", [[-10, 10], currEntry[0].graphRef]);
+		    currEntry[0].isIntegralDisplayed = board.create("integral", [[-1, 2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2 });
 			//currEntry[0].graphRef.addChild(currEntry[0].isIntegralDisplayed);
 		}
 	}

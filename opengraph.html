@@ -80,15 +80,32 @@
                     <span class="collapse-entry btn btn-default" title="Collapse Entry" ><span class="glyphicon glyphicon-menu-left"></span></span>
                     <span class="showColor btn btn-default" title="Toggle Color"><span class="glyphicon glyphicon-tint"></span></span>
                 </span>
-                <span class="collapse hiddenRow">
+                <span class="collapse hiddenRow basic">
                     <span class="btn-group" >
-                        <span class="btn btn-default disabled">Extras:</span>
+                        <span class="btn btn-default drawer2" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span>Calculus</span>
                         <span class="btn btn-default thicknessPlus" title="Increase Thickness"><span class="glyphicon glyphicon-plus"></span></span>
                         <span class="btn btn-default thicknessMinus" title="Decrease Thickness"><span class="glyphicon glyphicon-minus"></span></span>
                         <span class="btn btn-default roots"><span class="">0s</span></span>
+                        
+                        <!-- 
                         <span class="btn btn-default tangentLine" title="Toggle Tangent"><span class="">d/dx</span></span>
                         <span class="btn btn-default derivative" title="Toggle Derivative"><span class="">f '</span></span>
-						<span class="btn btn-default integral" title="Toggle Integral"><span class="">integrate</span></span>
+						<span class="btn btn-default integral" title="Toggle Integral"><span class="">&int; f</span></span>
+                            -->
+                    </span>
+                    <span class="collapse hiddenRow calc">
+                        <span class="btn-group">
+                            <span class="btn btn-default disabled">Toggle:</span>
+                            <span class="btn btn-default tangentLine" title="Toggle Tangent"><span class="">d/dx</span></span>
+                            <span class="btn btn-default derivative" title="Toggle Derivative"><span class="">f '</span></span>
+                            <span class="btn btn-default integral" title="Toggle Integral"><span class="">&int; f</span></span>
+                        </span>
+                        <span class="input-group">
+                            <span class="input-group-addon">a</span>
+                            <input class="form-control numA" type="text" value="-1" />
+                            <span class="input-group-addon">b</span>
+                            <input class="form-control numB" type="text" value="2"   />
+                        </span>
                     </span>
                 </span>
             </div>
