@@ -508,6 +508,65 @@ function onIntegralClick(e)
 	}
 }
 
+// Riemann Sum *************************
+function onEndpointTypeClick(e) {
+    var currEntry = $(e.target).parents(".entry");
+    currEntry.find('.menuTxt').html($(this).text());
+    //TODO: if rSum is graphed need to regraph it.
+    if (currEntry[0].isRsumDisplayed) {
+        board.removeObject(currEntry[0].isRsumDisplayed);
+        currEntry[0].isRsumDisplayed = null;
+        graphRS(currEntry);
+    }
+}
+function onSliderInput(e) {
+    var currEntry = $(e.target).parents(".entry");
+    currEntry.find('.nDisplay').html($(this).val());
+    //TODO: if rSum is graphed need to regraph it.
+    if (currEntry[0].isRsumDisplayed) {
+        board.removeObject(currEntry[0].isRsumDisplayed);
+        currEntry[0].isRsumDisplayed = null;
+        graphRS(currEntry);
+    }
+}
+function onRsumClick(e) {
+    var currEntry = $(e.target).parents(".entry");
+
+    if (currEntry[0].isRsumDisplayed) {
+        board.removeObject(currEntry[0].isRsumDisplayed);
+        currEntry.find(".RSresult").html("");
+        currEntry[0].isRsumDisplayed = null;
+    }
+    else {
+        if (currEntry[0].graphRef) {
+            graphRS(currEntry);
+        }
+    }
+}
+
+function graphRS(currEntry) {
+    
+    var d1 = parseFloat(currEntry.find('.numA').val());
+    if (isNaN(d1)) { d1 = 1.0 }
+    var d2 = parseFloat(currEntry.find('.numB').val());
+    if (isNaN(d2)) { d2 = 2.0 }
+    var n = parseInt(currEntry.find(".nDisplay").html());
+    var t = currEntry.find(".menuTxt").html();        // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+    // so redo it from mathquill
+    var userFunction;
+    var txt = MathQuill(currEntry.find(".math-field")[0]).text();
+
+    txt = filterText(txt, currEntry, 0);
+    // javascript math conversion here using  mathjs.js 
+    eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+    currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
+    currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed)
+    currEntry.find(".RSresult").html("&sum; = " + JXG.Math.Numerics.riemannsum(userFunction, n, t, d1, d2).toFixed(4));
+
+
+};
+//*************************
+
 // Called when the entry has gained focus somehow TODO: Continue working on the focusing entries
 function onEntryFocus(e)
 {

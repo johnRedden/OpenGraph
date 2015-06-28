@@ -98,9 +98,9 @@
                             <span class="btn btn-default derivative" title="Derivative"><span class="">f '</span></span>
                             <span class="btn btn-default integral" title="Integral"><span class="">&int; f</span></span>
                             <span class="btn btn-default rSum" title="Riemann Sum"><span class=""> &sum; f</span> </span>
-                            <div class="dropdown btn-group" style="display:inline">
-                                <button class="btn btn-default dropdown-toggle" type="button" id="endpointMnu" data-toggle="dropdown">
-                                    <span id="menuTxt">right</span>
+                            <span class="dropdown btn-group" style="display:inline">
+                                <button class="btn btn-default dropdown-toggle endpointBtn" type="button" data-toggle="dropdown">
+                                    <span class="menuTxt">right</span>
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu endpointMnu" role="menu" aria-labelledby="endpointMnu">
@@ -111,7 +111,7 @@
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="#">lower</a></li>
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="#">upper</a></li>
                                 </ul>
-                            </div>
+                            </span>
 
                         </span>
 
@@ -126,11 +126,13 @@
                                     <input class="form-control numB" type="text" value="2" />
                                 </span>
                                 <span class="rangeGroup pull-left spcLeft" >
-                                    <span class="pull-left "> n </span>
-                                    <input type="range" class="range1" min="1" max="100" step="1" value="10" style="width:120px; display:inline" />
+                                    <span> n: </span>
+                                    <input type="range" class="nSlider" min="1" max="100" step="1" value="10" style="width:120px; display:inline" />
+                                    <span class="nDisplay"> 10 </span>
                                 </span>
+                               
                             </span>
-               
+                            <span class="RSresult pull-right"></span>
                         </span>
                         
                     </span>

@@ -170,8 +170,10 @@ $(document).ready(function()
     ).on("click", ".thicknessMinus", onThicknessMinusClick
     ).on("click", ".tangentLine", onTangentLineClick
     ).on("click", ".derivative", onDerivativeClick
-    ).on("click", ".roots", onRootsClick
 	).on("click", ".integral", onIntegralClick
+    ).on("click", ".rSum", onRsumClick
+    ).on("click", ".endpointMnu li a", onEndpointTypeClick
+    ).on("input", ".nSlider", onSliderInput
 	).on("focus", ".entry", onEntryFocus
 	).on("blur", ".entry", onEntryBlur);
 
