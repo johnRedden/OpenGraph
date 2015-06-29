@@ -72,13 +72,6 @@ function filterText(txt, entry, key)
 			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
 			.replace(/\s\*/g, ""); // Had to take this out, messed things up
 	
-	if(txt.indexOf(",")!== -1)
-	{
-		txt=	txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\{\(\[]/g, "").replace(/[\}\)\]]/g, "");
-		
-		return {point: txt.split(",")};
-	}
-	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
 	{
 		switch(txt.substring(txt.length-6))
@@ -123,7 +116,25 @@ function filterText(txt, entry, key)
 		}
 	}
 	
-	$("#header").text(txt);
+	//$("#header").text(txt); // Live view of whats going on
+	
+	if(txt.indexOf(",")!== -1)
+	{
+		txt=	txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\(\[]/g, "").replace(/[\)\]]/g, "");
+		txt=	txt.split(",");
+		
+		return {point: txt};
+	}
+	if(txt.length> 2)
+	{
+		if(txt.substring(0, 2)=== "x=")
+		{
+			txt=	txt.substring(2);
+			
+			return {vline: txt};
+		}
+	}
+	
 	
 	return txt;
 }
@@ -140,7 +151,7 @@ function catchEntryText(entry, key) {
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		txt=	filterText(txt, entry, key);
 		
-		if(txt.point)
+		if(txt.point || txt.vline)
 		{
 			return {
 				text:	txt,
@@ -184,12 +195,28 @@ function renderGraph(entry, txt)
 		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
 	}
 	
-	if(txt.point!= null)
+	if(txt.point)
 	{
 		// Render point
 		try {
 			removeFromGraph(entry);
 			entry[0].graphRef=	board.create("point", [txt.point[0], txt.point[1]],
+			{
+				visible: true,
+				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+			});
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
+	}
+	if(txt.vline)
+	{
+		// Render vertical line
+		try {
+			removeFromGraph(entry);
+			entry[0].graphRef=	board.create("line", [-1*parseInt(txt.vline), 1, 0],
 			{
 				visible: true,
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
