@@ -70,6 +70,8 @@ function filterText(txt, entry, key)
 			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech")
 			.replace(/\\l\*o\*g[\s]*[\*]?/g, "log")
 			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
+			.replace(/t\*r\*i\*a\*n\*g\*l\*e[\*]?/g, "triangle")
+			.replace(/q\*u\*a\*d[\*]?/g, "quad")
 			.replace(/l\*i\*n\*e[\*]?/g, "line")
 			.replace(/c\*i\*r\*c\*l\*e[\*]?/g, "circle")
 			.replace(/e\*l\*l\*i\*p\*s\*e[\*]?/g, "ellipse")
@@ -134,6 +136,20 @@ function filterText(txt, entry, key)
 	{
 		return {vline: txt.substring(2)};
 	}
+	if(txt.indexOf("triangle")!== -1)
+	{
+		txt=	txt.substring(8).toUpperCase();
+		txt=	txt.split("*");
+		
+		return {triangle: txt};
+	}
+	if(txt.indexOf("quad")!== -1)
+	{
+		txt=	txt.substring(4).toUpperCase();
+		txt=	txt.split("*");
+		
+		return {quad: txt};
+	}
 	if(txt.indexOf("line")!== -1)
 	{
 		txt=	txt.substring(4).toUpperCase();
@@ -186,7 +202,11 @@ function catchEntryText(entry, key) {
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		txt=	filterText(txt, entry, key);
 		
-		if(txt.point || txt.vline || txt.line || txt.circle || txt.ellipse || txt.parabola || txt.hyperbola)
+		if
+		(
+			txt.triangle || txt.quad ||
+			txt.point || txt.vline || txt.line || txt.circle || txt.ellipse || txt.parabola || txt.hyperbola
+		)
 		{
 			return {
 				text:	txt,
@@ -221,35 +241,16 @@ function reRenderLines()
 {
 	$(".entry").each(function(index, elem)
 	{
-		if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("l*i*n*e")!= -1)
-		{
-			onEntryKeyUp({
-				target: $(elem).find(".math-field")[0],
-				keyCode: 0
-			});
-		}
-		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("c*i*r*c*l*e")!= -1)
-		{
-			onEntryKeyUp({
-				target: $(elem).find(".math-field")[0],
-				keyCode: 0
-			});
-		}
-		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("e*l*l*i*p*s*e")!= -1)
-		{
-			onEntryKeyUp({
-				target: $(elem).find(".math-field")[0],
-				keyCode: 0
-			});
-		}
-		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("p*a*r*a*b*o*l*a")!= -1)
-		{
-			onEntryKeyUp({
-				target: $(elem).find(".math-field")[0],
-				keyCode: 0
-			});
-		}
-		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("h*y*p*e*r*b*o*l*a")!= -1)
+		// Variables
+		var	txt=	MathQuill($(elem).find(".math-field")[0]).text();
+		
+		if
+		(
+			txt.indexOf("l*i*n*e")!== -1 || txt.indexOf("c*i*r*c*l*e")!== -1 ||
+			txt.indexOf("e*l*l*i*p*s*e")!== -1 || txt.indexOf("p*a*r*a*b*o*l*a")!== -1 ||
+			txt.indexOf("h*y*p*e*r*b*o*l*a")!== -1 || txt.indexOf("t*r*i*a*n*g*l*e")!== -1 ||
+			txt.indexOf("q*u*a*d")!== -1
+		)
 		{
 			onEntryKeyUp({
 				target: $(elem).find(".math-field")[0],
@@ -311,6 +312,55 @@ function renderGraph(entry, txt)
 				
 				MathQuill(entry.find(".math-field")[0]).latex("").typedText("x="+lx);
 			});
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
+	}
+	if(txt.triangle)
+	{
+		// Render triangle
+		try {
+			// Variables
+			var	ptA=	board.select(txt.triangle[0]);
+			var	ptB=	board.select(txt.triangle[1]);
+			var	ptC=	board.select(txt.triangle[2]);
+			
+			removeFromGraph(entry);
+			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+			{
+				entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				});
+			}
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
+	}
+	if(txt.quad)
+	{
+		// Render triangle
+		try {
+			// Variables
+			var	ptA=	board.select(txt.quad[0]);
+			var	ptB=	board.select(txt.quad[1]);
+			var	ptC=	board.select(txt.quad[2]);
+			var	ptD=	board.select(txt.quad[3]);
+			
+			removeFromGraph(entry);
+			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC) && JXG.isPoint(ptD))
+			{
+				entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC, ptD],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				});
+			}
 		}
 		catch(e) { console.log("caught "+e); }
 		
