@@ -72,6 +72,9 @@ function filterText(txt, entry, key)
 			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
 			.replace(/l\*i\*n\*e[\*]?/g, "line")
 			.replace(/c\*i\*r\*c\*l\*e[\*]?/g, "circle")
+			.replace(/e\*l\*l\*i\*p\*s\*e[\*]?/g, "ellipse")
+			.replace(/p\*a\*r\*a\*b\*o\*l\*a[\*]?/g, "parabola")
+			.replace(/h\*y\*p\*e\*r\*b\*o\*l\*a[\*]?/g, "hyperbola")
 			.replace(/\s\*/g, ""); // Had to take this out, messed things up
 	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
@@ -145,6 +148,27 @@ function filterText(txt, entry, key)
 		
 		return {circle: txt};
 	}
+	if(txt.indexOf("ellipse")!== -1)
+	{
+		txt=	txt.substring(7).toUpperCase();
+		txt=	txt.split("*");
+		
+		return {ellipse: txt};
+	}
+	if(txt.indexOf("parabola")!== -1)
+	{
+		txt=	txt.substring(8).toUpperCase();
+		txt=	txt.split("*");
+		
+		return {parabola: txt};
+	}
+	if(txt.indexOf("hyperbola")!== -1)
+	{
+		txt=	txt.substring(9).toUpperCase();
+		txt=	txt.split("*");
+		
+		return {hyperbola: txt};
+	}
 	
 	
 	return txt;
@@ -162,7 +186,7 @@ function catchEntryText(entry, key) {
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		txt=	filterText(txt, entry, key);
 		
-		if(txt.point || txt.vline || txt.line || txt.circle)
+		if(txt.point || txt.vline || txt.line || txt.circle || txt.ellipse || txt.parabola || txt.hyperbola)
 		{
 			return {
 				text:	txt,
@@ -204,7 +228,28 @@ function reRenderLines()
 				keyCode: 0
 			});
 		}
-		if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("c*i*r*c*l*e")!= -1)
+		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("c*i*r*c*l*e")!= -1)
+		{
+			onEntryKeyUp({
+				target: $(elem).find(".math-field")[0],
+				keyCode: 0
+			});
+		}
+		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("e*l*l*i*p*s*e")!= -1)
+		{
+			onEntryKeyUp({
+				target: $(elem).find(".math-field")[0],
+				keyCode: 0
+			});
+		}
+		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("p*a*r*a*b*o*l*a")!= -1)
+		{
+			onEntryKeyUp({
+				target: $(elem).find(".math-field")[0],
+				keyCode: 0
+			});
+		}
+		else if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("h*y*p*e*r*b*o*l*a")!= -1)
 		{
 			onEntryKeyUp({
 				target: $(elem).find(".math-field")[0],
@@ -317,6 +362,78 @@ function renderGraph(entry, txt)
 		
 		return;
 	}
+	if(txt.ellipse)
+	{
+		// Render ellipse
+		try {
+			// Variables
+			var	ptA=	board.select(txt.ellipse[0]);
+			var	ptB=	board.select(txt.ellipse[1]);
+			var	ptC=	board.select(txt.ellipse[2]);
+			
+			removeFromGraph(entry);
+			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+			{
+				entry[0].graphRef=	board.create("ellipse", [ptA, ptB, ptC],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				});
+			}
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
+	}
+	if(txt.parabola)
+	{
+		// Render parabola
+		try {
+			// Variables
+			var	ptA=	board.select(txt.ellipse[0]);
+			var	ptB=	board.select(txt.ellipse[1]);
+			var	ptC=	board.select(txt.ellipse[2]);
+			
+			removeFromGraph(entry);
+			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+			{
+				entry[0].graphRef=	board.create("parabola", [ptA, ptB],// ptC],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				});
+			}
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
+	}
+	if(txt.hyperbola)
+	{
+		// Render hyperbola
+		try {
+			// Variables
+			var	ptA=	board.select(txt.hyperbola[0]);
+			var	ptB=	board.select(txt.hyperbola[1]);
+			var	ptC=	board.select(txt.hyperbola[2]);
+			
+			removeFromGraph(entry);
+			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+			{
+				entry[0].graphRef=	board.create("hyperbola", [ptA, ptB, ptC],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				});
+			}
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
+	}
 	
 	// Not too sure if the check should still be here
 	try {
@@ -357,7 +474,7 @@ function renderGraph(entry, txt)
 			entry[0].graphRef.setAttribute({dash: attr.dash}); // Dashed attribute just didn't want to go into the board options
 		}
 	}
-	catch (e) { $("#header").text(e.message);console.log("caught " + e); }
+	catch (e) { console.log("caught " + e); }
 	reRenderLines();
 }
 
