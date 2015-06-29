@@ -183,6 +183,20 @@ function catchEntryText(entry, key) {
 	};
 }
 
+function reRenderLines()
+{
+	$(".entry").each(function(index, elem)
+	{
+		if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("l*i*n*e")!= -1)
+		{
+			onEntryKeyUp({
+				target: $(elem).find(".math-field")[0],
+				keyCode: 0
+			});
+		}
+	});
+}
+
 // Renders the graph
 function renderGraph(entry, txt)
 {
@@ -208,18 +222,9 @@ function renderGraph(entry, txt)
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
 			});
-			$(".entry").each(function(index, elem)
-			{
-				if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("l*i*n*e")!= -1)
-				{
-					onEntryKeyUp({
-						target: $(elem).find(".math-field")[0],
-						keyCode: 0
-					});
-				}
-			});
 		}
 		catch(e) { $("#header").text(e); console.log("caught "+e); }
+		reRenderLines();
 		
 		return;
 	}
@@ -280,6 +285,7 @@ function renderGraph(entry, txt)
 		}
 	}
 	catch (e) { console.log("caught " + e); }
+	reRenderLines();
 }
 
 // Called when the remove button has been called
@@ -423,6 +429,7 @@ function onMapClick(e)
 	    });
 	} else
 	    currEntry.effect("shake", { times: 2 }, 700);  // not sure this adds value
+	reRenderLines();
 }
 
 // Called whenever the user clicks on the textbox
