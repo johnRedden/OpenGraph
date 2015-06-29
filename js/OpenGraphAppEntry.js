@@ -204,6 +204,13 @@ function reRenderLines()
 				keyCode: 0
 			});
 		}
+		if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("c*i*r*c*l*e")!= -1)
+		{
+			onEntryKeyUp({
+				target: $(elem).find(".math-field")[0],
+				keyCode: 0
+			});
+		}
 	});
 }
 
@@ -307,6 +314,8 @@ function renderGraph(entry, txt)
 			}
 		}
 		catch(e) { console.log("caught "+e); }
+		
+		return;
 	}
 	
 	// Not too sure if the check should still be here
