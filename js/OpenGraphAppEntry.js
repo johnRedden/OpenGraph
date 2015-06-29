@@ -229,7 +229,8 @@ function renderGraph(entry, txt)
 			{
 				visible: true,
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+				fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
 			});
 		}
 		catch(e) { $("#header").text(e); console.log("caught "+e); }
@@ -246,7 +247,13 @@ function renderGraph(entry, txt)
 			{
 				visible: true,
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                fixed: false  //can make this true for VLT
+			}).on('drag', function () {
+                // get x-value (rounded to two places) of moveable line
+			    console.log(this.X(0.5).toFixed(2));
+			    // change the mathinput to reflect the change.
+                // but the mathinput change will try to graph it again??  It's already graphed.
 			});
 		}
 		catch(e) { console.log("caught "+e); }
@@ -684,7 +691,9 @@ function graphRS(currEntry) {
     var d2 = parseFloat(currEntry.find('.numB').val());
     if (isNaN(d2)) { d2 = 2.0 }
     var n = parseInt(currEntry.find(".nDisplay").html());
-    var t = currEntry.find(".menuTxt").html();        // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+    var t = currEntry.find(".menuTxt").html();
+    
+    // Do not know how to get the function from graphRef... should be able to  TODO: find out??
     // so redo it from mathquill
     var userFunction;
     var txt = MathQuill(currEntry.find(".math-field")[0]).text();
@@ -692,12 +701,14 @@ function graphRS(currEntry) {
     txt = filterText(txt, currEntry, 0);
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-    currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
+    currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
+
     currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed)
     currEntry.find(".RSresult").html("&sum; = " + JXG.Math.Numerics.riemannsum(userFunction, n, t, d1, d2).toFixed(4));
 
 
-};
+};
+
 //*************************
 
 // Called when the entry has gained focus somehow TODO: Continue working on the focusing entries

@@ -85,7 +85,10 @@
 	line-height:	75px;*/
 }
 /* end ENTRY css****************/
-
+ kbd{
+     background-color:oldlace;
+     color:black;
+ }
 
 .btn-group-sm{
 	padding-bottom:3px;
