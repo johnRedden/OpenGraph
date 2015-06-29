@@ -118,7 +118,7 @@ function filterText(txt, entry, key)
 		}
 	}
 	
-	$("#header").text(txt); // Live view of whats going on
+	//$("#header").text(txt); // Live view of whats going on
 	
 	if(txt.indexOf(",")!== -1)
 	{
@@ -192,6 +192,7 @@ function catchEntryText(entry, key) {
 	};
 }
 
+// Re renders any lines on the graph
 function reRenderLines()
 {
 	$(".entry").each(function(index, elem)
@@ -249,11 +250,14 @@ function renderGraph(entry, txt)
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
                 fixed: false  //can make this true for VLT
-			}).on('drag', function () {
-                // get x-value (rounded to two places) of moveable line
-			    console.log(this.X(0.5).toFixed(2));
-			    // change the mathinput to reflect the change.
-                // but the mathinput change will try to graph it again??  It's already graphed.
+			}).on('drag', function (e) {
+				// Variables
+				var	lx=	this.X(0.5).toFixed(2);
+				
+				if(lx== "-0.00")
+					lx="0.00"
+				
+				MathQuill(entry.find(".math-field")[0]).latex("").typedText("x="+lx);
 			});
 		}
 		catch(e) { console.log("caught "+e); }
