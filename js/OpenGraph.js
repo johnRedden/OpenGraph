@@ -124,7 +124,7 @@ $(document).ready(function()
 			if(str=== "https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html?")
 				return;
 			
-			$("#shareModal").modal("show").find("input#urlbox").val(str);
+			$("#shareModal").modal("show").find("input#urlbox").val(encodeURI(str));
 		});
         $('#help').on('click', function () {
             $('#helpModal').modal('show');
@@ -193,7 +193,7 @@ $(document).ready(function()
 	else if(location.search!= "")
 	{
 		// Variables
-		var	sterms=	location.search.substring(1);
+		var	sterms=	decodeURI(location.search).substring(1);
 		var	temp=	sterms.split('&');
 		var	k=	0;
 		
