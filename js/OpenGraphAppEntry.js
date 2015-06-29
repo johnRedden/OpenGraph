@@ -325,16 +325,39 @@ function renderGraph(entry, txt)
 		eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
 		if (JXG.isFunction(userFunction)) {
 			removeFromGraph(entry);
-			entry[0].graphRef = board.create("functiongraph", userFunction,
+			if(isNaN(MathQuill(entry.find(".math-field")[0]).text()))
 			{
-				visible: true,
-				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color')
-			});
+				entry[0].graphRef = board.create("functiongraph", userFunction,
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color'),
+					fixed:	isNaN(MathQuill(entry.find(".math-field")[0]).text())
+				});
+			}
+			else
+			{
+				entry[0].graphRef=	board.create("line", [-1*parseInt(MathQuill(entry.find(".math-field")[0]).text()), 0, 1],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+					fixed: false  //can make this true for VLT
+				}).on("drag", function(e)
+				{
+					// Variables
+					var	ly=	this.Y(0.5).toFixed(2);
+					
+					if(ly== "-0.00")
+						ly="0.00"
+					
+					MathQuill(entry.find(".math-field")[0]).latex("").typedText(ly);
+				});
+			}
 			entry[0].graphRef.setAttribute({dash: attr.dash}); // Dashed attribute just didn't want to go into the board options
 		}
 	}
-	catch (e) { console.log("caught " + e); }
+	catch (e) { $("#header").text(e.message);console.log("caught " + e); }
 	reRenderLines();
 }
 
