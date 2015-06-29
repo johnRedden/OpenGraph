@@ -71,6 +71,7 @@ function filterText(txt, entry, key)
 			.replace(/\\l\*o\*g[\s]*[\*]?/g, "log")
 			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
 			.replace(/l\*i\*n\*e[\*]?/g, "line")
+			.replace(/c\*i\*r\*c\*l\*e[\*]?/g, "circle")
 			.replace(/\s\*/g, ""); // Had to take this out, messed things up
 	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
@@ -117,7 +118,7 @@ function filterText(txt, entry, key)
 		}
 	}
 	
-	//$("#header").text(txt); // Live view of whats going on
+	$("#header").text(txt); // Live view of whats going on
 	
 	if(txt.indexOf(",")!== -1)
 	{
@@ -134,7 +135,15 @@ function filterText(txt, entry, key)
 	{
 		txt=	txt.substring(4).toUpperCase();
 		txt=	txt.split("*");
+		
 		return {line: txt};
+	}
+	if(txt.indexOf("circle")!== -1)
+	{
+		txt=	txt.substring(6).toUpperCase();
+		txt=	txt.split("*");
+		
+		return {circle: txt};
 	}
 	
 	
@@ -153,7 +162,7 @@ function catchEntryText(entry, key) {
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		txt=	filterText(txt, entry, key);
 		
-		if(txt.point || txt.vline || txt.line)
+		if(txt.point || txt.vline || txt.line || txt.circle)
 		{
 			return {
 				text:	txt,
@@ -252,9 +261,9 @@ function renderGraph(entry, txt)
 			var	ptA=	board.select(txt.line[0]);
 			var	ptB=	board.select(txt.line[1]);
 			
+			removeFromGraph(entry);
 			if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
 			{
-				removeFromGraph(entry);
 				entry[0].graphRef=	board.create("line", [ptA, ptB],
 				{
 					visible: true,
@@ -266,6 +275,27 @@ function renderGraph(entry, txt)
 		catch(e) { console.log("caught "+e); }
 		
 		return;
+	}
+	if(txt.circle)
+	{
+		// Render circle
+		try {
+			// Variables
+			var	ptA=	board.select(txt.circle[0]);
+			var	ptB=	board.select(txt.circle[1]);
+			
+			removeFromGraph(entry);
+			if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
+			{
+				entry[0].graphRef=	board.create("circle", [ptA, ptB],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				});
+			}
+		}
+		catch(e) { console.log("caught "+e); }
 	}
 	
 	// Not too sure if the check should still be here
