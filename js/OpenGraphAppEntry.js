@@ -58,7 +58,7 @@ function filterText(txt, entry, key)
 {
 	// Gets hyperbolic functions by default
 	txt = txt.toLowerCase()
-			.replace(/\*\*\*/g, "^")
+			.replace(/\*\*[\*]?/g, "^")
 			.replace(/cdot\s/g, "*")
 			.replace(/\\s\*i\*n[\s]*[\*]?/g, "sin")
 			.replace(/\\c\*s\*c[\s]*[\*]?/g, "csc")
@@ -115,6 +115,8 @@ function filterText(txt, entry, key)
 			}
 		}
 	}
+	
+	$("#header").text(txt);
 	
 	return txt;
 }
