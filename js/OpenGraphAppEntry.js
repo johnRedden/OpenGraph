@@ -70,6 +70,7 @@ function filterText(txt, entry, key)
 			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech")
 			.replace(/\\l\*o\*g[\s]*[\*]?/g, "log")
 			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
+			.replace(/l\*i\*n\*e[\*]?/g, "line")
 			.replace(/\s\*/g, ""); // Had to take this out, messed things up
 	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
@@ -125,14 +126,15 @@ function filterText(txt, entry, key)
 		
 		return {point: txt};
 	}
-	if(txt.length> 2)
+	if(txt.indexOf("x=")!== -1)
 	{
-		if(txt.substring(0, 2)=== "x=")
-		{
-			txt=	txt.substring(2);
-			
-			return {vline: txt};
-		}
+		return {vline: txt.substring(2)};
+	}
+	if(txt.indexOf("line")!== -1)
+	{
+		txt=	txt.substring(4).toUpperCase();
+		txt=	txt.split("*");
+		return {line: txt};
 	}
 	
 	
@@ -151,7 +153,7 @@ function catchEntryText(entry, key) {
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		txt=	filterText(txt, entry, key);
 		
-		if(txt.point || txt.vline)
+		if(txt.point || txt.vline || txt.line)
 		{
 			return {
 				text:	txt,
@@ -206,8 +208,18 @@ function renderGraph(entry, txt)
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
 			});
+			$(".entry").each(function(index, elem)
+			{
+				if(MathQuill($(elem).find(".math-field")[0]).text().indexOf("l*i*n*e")!= -1)
+				{
+					onEntryKeyUp({
+						target: $(elem).find(".math-field")[0],
+						keyCode: 0
+					});
+				}
+			});
 		}
-		catch(e) { console.log("caught "+e); }
+		catch(e) { $("#header").text(e); console.log("caught "+e); }
 		
 		return;
 	}
@@ -222,6 +234,29 @@ function renderGraph(entry, txt)
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
 			});
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
+	}
+	if(txt.line)
+	{
+		// Render line
+		try {
+			// Variables
+			var	ptA=	board.select(txt.line[0]);
+			var	ptB=	board.select(txt.line[1]);
+			
+			if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
+			{
+				removeFromGraph(entry);
+				entry[0].graphRef=	board.create("line", [ptA, ptB],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+				});
+			}
 		}
 		catch(e) { console.log("caught "+e); }
 		
