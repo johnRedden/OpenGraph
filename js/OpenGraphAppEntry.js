@@ -72,6 +72,13 @@ function filterText(txt, entry, key)
 			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
 			.replace(/\s\*/g, ""); // Had to take this out, messed things up
 	
+	if(txt.indexOf(",")!== -1)
+	{
+		txt=	txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\{\(\[]/g, "").replace(/[\}\)\]]/g, "");
+		
+		return {point: txt.split(",")};
+	}
+	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
 	{
 		switch(txt.substring(txt.length-6))
@@ -133,6 +140,14 @@ function catchEntryText(entry, key) {
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		txt=	filterText(txt, entry, key);
 		
+		if(txt.point)
+		{
+			return {
+				text:	txt,
+				canGraph:	true
+			};
+		}
+		
 		// Finds if it is graphable, unsure if we should detect here, or in the render function
 		try
 		{
@@ -167,6 +182,23 @@ function renderGraph(entry, txt)
 		attr.dash=	(entry[0].graphRef).getAttribute("dash");
 		attr.strokeColor=	(entry[0].graphRef).getAttribute("strokeColor");
 		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
+	}
+	
+	if(txt.point!= null)
+	{
+		// Render point
+		try {
+			removeFromGraph(entry);
+			entry[0].graphRef=	board.create("point", [txt.point[0], txt.point[1]],
+			{
+				visible: true,
+				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+			});
+		}
+		catch(e) { console.log("caught "+e); }
+		
+		return;
 	}
 	
 	// Not too sure if the check should still be here
