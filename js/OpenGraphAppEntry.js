@@ -136,10 +136,12 @@ function filterText(txt, entry, key)
 	{
 		return {vline: txt.substring(2)};
 	}
+    /*
 	if(txt.indexOf("y=")!== -1)
 	{
 		return {hline: txt.substring(2)};
 	}
+    */
 	if(txt.indexOf("triangle")!== -1)
 	{
 		txt=	txt.substring(8).toUpperCase();
