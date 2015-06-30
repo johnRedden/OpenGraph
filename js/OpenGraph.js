@@ -107,7 +107,7 @@ $(document).ready(function()
 		
 		$("#share").on("click", function(e) {
 			// Variables
-			var	str=	"https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html?";
+			var	str=	"http://www.opengraphingcalculator.com/?";
 			
 			if($(".entry")[0]=== null)
 				return;
@@ -121,8 +121,8 @@ $(document).ready(function()
 				
 				str+=	MathQuill($(elem).find(".math-field")[0]).latex();
 			});
-			if(str=== "https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html?")
-				return;
+			if(str=== "http://www.opengraphingcalculator.com/?")
+				str=	"http://www.opengrapgingcalculator.com/";
 			
 			$("#shareModal").modal("show").find("input#urlbox").val(encodeURI(str));
 		});
