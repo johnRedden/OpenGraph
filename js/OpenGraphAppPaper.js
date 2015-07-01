@@ -34,7 +34,7 @@ function getMouseCoords(e, i) {
 
 // Called whenever there is a movement detected
 function onBoardMovement(e) {
-    board.update();
+    //board.update();
 }
 
 // End of File
