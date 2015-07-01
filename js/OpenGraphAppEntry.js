@@ -754,75 +754,97 @@ function collapseAll() {
 }
 
 // Calculus
-function onRootsClick(e) {
+function onNumAKeyUp(e) {
     var currEntry = $(e.target).parents(".entry");
-    var interval = new Array(-10,-5);
-    
-    if (currEntry[0].graphRef) {
 
-        // Do not know how to get the function from graphRef... should be able to  TODO: find out??
-        // so redo it from mathquill
-        var userFunction;
-        var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
-		
-		txt=	filterText(txt, $(e.target).parents(".entry"), 0);
-
-        // javascript math conversion here using  mathjs.js 
-        eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-
-        if (JXG.isFunction(userFunction)) {
-            // create and then add it as a child to the graph
-            //console.log(JXG.Math.Numerics.fzero(userFunction, -10));
-            // Still Working on it!
-            console.log(userFunction(0));
-			
-			// Variables
-			var	root=	JXG.Math.Numerics.root(userFunction,
-				board.getBoundingBox()[0]+((board.getBoundingBox()[2]-board.getBoundingBox()[0])/2) // Gets the middle of the screen
-			);
-			
-			// So here is a general root finder, it doesn't work well, but we could probably look it up or do the intermediate-value theorem
-			
-			if(!isNaN(root) && userFunction(root)== 0)
-				board.create("point", [root, 0]);
-        }
+    // used for the tangent line f'(a)
+    if (currEntry[0].isTangentDisplayed) {
+        board.removeObject(currEntry[0].isTangentDisplayed);
+        graphTL(currEntry)
     }
-}
+    // used for the definite integal lower bound
+    if (currEntry[0].isIntegralDisplayed) {
+        board.removeObject(currEntry[0].isIntegralDisplayed.curveLeft);
+        board.removeObject(currEntry[0].isIntegralDisplayed.curveRight);
+        board.removeObject(currEntry[0].isIntegralDisplayed);
+        graphIntegral(currEntry);
+    }
+    // used for riemann sums
+    if (currEntry[0].isRsumDisplayed) {
+        board.removeObject(currEntry[0].isRsumDisplayed);
+        currEntry.find(".RSresult").html("");
+        graphRS(currEntry);
+    }
+};
+function onNumBKeyUp(e) {
+    var currEntry = $(e.target).parents(".entry");
+
+    // used for the definite integal upper bound
+    if (currEntry[0].isIntegralDisplayed) {
+        board.removeObject(currEntry[0].isIntegralDisplayed.curveLeft);
+        board.removeObject(currEntry[0].isIntegralDisplayed.curveRight);
+        board.removeObject(currEntry[0].isIntegralDisplayed);
+        graphIntegral(currEntry);
+    }
+    // used for riemann sums
+    if (currEntry[0].isRsumDisplayed) {
+        board.removeObject(currEntry[0].isRsumDisplayed);
+        currEntry.find(".RSresult").html("");
+        graphRS(currEntry);
+    }
+
+};
 
 function onTangentLineClick(e) {
-    // Variables
     var currEntry = $(e.target).parents(".entry");
 
     if (currEntry[0].isTangentDisplayed) {
         board.removeObject(currEntry[0].isTangentDisplayed);
         currEntry[0].isTangentDisplayed = null;
+        currEntry.find(".RSresult").html("");
     } else {
         if (currEntry[0].graphRef) {
-            var szeFn = function () {
-                var n = currEntry[0].graphRef.getAttribute('strokeWidth');
-                return (n > 1) ? n - 1 : 1;
-            };
-            var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
-
-            var d1 = parseFloat(currEntry.find('.numA').val());
-            if(isNaN(d1)){d1=1.0}
-            
-            // p1 will be the closest point on the graph to (d1,0)
-            var p1 = board.create("glider", [d1, 0, currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
-            currEntry[0].isTangentDisplayed = p1;
-
-            //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
-            board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn });
+            graphTL(currEntry);
         }
     }
-
-
-
-
 };
 
+function graphTL(currEntry) {
+    var szeFn = function () {
+        var n = currEntry[0].graphRef.getAttribute('strokeWidth');
+        return (n > 1) ? n - 1 : 1;
+    };
+    var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
+
+    var d1 = parseFloat(currEntry.find('.numA').val());
+    if (isNaN(d1)) { d1 = 1.0 }
+
+    // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+    // so redo it from mathquill
+    var userFunction;
+    var txt = MathQuill(currEntry.find(".math-field")[0]).text();
+
+    txt = filterText(txt, currEntry.parents(".entry"), 0);
+
+    // javascript math conversion here using  mathjs.js 
+    eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+
+    // p1 will be the closest point on the graph to (d1,0)
+    var p1 = board.create("glider", [d1, userFunction(d1), currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
+    currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
+
+    p1.on('drag', function () {
+        currEntry.find('.numA').val(p1.X().toFixed(2));
+        currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
+    });
+    currEntry[0].isTangentDisplayed = p1;
+
+    //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
+    board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn });
+
+}
+
 function onDerivativeClick(e) {
-	// Variables
     var currEntry = $(e.target).parents(".entry");
 
     if (currEntry[0].isDerivDisplayed) {
@@ -853,12 +875,9 @@ function onDerivativeClick(e) {
         }
     }
 	
-
 };
 
-function onIntegralClick(e)
-{
-	// Variables
+function onIntegralClick(e){
 	var	currEntry=	$(e.target).parents(".entry");
 	
 	if(currEntry[0].isIntegralDisplayed)
@@ -872,14 +891,39 @@ function onIntegralClick(e)
 	{
 		if(currEntry[0].graphRef)
 		{
-		    var d1 = parseFloat(currEntry.find('.numA').val());
-		    if (isNaN(d1)) { d1 = 1.0 }
-		    var d2 = parseFloat(currEntry.find('.numB').val());
-		    if (isNaN(d2)) { d2 = 2.0 }
-		    currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2 });
-			//currEntry[0].graphRef.addChild(currEntry[0].isIntegralDisplayed);
+		    graphIntegral(currEntry);
 		}
 	}
+}
+
+function graphIntegral(currEntry) {
+    var d1 = parseFloat(currEntry.find('.numA').val());
+    if (isNaN(d1)) { d1 = 1.0 }
+    var d2 = parseFloat(currEntry.find('.numB').val());
+    if (isNaN(d2)) { d2 = 2.0 }
+    currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2 });
+    currEntry[0].isIntegralDisplayed.curveLeft.setAttribute({ withLabel: true });
+    currEntry[0].isIntegralDisplayed.curveRight.setAttribute({ withLabel: true });
+    currEntry[0].isIntegralDisplayed.curveLeft.on('drag', function () {
+        currEntry.find('.numA').val(this.X().toFixed(2));
+        // used for riemann sums
+        if (currEntry[0].isRsumDisplayed) {
+            board.removeObject(currEntry[0].isRsumDisplayed);
+            currEntry.find(".RSresult").html("");
+            graphRS(currEntry);
+        }
+    });
+    currEntry[0].isIntegralDisplayed.curveRight.on('drag', function () {
+        currEntry.find('.numB').val(this.X().toFixed(2));
+        // used for riemann sums
+        if (currEntry[0].isRsumDisplayed) {
+            board.removeObject(currEntry[0].isRsumDisplayed);
+            currEntry.find(".RSresult").html("");
+            graphRS(currEntry);
+        }
+    });
+    //currEntry[0].graphRef.addChild(currEntry[0].isIntegralDisplayed);
+
 }
 
 // Riemann Sum *************************
