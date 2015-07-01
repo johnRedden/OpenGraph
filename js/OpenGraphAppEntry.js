@@ -827,9 +827,10 @@ function graphTL(currEntry) {
     // Do not know how to get the function from graphRef... should be able to  TODO: find out??
     // so redo it from mathquill
     var userFunction;
-    var txt = MathQuill(currEntry.find(".math-field")[0]).text();
 
-    txt = filterText(txt, currEntry.parents(".entry"), 0);
+    //get LaTex from Entry convert to asciiMath
+    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex())
+
 
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
@@ -868,7 +869,8 @@ function onDerivativeClick(e) {
             var userFunction;
             var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
 			
-			txt=	filterText(txt, $(e.target).parents(".entry"), 0);
+            txt = filterText(txt, $(e.target).parents(".entry"), 0);
+            
 
             // javascript math conversion here using  mathjs.js 
             eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
@@ -1005,6 +1007,8 @@ function onEntryBlur(e)
 {
 	$(e.target).parents(".entry").css("z-index", 10);
 }
+
+
 
 // End of File
 
