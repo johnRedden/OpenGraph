@@ -4,6 +4,7 @@
 // Variables
 var board;
 var resizeTimer;
+var	bMobile;
 
 // Centers the origin
 function centerOrigin() {
@@ -34,7 +35,8 @@ function getMouseCoords(e, i) {
 
 // Called whenever there is a movement detected
 function onBoardMovement(e) {
-    //board.update();
+	if(bMobile)
+		board.update();
 }
 
 // End of File

@@ -1,10 +1,13 @@
 
+
 // Called when the page is ready and loaded
 $(document).ready(function()
 {
 	// -------------------------------------------
 	// --- OpenGraphAppPaper.js Initialization ---
 	// -------------------------------------------
+	
+	bMobile=	(/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera\smini/i).test(navigator.userAgent.toLowerCase());
 	
 	board = JXG.JSXGraph.initBoard('myBox',
 	{

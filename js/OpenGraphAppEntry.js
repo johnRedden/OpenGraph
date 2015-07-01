@@ -906,7 +906,7 @@ function graphIntegral(currEntry) {
     if (isNaN(d1)) { d1 = 1.0 }
     var d2 = parseFloat(currEntry.find('.numB').val());
     if (isNaN(d2)) { d2 = 2.0 }
-    currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2 });
+    currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2, frozen: true });
     currEntry[0].isIntegralDisplayed.curveLeft.setAttribute({ withLabel: true });
     currEntry[0].isIntegralDisplayed.curveRight.setAttribute({ withLabel: true });
     currEntry[0].isIntegralDisplayed.curveLeft.on('drag', function () {
