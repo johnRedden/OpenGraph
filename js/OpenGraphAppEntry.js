@@ -125,73 +125,6 @@ function filterText(txt, entry, key)
 	
 	//$("#header").text(txt); // Live view of whats going on
 	
-	if(txt.indexOf(",")!== -1)
-	{
-		txt=	txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\(\[]/g, "").replace(/[\)\]]/g, "");
-		txt=	txt.split(",");
-		
-		return {point: txt};
-	}
-	if(txt.indexOf("x=")!== -1)
-	{
-		return {vline: txt.substring(2)};
-	}
-    
-	if(txt.indexOf("y=")!== -1)
-	{
-		return {hline: txt.substring(2)};
-	}
-    
-	if(txt.indexOf("triangle")!== -1)
-	{
-		txt=	txt.substring(8).toUpperCase();
-		txt=	txt.split("*");
-		
-		return {triangle: txt};
-	}
-	if(txt.indexOf("quad")!== -1)
-	{
-		txt=	txt.substring(4).toUpperCase();
-		txt=	txt.split("*");
-		
-		return {quad: txt};
-	}
-	if(txt.indexOf("line")!== -1)
-	{
-		txt=	txt.substring(4).toUpperCase();
-		txt=	txt.split("*");
-		
-		return {line: txt};
-	}
-	if(txt.indexOf("circle")!== -1)
-	{
-		txt=	txt.substring(6).toUpperCase();
-		txt=	txt.split("*");
-		
-		return {circle: txt};
-	}
-	if(txt.indexOf("ellipse")!== -1)
-	{
-		txt=	txt.substring(7).toUpperCase();
-		txt=	txt.split("*");
-		
-		return {ellipse: txt};
-	}
-	if(txt.indexOf("parabola")!== -1)
-	{
-		txt=	txt.substring(8).toUpperCase();
-		txt=	txt.split("*");
-		
-		return {parabola: txt};
-	}
-	if(txt.indexOf("hyperbola")!== -1)
-	{
-		txt=	txt.substring(9).toUpperCase();
-		txt=	txt.split("*");
-		
-		return {hyperbola: txt};
-	}
-	
 	
 	return txt;
 }
@@ -208,7 +141,7 @@ function catchEntryText(entry, key) {
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
 		txt=	filterText(txt, entry, key);
 		
-		if
+		/*if
 		(
 			txt.triangle || txt.quad || txt.hline ||
 			txt.point || txt.vline || txt.line || txt.circle || txt.ellipse || txt.parabola || txt.hyperbola
@@ -216,6 +149,103 @@ function catchEntryText(entry, key) {
 		{
 			return {
 				text:	txt,
+				canGraph:	true
+			};
+		}*/
+	
+		if(txt.indexOf(",")!== -1)
+		{
+			txt=	txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\(\[]/g, "").replace(/[\)\]]/g, "");
+			txt=	txt.split(",");
+			
+			return {
+				text: {point: txt},
+				canGraph: true
+			};
+		}
+		if(txt.indexOf("x=")!== -1)
+		{
+			return {
+				text:	{vline: txt.substring(2)},
+				canGraph:	true
+			};
+		}
+		
+		if(txt.indexOf("y=")!== -1)
+		{
+			return {
+				text: {hline: txt.substring(2)},
+				canGraph: true
+			};
+		}
+		
+		if(txt.indexOf("triangle")!== -1)
+		{
+			txt=	txt.substring(8).toUpperCase();
+			txt=	txt.split("*");
+			
+			return {
+				text:	{triangle: txt},
+				canGraph:	true
+			};
+		}
+		if(txt.indexOf("quad")!== -1)
+		{
+			txt=	txt.substring(4).toUpperCase();
+			txt=	txt.split("*");
+			
+			return {
+				text:	{quad: txt},
+				canGraph:	true
+			};
+		}
+		if(txt.indexOf("line")!== -1)
+		{
+			txt=	txt.substring(4).toUpperCase();
+			txt=	txt.split("*");
+			
+			return {
+				text:	{line: txt},
+				canGraph:	true
+			};
+		}
+		if(txt.indexOf("circle")!== -1)
+		{
+			txt=	txt.substring(6).toUpperCase();
+			txt=	txt.split("*");
+			
+			return {
+				text:	{circle: txt},
+				canGraph:	true
+			};
+		}
+		if(txt.indexOf("ellipse")!== -1)
+		{
+			txt=	txt.substring(7).toUpperCase();
+			txt=	txt.split("*");
+			
+			return {
+				text:	{ellipse: txt},
+				canGraph:	true
+			};
+		}
+		if(txt.indexOf("parabola")!== -1)
+		{
+			txt=	txt.substring(8).toUpperCase();
+			txt=	txt.split("*");
+			
+			return {
+				text:	{parabola: txt},
+				canGraph:	true
+			};
+		}
+		if(txt.indexOf("hyperbola")!== -1)
+		{
+			txt=	txt.substring(9).toUpperCase();
+			txt=	txt.split("*");
+			
+			return {
+				text:	{hyperbola: txt},
 				canGraph:	true
 			};
 		}
