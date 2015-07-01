@@ -47,7 +47,9 @@ $(document).ready(function()
         board.zoomOut();
     });
     //bootstrap tooltips
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip({
+		container: "body"
+	});
 
     // Called when the zoom type / toggle zoom type button has been clicked
     $("#toggleZoomType").click(function () {
