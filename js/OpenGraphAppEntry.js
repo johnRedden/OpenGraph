@@ -136,12 +136,12 @@ function filterText(txt, entry, key)
 	{
 		return {vline: txt.substring(2)};
 	}
-    /*
+    
 	if(txt.indexOf("y=")!== -1)
 	{
 		return {hline: txt.substring(2)};
 	}
-    */
+    
 	if(txt.indexOf("triangle")!== -1)
 	{
 		txt=	txt.substring(8).toUpperCase();
@@ -325,28 +325,33 @@ function renderGraph(entry, txt)
 	}
 	if(txt.hline)
 	{
-		// Render horizontal line
-		try {
-			removeFromGraph(entry);
-			entry[0].graphRef=	board.create("line", [-1*parseInt(txt.hline), 0, 1],
-			{
-				visible: true,
-				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                fixed: false  //can make this true for VLT
-			}).on('drag', function (e) {
-				// Variables
-				var	ly=	this.Y(0.5).toFixed(2);
-				
-				if(ly== "-0.00")
-					ly="0.00"
-				
-				MathQuill(entry.find(".math-field")[0]).latex("").typedText("y="+ly);
-			});
+		if(!isNaN(txt.hline))
+		{
+			// Render horizontal line
+			try {
+				removeFromGraph(entry);
+				entry[0].graphRef=	board.create("line", [-1*parseInt(txt.hline), 0, 1],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+					fixed: false  //can make this true for VLT
+				}).on('drag', function (e) {
+					// Variables
+					var	ly=	this.Y(0.5).toFixed(2);
+					
+					if(ly== "-0.00")
+						ly="0.00"
+					
+					MathQuill(entry.find(".math-field")[0]).latex("").typedText("y="+ly);
+				});
+			}
+			catch(e) { console.log("caught "+e); }
+			
+			return;
 		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
+		else
+			txt=	txt.hline;
 	}
 	if(txt.triangle)
 	{
