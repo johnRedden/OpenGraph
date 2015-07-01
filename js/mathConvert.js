@@ -1,6 +1,6 @@
 ﻿
 
-/* Credit Lippm
+/* Credit Lippman:  https://github.com/drlippman/IMathAS/blob/master/javascript/AMtoMQ.js
 \left| expr \right| to  abs(expr)
 \left( expression \right)  to   (expression)
 \sqrt{expression}  to sqrt(expression)
