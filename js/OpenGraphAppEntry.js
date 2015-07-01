@@ -854,10 +854,13 @@ function graphTL(currEntry) {
     var d1 = parseFloat(currEntry.find('.numA').val());
     if (isNaN(d1)) { d1 = 1.0 }
 
-    // Do not know how to get the function from graphRef... should be able to  TODO: find out?? so redo it from mathquill
+    // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+    // so redo it from mathquill
     var userFunction;
-    //get LaTex from Entry convert to asciiMath  (using new converter)
-    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
+
+    //get LaTex from Entry convert to asciiMath
+    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex())
+
 
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
@@ -891,10 +894,13 @@ function onDerivativeClick(e) {
             };
             var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
 
-            // Do not know how to get the function from graphRef... should be able to  TODO: find out?? so redo it from mathquill
+            // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+            // so redo it from mathquill
             var userFunction;
-            //get LaTex from Entry convert to asciiMath  (using new converter)
-            txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
+            var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
+			
+            txt = filterText(txt, $(e.target).parents(".entry"), 0);
+            
 
             // javascript math conversion here using  mathjs.js 
             eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
@@ -996,23 +1002,25 @@ function onRsumClick(e) {
 function graphRS(currEntry) {
     
     var d1 = parseFloat(currEntry.find('.numA').val());
-    if (isNaN(d1)) { d1 = 1.0 };
+    if (isNaN(d1)) { d1 = 1.0 }
     var d2 = parseFloat(currEntry.find('.numB').val());
-    if (isNaN(d2)) { d2 = 2.0 };
+    if (isNaN(d2)) { d2 = 2.0 }
     var n = parseInt(currEntry.find(".nDisplay").html());
     var t = currEntry.find(".menuTxt").html();
     
-    // Do not know how to get the function from graphRef... should be able to  TODO: find out?? so redo it from mathquill
+    // Do not know how to get the function from graphRef... should be able to  TODO: find out??
+    // so redo it from mathquill
     var userFunction;
-    //get LaTex from Entry convert to asciiMath  (using new converter)
-    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
+    var txt = MathQuill(currEntry.find(".math-field")[0]).text();
 
+    txt = filterText(txt, currEntry, 0);
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
     currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
 
     currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed)
     currEntry.find(".RSresult").html("&sum; = " + JXG.Math.Numerics.riemannsum(userFunction, n, t, d1, d2).toFixed(4));
+
 
 };
 
@@ -1030,3 +1038,80 @@ function onEntryBlur(e)
 	$(e.target).parents(".entry").css("z-index", 10);
 }
 
+
+
+// End of File
+
+/*
+/// For reference
+
+// Renders the graph
+// Ruins of the old renderer, delete later, keep now for reference?
+function old_renderGraph(inputObj) {
+    // this function takes in an Entry, creates javascript math, and then associates a graph to the entry
+    // Variables
+    var userFunction;
+    var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
+    txt = asciiMathfromMathQuill(txt).toLowerCase();
+
+    // not sure where to do the following... also needs to be stramlined... (3,2) plot a point.
+    if (txt.indexOf(",") !== -1) {
+        // if there is a comma try to plot a point
+        // try to render text ((3,2)) as an array [3,2] using the eval below
+        // TODO: streamline this
+        var modifiedTxt = eval(txt.replace("((", "[").replace("))", "]"));
+        try {
+            if (JXG.isArray(modifiedTxt)) {
+                removeFromGraph(inputObj);
+                inputObj.graphRef = board.create("point", modifiedTxt,
+                {
+                    visible: true,
+                    strokeColor: inputObj.color,
+                    fillColor: inputObj.color,
+                    fixed: true
+                });
+            }
+
+        } catch (e) {
+            // console.log("with comma " + e);
+        }
+
+    } else if (txt.substring(0, 7) === "l*i*n*e") {
+        //console.log(txt[8] + "," + txt[10]);
+
+        try {
+            var pt1 = board.select(txt[8].toUpperCase());
+            var pt2 = board.select(txt[10].toUpperCase());
+
+            if (JXG.isPoint(pt1) && JXG.isPoint(pt2)) {
+                removeFromGraph(inputObj);
+                inputObj.graphRef = board.create("line", [pt1, pt2],
+                {
+                    visible: true,
+                    strokeWidth: 2,
+                    strokeColor: inputObj.color
+                });
+            }
+        }
+        catch (e) { console.log("caught " + e); }
+
+
+    } else {
+        try {
+            // javascript math conversion here using  mathjs.js 
+            eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+            if (JXG.isFunction(userFunction)) {
+                removeFromGraph(inputObj);
+                inputObj.graphRef = board.create("functiongraph", userFunction,
+                {
+                    visible: true,
+                    strokeWidth: 2,
+                    strokeColor: inputObj.color
+                });
+            }
+        }
+        catch (e) { console.log("caught " + e); }
+    }
+
+}
+*/
