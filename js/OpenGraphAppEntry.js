@@ -77,7 +77,7 @@ function filterText(txt, entry, key)
 			.replace(/e\*l\*l\*i\*p\*s\*e[\*]?/g, "ellipse")
 			.replace(/p\*a\*r\*a\*b\*o\*l\*a[\*]?/g, "parabola")
 			.replace(/h\*y\*p\*e\*r\*b\*o\*l\*a[\*]?/g, "hyperbola")
-			.replace(/\s\*/g, ""); // Had to take this out, messed things up
+			.replace(/[\s]*[\*]*[\s]*/g, ""); // Had to take this out, messed things up
 	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
 	{
@@ -123,7 +123,7 @@ function filterText(txt, entry, key)
 		}
 	}
 	
-	//$("#header").text(txt); // Live view of whats going on
+	$("#header").text(txt); // Live view of whats going on
 	
 	
 	return txt;
