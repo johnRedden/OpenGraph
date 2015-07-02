@@ -516,13 +516,14 @@ function renderGraph(entry, txt, type)
 				try {
 					// Variables
 					var	ptA=	board.select(txt[0]);
-					var	ptB=	board.select(txt[1]);
-					var	ptC=	board.select(txt[2]);
+					var ptB = board.select(txt[1]);
+					var ptC = board.select(txt[2]);
+					var l = board.create('line', [ptC, ptB]);
 					
 					removeFromGraph(entry);
 					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
 					{
-						entry[0].graphRef=	board.create("parabola", [ptA, ptB],// ptC],
+						entry[0].graphRef=	board.create("parabola", [ptA, l],
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
