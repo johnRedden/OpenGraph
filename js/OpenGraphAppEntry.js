@@ -336,10 +336,10 @@ function renderGraph(entry, txt, type)
 		switch(type.toLowerCase())
 		{
 			case "point":
-				// Render point
+
 				try {
 					removeFromGraph(entry);
-					entry[0].graphRef=	board.create("point", [txt[0], txt[1]],
+					entry[0].graphRef=	board.create("point", [txt[0], (isNaN(txt[1]))?0:txt[1]],
 					{
 						visible: true,
 						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
@@ -347,7 +347,9 @@ function renderGraph(entry, txt, type)
 						fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
 					});
 				}
-				catch(e) { $("#header").text(e); console.log("caught "+e); }
+			    catch (e) { //$("#header").text(e);  // do not leave these on!! users will get this and it's scary
+			        console.log("caught " + e);
+			    }
 				reRenderLines();
 				
 				return;
