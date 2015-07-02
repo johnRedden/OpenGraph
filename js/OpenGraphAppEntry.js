@@ -134,7 +134,7 @@ function filterText(txt, entry, key)
 		}
 	}
 	
-	$("#header").text(txt); // Live view of whats going on
+	//$("#header").text(txt); // Live view of whats going on
 	
 	
 	return txt;
