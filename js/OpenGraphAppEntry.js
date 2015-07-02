@@ -49,7 +49,7 @@ function onEntryKeyUp(e) {
 		
 		// I could not think of a way to make it just the entry go through
 		if(obj.canGraph)
-			renderGraph(currEntry, obj.text);
+			renderGraph(currEntry, obj.text, obj.type);
     }
 }
 
@@ -76,8 +76,19 @@ function filterText(txt, entry, key)
 			.replace(/c\*i\*r\*c\*l\*e[\*]?/g, "circle")
 			.replace(/e\*l\*l\*i\*p\*s\*e[\*]?/g, "ellipse")
 			.replace(/p\*a\*r\*a\*b\*o\*l\*a[\*]?/g, "parabola")
-			.replace(/h\*y\*p\*e\*r\*b\*o\*l\*a[\*]?/g, "hyperbola")
-			.replace(/[\s]*[\*]*[\s]*/g, ""); // Had to take this out, messed things up
+			.replace(/h\*y\*p\*e\*r\*b\*o\*l\*a[\*]?/g, "hyperbola");
+	
+	if
+	(
+		txt.indexOf("line")=== -1 && txt.indexOf("circle")=== -1 &&  txt.indexOf("triangle")=== -1 &&
+		txt.indexOf("quad")=== -1 && txt.indexOf("ellipse")=== -1 && txt.indexOf("parabola")=== -1 &&
+		txt.indexOf("hyperbola")=== -1
+	)
+	{
+		txt=	txt.replace(/[\s]*[\*]*[\s]*/g, "");
+	}
+	else
+		txt=	txt.replace(/[\s]+\*/g, "");
 	
 	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
 	{
@@ -159,14 +170,16 @@ function catchEntryText(entry, key) {
 			txt=	txt.split(",");
 			
 			return {
-				text: {point: txt},
+				text:	txt,
+				type:	"point",//{point: txt},
 				canGraph: true
 			};
 		}
 		if(txt.indexOf("x=")!== -1)
 		{
 			return {
-				text:	{vline: txt.substring(2)},
+				text:	txt,
+				type:	"vline",//{vline: txt.substring(2)},
 				canGraph:	true
 			};
 		}
@@ -174,7 +187,8 @@ function catchEntryText(entry, key) {
 		if(txt.indexOf("y=")!== -1)
 		{
 			return {
-				text: {hline: txt.substring(2)},
+				text:	txt,
+				type:	"hline",//{hline: txt.substring(2)},
 				canGraph: true
 			};
 		}
@@ -185,7 +199,8 @@ function catchEntryText(entry, key) {
 			txt=	txt.split("*");
 			
 			return {
-				text:	{triangle: txt},
+				text:	txt,
+				type:	"triangle",//{triangle: txt},
 				canGraph:	true
 			};
 		}
@@ -195,7 +210,8 @@ function catchEntryText(entry, key) {
 			txt=	txt.split("*");
 			
 			return {
-				text:	{quad: txt},
+				text:	txt,
+				type:	"quad",//{quad: txt},
 				canGraph:	true
 			};
 		}
@@ -205,7 +221,8 @@ function catchEntryText(entry, key) {
 			txt=	txt.split("*");
 			
 			return {
-				text:	{line: txt},
+				text:	txt,
+				type:	"line",//{line: txt},
 				canGraph:	true
 			};
 		}
@@ -215,7 +232,8 @@ function catchEntryText(entry, key) {
 			txt=	txt.split("*");
 			
 			return {
-				text:	{circle: txt},
+				text:	txt,
+				type:	"circle",//{circle: txt},
 				canGraph:	true
 			};
 		}
@@ -225,7 +243,8 @@ function catchEntryText(entry, key) {
 			txt=	txt.split("*");
 			
 			return {
-				text:	{ellipse: txt},
+				text:	txt,
+				type:	"ellipse",//{ellipse: txt},
 				canGraph:	true
 			};
 		}
@@ -235,7 +254,8 @@ function catchEntryText(entry, key) {
 			txt=	txt.split("*");
 			
 			return {
-				text:	{parabola: txt},
+				text:	txt,
+				type:	"parabola",//{parabola: txt},
 				canGraph:	true
 			};
 		}
@@ -245,7 +265,8 @@ function catchEntryText(entry, key) {
 			txt=	txt.split("*");
 			
 			return {
-				text:	{hyperbola: txt},
+				text:	txt,
+				type:	"hyperbola",//{hyperbola: txt},
 				canGraph:	true
 			};
 		}
@@ -297,7 +318,7 @@ function reRenderLines()
 }
 
 // Renders the graph
-function renderGraph(entry, txt)
+function renderGraph(entry, txt, type)
 {
 	// Variables
     var userFunction;
@@ -310,245 +331,233 @@ function renderGraph(entry, txt)
 		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
 	}
 	
-	if(txt.point)
+	if(type)
 	{
-		// Render point
-		try {
-			removeFromGraph(entry);
-			entry[0].graphRef=	board.create("point", [txt.point[0], txt.point[1]],
-			{
-				visible: true,
-				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-				fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-			});
-		}
-		catch(e) { $("#header").text(e); console.log("caught "+e); }
-		reRenderLines();
-		
-		return;
-	}
-	if(txt.vline)
-	{
-		// Render vertical line
-		try {
-			removeFromGraph(entry);
-			entry[0].graphRef=	board.create("line", [-1*parseInt(txt.vline), 1, 0],
-			{
-				visible: true,
-				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                fixed: false  //can make this true for VLT
-			}).on('drag', function (e) {
-				// Variables
-				var	lx=	this.X(0.5).toFixed(2);
-				
-				if(lx== "-0.00")
-					lx="0.00"
-				
-				MathQuill(entry.find(".math-field")[0]).latex("").typedText("x="+lx);
-			});
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
-	}
-	if(txt.hline)
-	{
-		if(!isNaN(txt.hline))
+		switch(type.toLowerCase())
 		{
-			// Render horizontal line
-			try {
-				removeFromGraph(entry);
-				entry[0].graphRef=	board.create("line", [-1*parseInt(txt.hline), 0, 1],
+			case "point":
+				// Render point
+				try {
+					removeFromGraph(entry);
+					entry[0].graphRef=	board.create("point", [txt[0], txt[1]],
+					{
+						visible: true,
+						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+						strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+						fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+					});
+				}
+				catch(e) { $("#header").text(e); console.log("caught "+e); }
+				reRenderLines();
+				
+				return;
+			case "vline":
+				// Render vertical line
+				try {
+					removeFromGraph(entry);
+					entry[0].graphRef=	board.create("line", [-1*parseInt(txt), 1, 0],
+					{
+						visible: true,
+						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+						strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+						fixed: false  //can make this true for VLT
+					}).on('drag', function (e) {
+						// Variables
+						var	lx=	this.X(0.5).toFixed(2);
+						
+						if(lx== "-0.00")
+							lx="0.00"
+						
+						MathQuill(entry.find(".math-field")[0]).latex("").typedText("x="+lx);
+					});
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			case "hline":
+				if(!isNaN(txt))
 				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-					fixed: false  //can make this true for VLT
-				}).on('drag', function (e) {
+					// Render horizontal line
+					try {
+						removeFromGraph(entry);
+						entry[0].graphRef=	board.create("line", [-1*parseInt(txt), 0, 1],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+							fixed: false  //can make this true for VLT
+						}).on('drag', function (e) {
+							// Variables
+							var	ly=	this.Y(0.5).toFixed(2);
+							
+							if(ly== "-0.00")
+								ly="0.00"
+							
+							MathQuill(entry.find(".math-field")[0]).latex("").typedText("y="+ly);
+						});
+					}
+					catch(e) { console.log("caught "+e); }
+					
+					return;
+				}
+				else
+					break;
+			case "triangle":
+				// Render triangle
+				try {
 					// Variables
-					var	ly=	this.Y(0.5).toFixed(2);
+					var	ptA=	board.select(txt[0]);
+					var	ptB=	board.select(txt[1]);
+					var	ptC=	board.select(txt[2]);
 					
-					if(ly== "-0.00")
-						ly="0.00"
+					removeFromGraph(entry);
+					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+					{
+						entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+					}
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			case "quad":
+				// Render quadrilateral
+				try {
+					// Variables
+					var	ptA=	board.select(txt[0]);
+					var	ptB=	board.select(txt[1]);
+					var	ptC=	board.select(txt[2]);
+					var	ptD=	board.select(txt[3]);
 					
-					MathQuill(entry.find(".math-field")[0]).latex("").typedText("y="+ly);
-				});
-			}
-			catch(e) { console.log("caught "+e); }
-			
-			return;
+					removeFromGraph(entry);
+					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC) && JXG.isPoint(ptD))
+					{
+						entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC, ptD],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+					}
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			case "line":
+				// Render line
+				try {
+					// Variables
+					var	ptA=	board.select(txt[0]);
+					var	ptB=	board.select(txt[1]);
+					
+					removeFromGraph(entry);
+					if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
+					{
+						entry[0].graphRef=	board.create("line", [ptA, ptB],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+					}
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			case "circle":
+				// Render circle
+				try {
+					// Variables
+					var	ptA=	board.select(txt[0]);
+					var	ptB=	board.select(txt[1]);
+					
+					removeFromGraph(entry);
+					if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
+					{
+						entry[0].graphRef=	board.create("circle", [ptA, ptB],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+					}
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			case "ellipse":
+				// Render ellipse
+				try {
+					// Variables
+					var	ptA=	board.select(txt[0]);
+					var	ptB=	board.select(txt[1]);
+					var	ptC=	board.select(txt[2]);
+					
+					removeFromGraph(entry);
+					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+					{
+						entry[0].graphRef=	board.create("ellipse", [ptA, ptB, ptC],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+					}
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			case "parabola":
+				// Render parabola
+				try {
+					// Variables
+					var	ptA=	board.select(txt[0]);
+					var	ptB=	board.select(txt[1]);
+					var	ptC=	board.select(txt[2]);
+					
+					removeFromGraph(entry);
+					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+					{
+						entry[0].graphRef=	board.create("parabola", [ptA, ptB],// ptC],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+					}
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			case "hyperbola":
+				// Render hyperbola
+				try {
+					// Variables
+					var	ptA=	board.select(txt[0]);
+					var	ptB=	board.select(txt[1]);
+					var	ptC=	board.select(txt[2]);
+					
+					removeFromGraph(entry);
+					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+					{
+						entry[0].graphRef=	board.create("hyperbola", [ptA, ptB, ptC],
+						{
+							visible: true,
+							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+					}
+				}
+				catch(e) { console.log("caught "+e); }
+				
+				return;
+			default:
+				break;
 		}
-		else
-			txt=	txt.hline;
-	}
-	if(txt.triangle)
-	{
-		// Render triangle
-		try {
-			// Variables
-			var	ptA=	board.select(txt.triangle[0]);
-			var	ptB=	board.select(txt.triangle[1]);
-			var	ptC=	board.select(txt.triangle[2]);
-			
-			removeFromGraph(entry);
-			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-			{
-				entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-				});
-			}
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
-	}
-	if(txt.quad)
-	{
-		// Render triangle
-		try {
-			// Variables
-			var	ptA=	board.select(txt.quad[0]);
-			var	ptB=	board.select(txt.quad[1]);
-			var	ptC=	board.select(txt.quad[2]);
-			var	ptD=	board.select(txt.quad[3]);
-			
-			removeFromGraph(entry);
-			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC) && JXG.isPoint(ptD))
-			{
-				entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC, ptD],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-				});
-			}
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
-	}
-	if(txt.line)
-	{
-		// Render line
-		try {
-			// Variables
-			var	ptA=	board.select(txt.line[0]);
-			var	ptB=	board.select(txt.line[1]);
-			
-			removeFromGraph(entry);
-			if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
-			{
-				entry[0].graphRef=	board.create("line", [ptA, ptB],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-				});
-			}
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
-	}
-	if(txt.circle)
-	{
-		// Render circle
-		try {
-			// Variables
-			var	ptA=	board.select(txt.circle[0]);
-			var	ptB=	board.select(txt.circle[1]);
-			
-			removeFromGraph(entry);
-			if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
-			{
-				entry[0].graphRef=	board.create("circle", [ptA, ptB],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-				});
-			}
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
-	}
-	if(txt.ellipse)
-	{
-		// Render ellipse
-		try {
-			// Variables
-			var	ptA=	board.select(txt.ellipse[0]);
-			var	ptB=	board.select(txt.ellipse[1]);
-			var	ptC=	board.select(txt.ellipse[2]);
-			
-			removeFromGraph(entry);
-			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-			{
-				entry[0].graphRef=	board.create("ellipse", [ptA, ptB, ptC],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-				});
-			}
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
-	}
-	if(txt.parabola)
-	{
-		// Render parabola
-		try {
-			// Variables
-			var	ptA=	board.select(txt.ellipse[0]);
-			var	ptB=	board.select(txt.ellipse[1]);
-			var	ptC=	board.select(txt.ellipse[2]);
-			
-			removeFromGraph(entry);
-			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-			{
-				entry[0].graphRef=	board.create("parabola", [ptA, ptB],// ptC],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-				});
-			}
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
-	}
-	if(txt.hyperbola)
-	{
-		// Render hyperbola
-		try {
-			// Variables
-			var	ptA=	board.select(txt.hyperbola[0]);
-			var	ptB=	board.select(txt.hyperbola[1]);
-			var	ptC=	board.select(txt.hyperbola[2]);
-			
-			removeFromGraph(entry);
-			if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-			{
-				entry[0].graphRef=	board.create("hyperbola", [ptA, ptB, ptC],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-				});
-			}
-		}
-		catch(e) { console.log("caught "+e); }
-		
-		return;
 	}
 	
 	// Not too sure if the check should still be here
