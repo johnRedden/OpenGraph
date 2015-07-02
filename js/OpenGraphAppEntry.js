@@ -352,10 +352,11 @@ function renderGraph(entry, txt, type)
 				
 				return;
 			case "vline":
-				// Render vertical line
+			    // Render vertical line
+			    //console.log(txt.substring(2));
 				try {
 					removeFromGraph(entry);
-					entry[0].graphRef=	board.create("line", [-1*parseInt(txt), 1, 0],
+					entry[0].graphRef = board.create("line", [-1 * parseFloat(txt.substring(2)), 1, 0],
 					{
 						visible: true,
 						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
@@ -377,10 +378,12 @@ function renderGraph(entry, txt, type)
 			case "hline":
 				if(!isNaN(txt))
 				{
-					// Render horizontal line
-					try {
+				    // Render horizontal line
+				    console.log(txt.substring(2));
+				    try {
+				        
 						removeFromGraph(entry);
-						entry[0].graphRef=	board.create("line", [-1*parseInt(txt), 0, 1],
+						entry[0].graphRef=	board.create("line", [-1*parseFloat(txt.substring(2)), 0, 1],
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
