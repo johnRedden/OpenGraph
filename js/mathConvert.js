@@ -82,7 +82,7 @@ function getUserFunction(currEntry) {
 
     //get LaTex from Entry convert to asciiMath
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
-    //console.log(txt);
+    console.log(txt);
  
     if ( txt.indexOf("=") !== -1 ) {
         var inputStrs = txt.split("=");
@@ -109,6 +109,24 @@ function getUserFunction(currEntry) {
     }
     else
         fnIsGraphable = false;
+
+    //special lagrange function here
+    if (txt.indexOf("lagrange") !== -1) {
+        var inputStrs = txt.substring(8).toUpperCase().trim();
+        inputStrs = inputStrs.split(""); // a little different than the others
+
+        var pts = [];
+        fnIsGraphable = true;
+        for (var i = 0; i < inputStrs.length; i++) {
+            pts[i] = board.select(inputStrs[i]);
+            if (!JXG.isPoint(pts[0])) {
+                fnIsGraphable = false;
+                break;
+            }
+        }
+        fn = JXG.Math.Numerics.lagrangePolynomial(pts);
+        // fyi lagrange function is a jsxGraph curve
+    }
 
     return {
         name: fnName.trim()[0],  //name is one char 
@@ -170,11 +188,22 @@ function catchEntryText(entry, key) {
         }
         if (txt.indexOf("quad") !== -1) {
             txt = txt.substring(4).toUpperCase();
+           
             txt = txt.split("*");
 
             return {
                 text: txt,
                 type: "quad",//{quad: txt},
+                canGraph: true
+            };
+        }
+        if (txt.indexOf("lagrange") !== -1) {
+            txt = txt.substring(8).toUpperCase();
+            txt = txt.split(""); // a little different than the others
+            //console.log(txt);
+            return {
+                text: txt,
+                type: "lagrange",//{lagrange: txt},
                 canGraph: true
             };
         }

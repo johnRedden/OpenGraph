@@ -298,6 +298,33 @@ function renderGraph(entry, txt, type)
 				catch(e) { console.log("caught "+e); }
 				
 				return;
+		    case "lagrange":
+		        try {
+		            var pts = [];
+		            var golagrange = true;
+		            for (var i = 0; i < txt.length; i++) {
+		                pts[i] = board.select(txt[i]);
+		                if (!JXG.isPoint(pts[0])) {
+		                    golagrange = false;
+		                    break;
+		                }
+		            }
+		            
+		            removeFromGraph(entry);
+		            if(golagrange) {
+		                
+		                var f = JXG.Math.Numerics.lagrangePolynomial(pts);
+		                entry[0].graphRef = board.create("functiongraph", [f,-10,10],
+						{
+						    visible: true,
+						    strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+						    strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						});
+		            }
+		        }
+		        catch (e) { console.log("caught " + e); }
+
+		        return;
 			default:
 				break;
 		}
