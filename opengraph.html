@@ -60,16 +60,15 @@
     <![endif]-->
 </head>
 <body>
-    
     <div id="myBox" class="jxgbox" style="position:absolute; width:100px; height:100px;"></div>
-   
+
     <div class="container-fluid noselect" style="top: 0px; background-color:black; opacity:0.5; ">
         <h4 id="header" class="pull-left" style="color:white"><em>placeholder</em></h4>
         <div id="info" class="glyphicon glyphicon-info-sign pull-right" style="color:white;top:10px" title="Info" data-toggle="tooltip" data-placement="bottom"></div>
         <div id="help" class="glyphicon glyphicon-question-sign pull-right" style="color:white;top:10px" title="Help" data-toggle="tooltip" data-placement="bottom">&nbsp;</div>
-        
+
     </div>
-    
+
     <div class="btn-group" style="position: absolute; top: 45px; left:10px">
         <div id="deleteAll" class="btn btn-default" title="Delete All" data-toggle="tooltip" data-placement="bottom">
             <span class="glyphicon glyphicon-erase" style="color:mediumvioletred"></span>
@@ -82,132 +81,132 @@
         </div>
     </div>
 
-        <div class="myForm">
+    <div class="myForm">
 
-            <!-- Entry Object -->
-            <div class="entry noselect">
- 
-                <span class="grabber"></span>
-                <span class="btn-group-vertical spcLeft">
-                    <span class="btn btn-default btn-remove" title="Remove"> <span class="glyphicon glyphicon-remove"></span> </span>
-                    <span class="btn btn-default drawer1" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span></span>
+        <!-- Entry Object -->
+        <div class="entry noselect">
+
+            <span class="grabber"></span>
+            <span class="btn-group-vertical spcLeft">
+                <span class="btn btn-default btn-remove" title="Remove"> <span class="glyphicon glyphicon-remove"></span> </span>
+                <span class="btn btn-default drawer1" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span></span>
+            </span>
+            <span class="btn-group-vertical  spcLeft">
+                <span class="btn btn-default map" title="Add Point"> <span class="glyphicon glyphicon-map-marker"></span> </span>
+                <span class="dashed btn btn-default" title="Dashed" style="color:LightGray;"><span class="glyphicon glyphicon-option-horizontal"></span></span>
+            </span>
+            <span class="mathinput">
+                <span class="math-field"></span>
+            </span>
+            <span class="btn-group-vertical spcLeft">
+                <span class="collapse-entry btn btn-default" title="Collapse Entry"><span class="glyphicon glyphicon-menu-left"></span></span>
+                <span class="showColor btn btn-default" title="Toggle Color"><span class="glyphicon glyphicon-tint"></span></span>
+            </span>
+            <span class="collapse hiddenRow basic">
+                <span class="btn-group">
+                    <span class="btn btn-default disabled">Size:</span>
+
+                    <span class="btn btn-default thicknessPlus" title="Increase Thickness"><span class="glyphicon glyphicon-plus"></span></span>
+                    <span class="btn btn-default thicknessMinus" title="Decrease Thickness"><span class="glyphicon glyphicon-minus"></span></span>
+                    <span class="btn btn-default drawer2" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span>Calculus</span>
+                    <!--  might give up on zeros for now.
+                    <span class="btn btn-default roots"><span class="">0s</span></span>
+                    -->
                 </span>
-                <span class="btn-group-vertical  spcLeft">
-                    <span class="btn btn-default map" title="Add Point"> <span class="glyphicon glyphicon-map-marker"></span> </span>
-                    <span class="dashed btn btn-default" title="Dashed" style="color:LightGray;"><span class="glyphicon glyphicon-option-horizontal"></span></span>
-                </span>
-                <span class="mathinput">
-                    <span class="math-field"></span>
-                </span>
-                <span class="btn-group-vertical spcLeft">
-                    <span class="collapse-entry btn btn-default" title="Collapse Entry" ><span class="glyphicon glyphicon-menu-left"></span></span>
-                    <span class="showColor btn btn-default" title="Toggle Color"><span class="glyphicon glyphicon-tint"></span></span>
-                </span>
-                <span class="collapse hiddenRow basic">
-                    <span class="btn-group" >
-                        <span class="btn btn-default disabled">Size:</span>
-                        
-                        <span class="btn btn-default thicknessPlus" title="Increase Thickness"><span class="glyphicon glyphicon-plus"></span></span>
-                        <span class="btn btn-default thicknessMinus" title="Decrease Thickness"><span class="glyphicon glyphicon-minus"></span></span>
-                        <span class="btn btn-default drawer2" title="Toggle Extras"><span class="glyphicon glyphicon-import"></span>Calculus</span>
-                        <!--  might give up on zeros for now.
-                        <span class="btn btn-default roots"><span class="">0s</span></span>
-                        -->
+                <span class="collapse hiddenRow calc">
+                    <span class="btn-group">
+                        <span class="btn btn-default tangentLine" title="Tangent Line"><span class="">f '(a)</span></span>
+                        <span class="btn btn-default derivative" title="Derivative"><span class="">f '</span></span>
+                        <span class="btn btn-default secondDerivative" title="Second Derivative"><span class="">f ''</span></span>
+                        <span class="btn btn-default integral" title="Integral"><span class="">&int; f</span></span>
+                        <span class="btn btn-default rSum" title="Riemann Sum"><span class=""> &sum; f</span> </span>
+                        <span class="dropdown btn-group" style="display:inline">
+                            <button class="btn btn-default dropdown-toggle endpointBtn" type="button" data-toggle="dropdown">
+                                <span class="menuTxt">right</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu endpointMnu" role="menu" aria-labelledby="endpointMnu">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">right</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">left</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">middle</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">trapezoidal</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">lower</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">upper</a></li>
+                            </ul>
+                        </span>
+
                     </span>
-                    <span class="collapse hiddenRow calc">
-                        <span class="btn-group">
-                            <span class="btn btn-default disabled">Toggles:</span>
-                            <span class="btn btn-default tangentLine" title="Tangent Line"><span class="">f '(a)</span></span>
-                            <span class="btn btn-default derivative" title="Derivative"><span class="">f '</span></span>
-                            <span class="btn btn-default integral" title="Integral"><span class="">&int; f</span></span>
-                            <span class="btn btn-default rSum" title="Riemann Sum"><span class=""> &sum; f</span> </span>
-                            <span class="dropdown btn-group" style="display:inline">
-                                <button class="btn btn-default dropdown-toggle endpointBtn" type="button" data-toggle="dropdown">
-                                    <span class="menuTxt">right</span>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu endpointMnu" role="menu" aria-labelledby="endpointMnu">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">right</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">left</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">middle</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">trapezoidal</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">lower</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">upper</a></li>
-                                </ul>
+
+                    <span class="calc">
+                        <span class="row">
+                            <span class="input-group col-xs-3 pull-left">
+                                <span class="input-group-addon">a</span>
+                                <input class="form-control numA" type="text" value="1" />
+                            </span>
+                            <span class="input-group col-xs-3 pull-left spcLeft">
+                                <span class="input-group-addon">b</span>
+                                <input class="form-control numB" type="text" value="2" />
+                            </span>
+                            <span class="rangeGroup pull-left spcLeft">
+                                <span> n: </span>
+                                <input type="range" class="nSlider" min="1" max="100" step="1" value="10" style="width:120px; display:inline" />
+                                <span class="nDisplay"> 10 </span>
                             </span>
 
                         </span>
-
-                        <span class="calc">
-                            <span class="row">
-                                <span class="input-group col-xs-3 pull-left">
-                                    <span class="input-group-addon">a</span>
-                                    <input class="form-control numA" type="text" value="1" />
-                                </span>
-                                <span class="input-group col-xs-3 pull-left spcLeft">
-                                    <span class="input-group-addon">b</span>
-                                    <input class="form-control numB" type="text" value="2" />
-                                </span>
-                                <span class="rangeGroup pull-left spcLeft" >
-                                    <span> n: </span>
-                                    <input type="range" class="nSlider" min="1" max="100" step="1" value="10" style="width:120px; display:inline" />
-                                    <span class="nDisplay"> 10 </span>
-                                </span>
-                               
-                            </span>
-                            <span class="RSresult pull-right"></span>
-                        </span>
-                        
+                        <span class="RSresult pull-right"></span>
                     </span>
+
                 </span>
+            </span>
+        </div>
+        <!-- End Entry Object -->
+
+    </div>
+
+    <!-- Paper Zoom Controls uses Bootstrap Buttons-->
+    <div id="graphPaperButtons" class="controlContainer">
+        <div id="dockButton" class="btn btn-default pull-left" title="Dock Right" style="height: 100%;" data-toggle="tooltip" data-placement="bottom">
+            <span class="glyphicon glyphicon-menu-right"></span>
+        </div>
+        <div class="buttons pull-right">
+            <div class="btn-group" style="width:100%">
+                <div id="resetHome" class="btn btn-default" title="Reset Home" style="width:50%" data-toggle="tooltip" data-placement="bottom"><div class="glyphicon glyphicon-screenshot"></div></div>
+                <div id="resetZoom" class="btn btn-default" title="Reset Zoom" style="width:50%" data-toggle="tooltip" data-placement="bottom"><div class="glyphicon glyphicon-fullscreen"></div></div>
             </div>
-            <!-- End Entry Object -->
+            <br />
+            <div id="toggleZoomType" class="btn btn-default" title="Toggle Zoom Type" style="width:100%" data-toggle="tooltip" data-placement="bottom">
+                <span class="glyphicon glyphicon-zoom-in" title="zoom type"></span>
+                <span id="zoomType" style="font-family:'Courier New', Courier, monospace">xy</span>
+            </div>
+            <br />
+            <div class="btn-group" style="width:100%">
+                <div id="zoomIn" class="btn btn-default" title="Zoom in" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-zoom-in"></span></div>
+                <div id="zoomOut" class="btn btn-default" title="Zoom out" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-zoom-out"></span></div>
+            </div>
+            <br />
+            <div class="btn-group" style="width:100%">
+                <div id="print" class="btn btn-default" title="Print" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-print"></span></div>
+                <div id="share" class="btn btn-default" title="Share" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-share"></span></div>
+            </div>
+        </div>
+    </div>
+    <!--End Paper Zoom controls-->
+    <div class="modal fade" id="shareModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Share</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="urlbox" value="NOTHING, AHAHAHA" style="width: 100%;" /><br /><br />
+                </div>
+            </div>
 
         </div>
-
-        <!-- Paper Zoom Controls uses Bootstrap Buttons-->
-        <div id="graphPaperButtons" class="controlContainer" >
-            <div id="dockButton" class="btn btn-default pull-left" title="Dock Right" style="height: 100%;" data-toggle="tooltip" data-placement="bottom">
-                <span class="glyphicon glyphicon-menu-right"></span>
-            </div>
-            <div class="buttons pull-right">
-                <div class="btn-group" style="width:100%">
-                    <div id="resetHome" class="btn btn-default" title="Reset Home" style="width:50%" data-toggle="tooltip" data-placement="bottom"><div class="glyphicon glyphicon-screenshot"></div></div>
-                    <div id="resetZoom" class="btn btn-default" title="Reset Zoom" style="width:50%" data-toggle="tooltip" data-placement="bottom"><div class="glyphicon glyphicon-fullscreen"></div></div>
-                </div>
-                <br />
-                <div id="toggleZoomType" class="btn btn-default" title="Toggle Zoom Type" style="width:100%" data-toggle="tooltip" data-placement="bottom">
-                    <span class="glyphicon glyphicon-zoom-in" title="zoom type"></span>
-                    <span id="zoomType" style="font-family:'Courier New', Courier, monospace">xy</span>
-                </div>
-                <br />
-                <div class="btn-group" style="width:100%">
-                    <div id="zoomIn" class="btn btn-default" title="Zoom in" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-zoom-in"></span></div>
-                    <div id="zoomOut" class="btn btn-default" title="Zoom out" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-zoom-out"></span></div>
-                </div>
-                <br />
-                <div class="btn-group" style="width:100%">
-                    <div id="print" class="btn btn-default" title="Print" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-print"></span></div>
-                    <div id="share" class="btn btn-default" title="Share" style="width:50%" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-share"></span></div>
-                </div>
-            </div>
-        </div>
-        <!--End Paper Zoom controls-->
-	<div class="modal fade" id="shareModal" role="dialog">
-		<div class="modal-dialog modal-lg">
-			
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Share</h4>
-				</div>
-				<div class="modal-body">
-					<input type="text" id="urlbox" value="NOTHING, AHAHAHA" style="width: 100%;"/><br /><br />
-				</div>
-			</div>
-			
-		</div>
-	</div>
+    </div>
     <!-- About Modal-->
     <!-- Modal -->
     <div class="modal fade" id="helpModal" role="dialog">
@@ -218,10 +217,13 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Help</h4>
+
                 </div>
                 <div class="modal-body">
                     <div class="text-info well">
+
                         Instructions: *** Works best in the Google Chrome Browser.***
+
                         <ul>
                             <li>Drag to Pan</li>
                             <li>Mouse Wheel to Zoom</li>
@@ -233,19 +235,21 @@
                             <li>Type <kbd>parabola ABC</kbd> with focus A and line through B and C.</li>
                             <li>Type <kbd>ellipse ABC</kbd> with foci A and B through C.</li>
                             <li>Type <kbd>hyperbola ABC</kbd> with foci A and B through C.</li>
-							<li>Type <kbd>triangle ABC</kbd> with points A, B, and C</li>
-							<li>Type <kbd>quad ABCD</kbd> with points A, B, C, and D</li>
-                            <li>Type <kbd>y = 3</kbd> for draggable horizontal line (HLT).</li>
+                            <li>Type <kbd>triangle ABC</kbd> with points A, B, and C</li>
+                            <li>Type <kbd>quad ABCD</kbd> with points A, B, C, and D</li>
                             <li>Type <kbd>x = 3</kbd> for draggable vertical line (VLT).</li>
-                            <li>Lines and Curves through map points are dynamic.</li>
+                            <li>Conic Sections through map points are dynamic.</li>
+                            <li>Type <kbd>f(x) =</kbd> to define functions.</li>
+                            <li>Type <kbd>f(3)</kbd> to evaluate functions.</li>
                             <li>Calculus operations are dynamic as well.</li>
+                            <li>Hit refresh to start over. :)</li>
 
                             <li>More capabilities coming soon.</li>
                         </ul>
 
                     </div>
                     <p>
-                    <strong><em>Open Graphing Calculator</em></strong> is an open source project, feel free to fork the source on GitHub, submit issues, and contribute.
+                        <strong><em>Open Graphing Calculator</em></strong> is an open source project, feel free to fork the source on GitHub, submit issues, and contribute.
                     </p>
                     <div class="text-center center-block">
                         <a class="btn btn-default" href="https://github.com/johnRedden/OpenGraph" target="_blank">Source On GitHub</a>
@@ -253,12 +257,11 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    
+
                 </div>
             </div>
 
         </div>
     </div>
-		
 </body>
 </html>

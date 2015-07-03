@@ -687,10 +687,7 @@ function onDerivativeClick(e) {
             var userFunction = obj.userFunction;
 
             try {
-                //todo: change later when functon notation is enabled
                 if (obj.isGraphable )  {
-                   
-                        // create and then add it as a child to the graph (it's color should change??
                         currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
                         currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
                     }
@@ -701,7 +698,40 @@ function onDerivativeClick(e) {
     }
 	
 };
+function onSecondDerivativeClick(e) {
+    var currEntry = $(e.target).parents(".entry");
 
+    if (currEntry[0].is2DerivDisplayed) {
+        board.removeObject(currEntry[0].is2DerivDisplayed);
+        currEntry[0].is2DerivDisplayed = null;
+    } else {
+        if (currEntry[0].graphRef && currEntry[0].graphRef.getType() === 'curve') {
+            var szeFn = function () {
+                var n = currEntry[0].graphRef.getAttribute('strokeWidth');
+                return (n > 1) ? n - 1 : 1;
+            };
+            var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
+
+            var obj = getUserFunction(currEntry);
+            var userFunction = obj.userFunction;
+
+            var firstD = JXG.Math.Numerics.D(userFunction);
+            var secondD = JXG.Math.Numerics.D(firstD);
+
+            try {
+                //todo: change later when functon notation is enabled
+                if (obj.isGraphable) {
+
+                    currEntry[0].is2DerivDisplayed = board.create('functiongraph', [secondD], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
+                    currEntry[0].graphRef.addChild(currEntry[0].is2DerivDisplayed);
+                }
+            } catch (e) {
+                //do something
+            }
+        }
+    }
+
+};
 function onIntegralClick(e){
 	var	currEntry=	$(e.target).parents(".entry");
 	

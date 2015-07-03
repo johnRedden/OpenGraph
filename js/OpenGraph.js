@@ -177,6 +177,7 @@ $(document).ready(function()
     ).on("click", ".thicknessMinus", onThicknessMinusClick
     ).on("click", ".tangentLine", onTangentLineClick
     ).on("click", ".derivative", onDerivativeClick
+    ).on("click", ".secondDerivative", onSecondDerivativeClick
 	).on("click", ".integral", onIntegralClick
     ).on("click", ".rSum", onRsumClick
     ).on("click", ".endpointMnu li a", onEndpointTypeClick
