@@ -378,12 +378,10 @@ function renderGraph(entry, txt, type)
 				
 				return;
 		    case "hline":
-		        console.log(txt);
 				if(!isNaN(txt))
 				{
 				    // Render horizontal line
                     // need functiongraph (curve) to do calculus
-				    //console.log(txt.substring(2));
 				    try {
 				        
 						removeFromGraph(entry);
@@ -582,7 +580,7 @@ function renderGraph(entry, txt, type)
 				visible: true,
 				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color'),
-				fixed:	isNaN(MathQuill(entry.find(".math-field")[0]).text())
+				fixed:	true
 			});
 			
 			entry[0].graphRef.setAttribute({dash: attr.dash}); // Dashed attribute just didn't want to go into the board options
