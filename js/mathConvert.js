@@ -82,6 +82,7 @@ function getUserFunction(currEntry) {
 
     //get LaTex from Entry convert to asciiMath
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
+    //console.log(txt);
  
     if ( txt.indexOf("=") !== -1 ) {
         var inputStrs = txt.split("=");
@@ -97,10 +98,15 @@ function getUserFunction(currEntry) {
     try{
         eval("fn = function(x) { with(Math) return " + mathjs(fnAsciiMath) + " }");
     }catch(e){
-        console.log("in getUserFunction " + e);
+        //console.log("in getUserFunction " + e);
     }
-    if (txt.indexOf(",") === -1)
+    if(
+     txt.indexOf("line") === -1 && txt.indexOf("circle") === -1 && txt.indexOf("triangle") === -1 &&
+     txt.indexOf("quad") === -1 && txt.indexOf("ellipse") === -1 && txt.indexOf("parabola") === -1 &&
+     txt.indexOf("hyperbola") === -1 && txt.indexOf(",") === -1)
+    {
         fnIsGraphable = JXG.isFunction(fn);
+    }
     else
         fnIsGraphable = false;
 

@@ -74,18 +74,28 @@ function renderGraph(entry, txt, type)
 		switch(type.toLowerCase())
 		{
 			case "point":
-				try {
-					removeFromGraph(entry);
-					entry[0].graphRef=	board.create("point", [txt[0], (isNaN(txt[1]))?0:txt[1]],
+			    try {
+			        removeFromGraph(entry);
+			        entry[0].graphRef = board.create("point", [parseFloat(txt[0]), parseFloat(txt[1])],
 					{
-						visible: true,
 						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 						strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-						fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+						fixed:false
+					}).on('drag', function () {
+					    var px = this.X().toFixed(2);
+					    var py = this.Y().toFixed(2);
+
+					    if (px == "-0.00")
+					        px = "0.00"
+					    if (py == "-0.00")
+					        py = "0.00"
+
+					    MathQuill(entry.find(".math-field")[0]).latex("").typedText("(" + px +"," + py + ")");
 					});
 				}
-			    catch (e) { //$("#header").text(e);  // do not leave these on!! users will get this and it's scary
-			        console.log("caught " + e);
+			    catch (e) { 
+			        //console.log("caught " + e);
 			    }
 				reRenderLines();
 				
@@ -244,23 +254,28 @@ function renderGraph(entry, txt, type)
 				return;
 			case "parabola":
 				try {
-					var	ptA=	board.select(txt[0]);
+					var	ptA = board.select(txt[0]);
 					var ptB = board.select(txt[1]);
 					var ptC = board.select(txt[2]);
-					var l = board.create('line', [ptC, ptB]);
 					
 					removeFromGraph(entry);
 					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
 					{
-						entry[0].graphRef=	board.create("parabola", [ptA, l],
+					    
+					    var l = board.create('line', [ptC, ptB]);
+					    entry[0].graphRef = board.create("parabola", [ptA, l],
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
 						});
+					    // entry[0].graphRef.addChild(l);
+                        // the above line crashes the app on Entry delete for some reason??
 					}
 				}
-				catch(e) { console.log("caught "+e); }
+			    catch (e) {
+			        //console.log("caught "+e); 
+			    }
 				
 				return;
 			case "hyperbola":
@@ -318,7 +333,6 @@ function renderGraph(entry, txt, type)
 	                        //plot the point
 	                        try {
 	                            removeFromGraph(entry);
-	                            console.log(entry[0]);
 	                            entry[0].graphRef = board.create("point", [value, fn(value)],
                                 {
                                     visible: true,
@@ -757,8 +771,9 @@ function graphIntegral(currEntry) {
     var d2 = parseFloat(currEntry.find('.numB').val());
     if (isNaN(d2)) { d2 = 2.0 }
 
+    var obj = getUserFunction(currEntry);
     
-    if (currEntry[0].graphRef.getType() === 'curve') {  // only on jsxGraph curves
+    if (obj.isGraphable && currEntry[0].graphRef.getType() === 'curve') {  // only on jsxGraph curves
         
         currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2, frozen: true });
         currEntry[0].isIntegralDisplayed.curveLeft.setAttribute({ withLabel: true });
@@ -840,7 +855,7 @@ function graphRS(currEntry) {
         try{
             currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
 
-            currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed)
+            currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed);
             currEntry.find(".RSresult").html("&sum; = " + JXG.Math.Numerics.riemannsum(userFunction, n, t, d1, d2).toFixed(4));
         } catch (e) {
             // conics throw errors
