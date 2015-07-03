@@ -36,7 +36,7 @@ function constructNewEntry() {
 
 }
 
-// Called whenever there is a key detected on an entry input
+// Called whenever there is a key detected on an entry mathinput
 function onEntryKeyUp(e) {
 	// Variables
     var currEntry = $(e.target).parents(".entry");
@@ -44,282 +44,16 @@ function onEntryKeyUp(e) {
     if (e.keyCode === 13) {  //enter
         constructNewEntry();
     }else{
-		// Variables
+		// intervene with the users input
 		var	obj=	catchEntryText(currEntry, e.keyCode);
 		
-		// I could not think of a way to make it just the entry go through
+		// Try to graph
 		if (obj.canGraph) {
-		    console.log(obj.text);
 		    renderGraph(currEntry, obj.text, obj.type);
 		}
     }
 }
 
-// Filters the given text from messed up syntax
-function filterText(txt, entry, key)
-{
-	// Gets hyperbolic functions by default
-	txt = txt.toLowerCase()
-			.replace(/\*\*[\*]?/g, "^")
-			.replace(/cdot\s/g, "*")
-			.replace(/\\s\*i\*n[\s]*[\*]?/g, "sin")
-			.replace(/\\c\*s\*c[\s]*[\*]?/g, "csc")
-			.replace(/\\c\*o\*s[\s]*[\*]?/g, "cos")
-			.replace(/\\s\*e\*c[\s]*[\*]?/g, "sec")
-			.replace(/\\t\*a\*n[\s]*[\*]?/g, "tan")
-			.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
-			.replace(/\\operatorname\{c\*s\*c\*h}[\*]?/g, "csch")
-			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech")
-			.replace(/\\l\*o\*g[\s]*[\*]?/g, "log")
-			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
-			.replace(/t\*r\*i\*a\*n\*g\*l\*e[\*]?/g, "triangle")
-			.replace(/q\*u\*a\*d[\*]?/g, "quad")
-			.replace(/l\*i\*n\*e[\*]?/g, "line")
-			.replace(/c\*i\*r\*c\*l\*e[\*]?/g, "circle")
-			.replace(/e\*l\*l\*i\*p\*s\*e[\*]?/g, "ellipse")
-			.replace(/p\*a\*r\*a\*b\*o\*l\*a[\*]?/g, "parabola")
-			.replace(/h\*y\*p\*e\*r\*b\*o\*l\*a[\*]?/g, "hyperbola");
-	
-	if
-	(
-		txt.indexOf("line")=== -1 && txt.indexOf("circle")=== -1 &&  txt.indexOf("triangle")=== -1 &&
-		txt.indexOf("quad")=== -1 && txt.indexOf("ellipse")=== -1 && txt.indexOf("parabola")=== -1 &&
-		txt.indexOf("hyperbola")=== -1
-	)
-	{
-		txt=	txt.replace(/[\s]*[\*]*[\s]*/g, "");
-	}
-	else
-		txt=	txt.replace(/[\s]+\*/g, "");
-	
-	if((key== 104 || key== 72) && txt.length>= 6) // Looks for 'h' or 'H'
-	{
-		switch(txt.substring(txt.length-6))
-		{
-			case "sin(h)":
-			case "csc(h)":
-			case "cos(h)":
-			case "sec(h)":
-			case "tan(h)":
-			case "cot(h)":
-				MathQuill(entry.find(".math-field")[0]).latex(""); // Deletes everything on the entry
-				txt=	txt.substring(0, txt.length-3)+"h("; // Formulates everything to make it hyperbolic
-				MathQuill(entry.find(".math-field")[0]).typedText(txt); // Rewrites everything back on
-				break;
-		}
-	}
-	else if(key!= 8 && key!= 127) // Else if they are not pressing backspace or delete, so there is no fighting
-	{
-		if(txt.length>= 3)
-		{
-			switch(txt.substring(txt.length-3))
-			{
-				case "sin":
-				case "csc":
-				case "cos":
-				case "sec":
-				case "tan":
-				case "cot":
-				case "log":
-					MathQuill(entry.find(".math-field")[0]).typedText("("); // Acts as if the user typed in a parenthesis instead
-					break;
-			}
-		}
-		if(txt.length>= 2)
-		{
-			switch(txt.substring(txt.length-2))
-			{
-				case "ln":
-					MathQuill(entry.find(".math-field")[0]).typedText("(");
-					break;
-			}
-		}
-	}
-	
-	//$("#header").text(txt); // Live view of whats going on
-	
-	
-	return txt;
-}
-
-// special cases
-function catchEntryText(entry, key) {
-	
-	// Variables
-	var	txt=	"";
-	var	bGraph=	false;
-	
-	try
-	{
-		txt=	MathQuill(entry.find(".math-field")[0]).text();
-		txt = filterText(txt, entry, key);
-
-		
-		/*if
-		(
-			txt.triangle || txt.quad || txt.hline ||
-			txt.point || txt.vline || txt.line || txt.circle || txt.ellipse || txt.parabola || txt.hyperbola
-		)
-		{
-			return {
-				text:	txt,
-				canGraph:	true
-			};
-		}*/
-	
-		if(txt.indexOf(",")!== -1)
-		{
-		    
-			txt=	txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\(\[]/g, "").replace(/[\)\]]/g, "");
-			txt=	txt.split(",");
-			
-			return {
-				text:	txt,
-				type:	"point",//{point: txt},
-				canGraph: true
-			};
-		}
-		if(txt.indexOf("x=")!== -1)
-		{
-			return {
-				text:	txt,
-				type:	"vline",//{vline: txt.substring(2)},
-				canGraph:	true
-			};
-		}
-		/*
-		if(txt.indexOf("y=")!== -1)
-		{  //basically everyting with y= is labelled a hline?? that does not seem right
-			return {
-				text:	txt,
-				type:	"hline",//{hline: txt.substring(2)},
-				canGraph: true
-			};
-		}
-		*/
-		if(txt.indexOf("triangle")!== -1)
-		{
-			txt=	txt.substring(8).toUpperCase();
-			txt=	txt.split("*");
-			
-			return {
-				text:	txt,
-				type:	"triangle",//{triangle: txt},
-				canGraph:	true
-			};
-		}
-		if(txt.indexOf("quad")!== -1)
-		{
-			txt=	txt.substring(4).toUpperCase();
-			txt=	txt.split("*");
-			
-			return {
-				text:	txt,
-				type:	"quad",//{quad: txt},
-				canGraph:	true
-			};
-		}
-		if(txt.indexOf("line")!== -1)
-		{
-			txt=	txt.substring(4).toUpperCase();
-			txt=	txt.split("*");
-			
-			return {
-				text:	txt,
-				type:	"line",//{line: txt},
-				canGraph:	true
-			};
-		}
-		if(txt.indexOf("circle")!== -1)
-		{
-			txt=	txt.substring(6).toUpperCase();
-			txt=	txt.split("*");
-			
-			return {
-				text:	txt,
-				type:	"circle",//{circle: txt},
-				canGraph:	true
-			};
-		}
-		if(txt.indexOf("ellipse")!== -1)
-		{
-			txt=	txt.substring(7).toUpperCase();
-			txt=	txt.split("*");
-			
-			return {
-				text:	txt,
-				type:	"ellipse",//{ellipse: txt},
-				canGraph:	true
-			};
-		}
-		if(txt.indexOf("parabola")!== -1)
-		{
-			txt=	txt.substring(8).toUpperCase();
-			txt=	txt.split("*");
-			
-			return {
-				text:	txt,
-				type:	"parabola",//{parabola: txt},
-				canGraph:	true
-			};
-		}
-		if(txt.indexOf("hyperbola")!== -1)
-		{
-			txt=	txt.substring(9).toUpperCase();
-			txt=	txt.split("*");
-			
-			return {
-				text:	txt,
-				type:	"hyperbola",//{hyperbola: txt},
-				canGraph:	true
-			};
-		}
-		
-		// Finds if it is graphable, unsure if we should detect here, or in the render function
-		try
-		{
-			// Variables
-			var	userFunction;
-			eval("userFunction= function(x) { with(Math) return "+mathjs(txt)+" }");
-			if(JXG.isFunction(userFunction))
-				bGraph=	true;
-		}catch(e){console.log("caught "+e);}
-	}
-	catch(e)
-	{
-		console.log("caught "+e);
-		bGraph=	false;
-	}
-	
-	return {
-		text:	txt,
-		canGraph:	bGraph
-	};
-}
-
-// Re renders any lines on the graph
-function reRenderLines()
-{
-	$(".entry").each(function(index, elem)
-	{
-		// Variables
-		var	txt=	MathQuill($(elem).find(".math-field")[0]).text();
-		
-		if
-		(
-			txt.indexOf("l*i*n*e")!== -1 || txt.indexOf("c*i*r*c*l*e")!== -1 ||
-			txt.indexOf("e*l*l*i*p*s*e")!== -1 || txt.indexOf("p*a*r*a*b*o*l*a")!== -1 ||
-			txt.indexOf("h*y*p*e*r*b*o*l*a")!== -1 || txt.indexOf("t*r*i*a*n*g*l*e")!== -1 ||
-			txt.indexOf("q*u*a*d")!== -1
-		)
-		{
-			onEntryKeyUp({
-				target: $(elem).find(".math-field")[0],
-				keyCode: 0
-			});
-		}
-	});
-}
 
 // Renders the graph
 function renderGraph(entry, txt, type)
@@ -340,7 +74,6 @@ function renderGraph(entry, txt, type)
 		switch(type.toLowerCase())
 		{
 			case "point":
-
 				try {
 					removeFromGraph(entry);
 					entry[0].graphRef=	board.create("point", [txt[0], (isNaN(txt[1]))?0:txt[1]],
@@ -357,9 +90,7 @@ function renderGraph(entry, txt, type)
 				reRenderLines();
 				
 				return;
-			case "vline":
-			    // Render vertical line
-			    //console.log(txt.substring(2));
+			case "vline":// Render vertical line
 				try {
 					removeFromGraph(entry);
 					entry[0].graphRef = board.create("line", [-1 * parseFloat(txt.substring(2)), 1, 0],
@@ -381,11 +112,10 @@ function renderGraph(entry, txt, type)
 				catch(e) { console.log("caught "+e); }
 				
 				return;
-		    case "hline":
+		    case "hline":// need functiongraph (curve) to do calculus  TODO: Redo this
+                /*
 				if(!isNaN(txt))
-				{
-				    // Render horizontal line
-                    // need functiongraph (curve) to do calculus
+				{ 
 				    try {
 				        
 						removeFromGraph(entry);
@@ -408,13 +138,13 @@ function renderGraph(entry, txt, type)
 					catch(e) { console.log("caught "+e); }
 					
 					return;
+                    
 				}
 				else
 					break;
+                    */
 			case "triangle":
-				// Render triangle
 				try {
-					// Variables
 					var	ptA=	board.select(txt[0]);
 					var	ptB=	board.select(txt[1]);
 					var	ptC=	board.select(txt[2]);
@@ -434,9 +164,7 @@ function renderGraph(entry, txt, type)
 				
 				return;
 			case "quad":
-				// Render quadrilateral
 				try {
-					// Variables
 					var	ptA=	board.select(txt[0]);
 					var	ptB=	board.select(txt[1]);
 					var	ptC=	board.select(txt[2]);
@@ -456,11 +184,8 @@ function renderGraph(entry, txt, type)
 				catch(e) { console.log("caught "+e); }
 				
 				return;
-			case "line":
-			    // Render line
-                // line is ok here because it is considered a conic section
+		    case "line":// line is ok here because it is considered a conic section                
 				try {
-					// Variables
 					var	ptA=	board.select(txt[0]);
 					var	ptB=	board.select(txt[1]);
 					
@@ -479,9 +204,7 @@ function renderGraph(entry, txt, type)
 				
 				return;
 			case "circle":
-				// Render circle
 				try {
-					// Variables
 					var	ptA=	board.select(txt[0]);
 					var	ptB=	board.select(txt[1]);
 					
@@ -500,9 +223,7 @@ function renderGraph(entry, txt, type)
 				
 				return;
 			case "ellipse":
-				// Render ellipse
 				try {
-					// Variables
 					var	ptA=	board.select(txt[0]);
 					var	ptB=	board.select(txt[1]);
 					var	ptC=	board.select(txt[2]);
@@ -522,9 +243,7 @@ function renderGraph(entry, txt, type)
 				
 				return;
 			case "parabola":
-				// Render parabola
 				try {
-					// Variables
 					var	ptA=	board.select(txt[0]);
 					var ptB = board.select(txt[1]);
 					var ptC = board.select(txt[2]);
@@ -545,9 +264,7 @@ function renderGraph(entry, txt, type)
 				
 				return;
 			case "hyperbola":
-				// Render hyperbola
 				try {
-					// Variables
 					var	ptA=	board.select(txt[0]);
 					var	ptB=	board.select(txt[1]);
 					var	ptC=	board.select(txt[2]);
@@ -574,12 +291,13 @@ function renderGraph(entry, txt, type)
 	// **********************main graphing here **************************
 	try {
 	    var hasPlottedPoint = false;
-	    //console.log("long haul: " + txt);
-        // try to evaluate functions here... no equal only
-	    if (txt.indexOf("=") === -1) {
+        
+        // ******  Evaluating function notation ************
+	    if (txt.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
 	        var test = txt.replace(/\(/g, '');
 	        var value = parseFloat(test.substring(1));
-	        entry.find('.ghost').remove();
+
+	        entry.find('.dynamicOutput').remove();  // generated output element
 	        if (!isNaN(value)) {
                 // get all of the current entries
 	            var currEntries = entry.parents(".myForm").find(".entry");
@@ -593,9 +311,9 @@ function renderGraph(entry, txt, type)
 	                    var fn = obj.userFunction;
 	                    var yn = fn(value);
 	                    if (!$.isNumeric(yn) || !isFinite(yn) ){
-	                        entry.find('.mathinput').append("<span class='ghost' style='float:right'> undefined </span>");
+	                        entry.find('.mathinput').append("<span class='dynamicOutput' style='float:right'> undefined </span>");
 	                    } else {
-	                        entry.find('.mathinput').append("<span class='ghost' style='float:right'>= " + fn(value).toFixed(4) + "</span>");
+	                        entry.find('.mathinput').append("<span class='dynamicOutput' style='float:right'>= " + fn(value).toFixed(4) + "</span>");
 
 	                        //plot the point
 	                        try {
@@ -607,13 +325,13 @@ function renderGraph(entry, txt, type)
                                     strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
                                     strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
                                     fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                                    fixed: true
+                                    fixed: true  //can make it dynamic here but choose not to
                                 });
 	                            hasPlottedPoint = true;
 
 	                        }
 	                        catch (e) {
-	                            console.log("function point " + e);
+	                            //console.log("function point " + e);
 	                        }
 	                    }
 	                    break;
@@ -624,14 +342,14 @@ function renderGraph(entry, txt, type)
 	        }
 	            
 	    }
+	    // ******  End evaluating function notation ************
 
         var obj = getUserFunction(entry);
         var userFunction = obj.userFunction;
 
-	    //todo: enable function notation here and now
 	    if (obj.isGraphable && !hasPlottedPoint) {
 			removeFromGraph(entry);
-		
+		    // grpahing functiongraphs which is a jsxGraph curve
 			entry[0].graphRef = board.create("functiongraph", userFunction,
 			{
 				visible: true,
@@ -646,6 +364,26 @@ function renderGraph(entry, txt, type)
 	catch (e) { console.log("caught " + e); }
 	reRenderLines();
 }
+// Re renders any lines on the graph
+function reRenderLines() {
+    $(".entry").each(function (index, elem) {
+        // Variables
+        var txt = MathQuill($(elem).find(".math-field")[0]).text();
+
+        if 
+		(
+			txt.indexOf("l*i*n*e") !== -1 || txt.indexOf("c*i*r*c*l*e") !== -1 ||
+			txt.indexOf("e*l*l*i*p*s*e") !== -1 || txt.indexOf("p*a*r*a*b*o*l*a") !== -1 ||
+			txt.indexOf("h*y*p*e*r*b*o*l*a") !== -1 || txt.indexOf("t*r*i*a*n*g*l*e") !== -1 ||
+			txt.indexOf("q*u*a*d") !== -1
+		) {
+            onEntryKeyUp({
+                target: $(elem).find(".math-field")[0],
+                keyCode: 0
+            });
+        }
+    });
+}
 
 // Called when the remove button has been called
 function onRemoveClick(e)
@@ -657,11 +395,11 @@ function onRemoveClick(e)
 function removeEntry(entry)
 {
     removeFromGraph(entry);  // remove from board
-    // https://api.jquery.com/remove/  // reference to it remains??
 	entry.remove();  // remove from DOM
 }
 // Removes the given object from the board
-function removeFromGraph(entry) {
+function removeFromGraph(entry)
+{
     if (typeof entry === "object") {
         board.removeObject(entry[0].graphRef);
     }
@@ -685,7 +423,7 @@ function onShowColorClick(e)
         var d = (currEntry[0].graphRef).childElements;
 		
         for (el in d) {
-            //console.log(d[el]); // Got them - the freakin kids (2 hours for this)!!!!!
+            //console.log(d[el]); // Got them !!
             d[el].setAttribute({strokeColor: thisCol });
             if(JXG.isPoint(d[el]))
                 d[el].setAttribute({ fillColor: thisCol });
@@ -729,7 +467,7 @@ function onThicknessMinusClick(e) {
     if (currEntry[0].graphRef) {
         var n = parseInt((currEntry[0].graphRef).getAttribute('strokeWidth'));
         n = (n > 1) ? n-1 : 1;
-        // JSXgraph setProperty has been depreciated...TODO replace everywhere
+        // JSXgraph setProperty has been depreciated...  use setAttribute
         (currEntry[0].graphRef).setAttribute({ strokeWidth: n });
     }
 };
@@ -744,7 +482,6 @@ function makeUnDraggable(e) {
 // Called whenever the user wants to toggle between a dashed equation
 function onDashedClick(e)
 {
-	// Variables
 	var	currEntry=	$(this).parents(".entry");
 	
 	if(currEntry[0].graphRef)
@@ -772,8 +509,9 @@ function onMapClick(e)
 	// Variables
     var currEntry = $(this).parents(".entry");
     var currColor = currEntry.find(".showColor").css('color');
-	
-	if (currEntry[0].graphRef) {
+
+    // no map points on graphs that are points
+    if (currEntry[0].graphRef && !JXG.isPoint(currEntry[0].graphRef)) {
 	    board.create("glider", [0, 1, currEntry[0].graphRef], { color: currColor }).on('up', function (e) {
 	        // map point on down stuff here
             // TODO: add touch capabilties
@@ -788,7 +526,7 @@ function onMapClick(e)
 	    });
 	} else
 	    currEntry.effect("shake", { times: 2 }, 700);  // not sure this adds value
-	reRenderLines();
+	//reRenderLines();  // not sure why we are rerendering here?
 }
 
 // Called whenever the user clicks on the textbox
@@ -841,7 +579,7 @@ function collapseAll() {
 	});
 }
 
-// Calculus  ************************************************************
+// Calculus  (can only do calc on jsxGraph curves *****************************************
 function onNumAKeyUp(e) {
     var currEntry = $(e.target).parents(".entry");
 
@@ -911,7 +649,7 @@ function graphTL(currEntry) {
     var userFunction = obj.userFunction;
     
     //todo: change later when functon notation is enabled
-    if (obj.isGraphable ) {  
+    if (obj.isGraphable && currEntry[0].graphRef.getType() === 'curve') {
         try {
             var p1 = board.create("glider", [d1, userFunction(d1), currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
             currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
@@ -938,7 +676,7 @@ function onDerivativeClick(e) {
         board.removeObject(currEntry[0].isDerivDisplayed);
         currEntry[0].isDerivDisplayed = null;
     } else {
-        if (currEntry[0].graphRef) {
+        if (currEntry[0].graphRef && currEntry[0].graphRef.getType() === 'curve') {
             var szeFn = function () {
                 var n = currEntry[0].graphRef.getAttribute('strokeWidth');
                 return (n > 1) ? n - 1 : 1;
@@ -1067,17 +805,21 @@ function graphRS(currEntry) {
     var userFunction = obj.userFunction;
 
     //todo: change later when functon notation is enabled
-    if (obj.isGraphable) {
-
+ 
+    if (obj.isGraphable && currEntry[0].graphRef.getType() === 'curve') {
+        try{
             currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
 
             currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed)
             currEntry.find(".RSresult").html("&sum; = " + JXG.Math.Numerics.riemannsum(userFunction, n, t, d1, d2).toFixed(4));
+        } catch (e) {
+            // conics throw errors
+        }
     }
 
 };
 
-//*************************
+//************************* End Calculus ************************
 
 // Called when the entry has gained focus somehow TODO: Continue working on the focusing entries
 function onEntryFocus(e)
