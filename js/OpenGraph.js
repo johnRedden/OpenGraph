@@ -149,7 +149,7 @@ $(document).ready(function()
 
     // Page Buttons
     $("#dockButton").click(onCollapseCollapser);
-    $("#header").html("<em>OpenGraphingCalculator.com <sub>&alpha; 0.25</sub></em>");
+    $("#header").html("<em>OpenGraphingCalculator.com <sub>&alpha; 0.30</sub></em>");
     $("#addNewEntry").on("click", constructNewEntry);
     $("#deleteAll").on("click", clearAll);
 	$("#dockRight").on("click", collapseAll);
