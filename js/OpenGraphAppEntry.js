@@ -183,16 +183,16 @@ function catchEntryText(entry, key) {
 				canGraph:	true
 			};
 		}
-		
+		/*
 		if(txt.indexOf("y=")!== -1)
-		{
+		{  //basically everyting with y= is labelled a hline?? that does not seem right
 			return {
 				text:	txt,
 				type:	"hline",//{hline: txt.substring(2)},
 				canGraph: true
 			};
 		}
-		
+		*/
 		if(txt.indexOf("triangle")!== -1)
 		{
 			txt=	txt.substring(8).toUpperCase();
@@ -377,11 +377,13 @@ function renderGraph(entry, txt, type)
 				catch(e) { console.log("caught "+e); }
 				
 				return;
-			case "hline":
+		    case "hline":
+		        console.log(txt);
 				if(!isNaN(txt))
 				{
 				    // Render horizontal line
-				    console.log(txt.substring(2));
+                    // need functiongraph (curve) to do calculus
+				    //console.log(txt.substring(2));
 				    try {
 				        
 						removeFromGraph(entry);
@@ -453,7 +455,8 @@ function renderGraph(entry, txt, type)
 				
 				return;
 			case "line":
-				// Render line
+			    // Render line
+                // line is ok here because it is considered a conic section
 				try {
 					// Variables
 					var	ptA=	board.select(txt[0]);
@@ -573,35 +576,15 @@ function renderGraph(entry, txt, type)
 		eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
 		if (JXG.isFunction(userFunction)) {
 			removeFromGraph(entry);
-			if(isNaN(MathQuill(entry.find(".math-field")[0]).text()))
+		
+			entry[0].graphRef = board.create("functiongraph", userFunction,
 			{
-				entry[0].graphRef = board.create("functiongraph", userFunction,
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color'),
-					fixed:	isNaN(MathQuill(entry.find(".math-field")[0]).text())
-				});
-			}
-			else
-			{
-				entry[0].graphRef=	board.create("line", [-1*parseInt(MathQuill(entry.find(".math-field")[0]).text()), 0, 1],
-				{
-					visible: true,
-					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-					fixed: false  //can make this true for VLT
-				}).on("drag", function(e)
-				{
-					// Variables
-					var	ly=	this.Y(0.5).toFixed(2);
-					
-					if(ly== "-0.00")
-						ly="0.00"
-					
-					MathQuill(entry.find(".math-field")[0]).latex("").typedText(ly);
-				});
-			}
+				visible: true,
+				strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+				strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color'),
+				fixed:	isNaN(MathQuill(entry.find(".math-field")[0]).text())
+			});
+			
 			entry[0].graphRef.setAttribute({dash: attr.dash}); // Dashed attribute just didn't want to go into the board options
 		}
 	}
@@ -865,6 +848,7 @@ function graphTL(currEntry) {
         return (n > 1) ? n - 1 : 1;
     };
     var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
+    //console.log(currEntry[0].graphRef);
 
     var d1 = parseFloat(currEntry.find('.numA').val());
     if (isNaN(d1)) { d1 = 1.0 }
@@ -921,11 +905,14 @@ function onDerivativeClick(e) {
 
             // javascript math conversion here using  mathjs.js 
             eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-
-            if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) {
-                // create and then add it as a child to the graph (it's color should change??
-                currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
-                currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
+            try{
+                if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) {
+                    // create and then add it as a child to the graph (it's color should change??
+                    currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
+                    currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
+                }
+            } catch (e) {
+                //do something
             }
         }
     }
@@ -1066,77 +1053,3 @@ function onEntryBlur(e)
 
 
 // End of File
-
-/*
-/// For reference
-
-// Renders the graph
-// Ruins of the old renderer, delete later, keep now for reference?
-function old_renderGraph(inputObj) {
-    // this function takes in an Entry, creates javascript math, and then associates a graph to the entry
-    // Variables
-    var userFunction;
-    var txt = $(inputObj).find(".mathquill-editable").mathquill("text");
-    txt = asciiMathfromMathQuill(txt).toLowerCase();
-
-    // not sure where to do the following... also needs to be stramlined... (3,2) plot a point.
-    if (txt.indexOf(",") !== -1) {
-        // if there is a comma try to plot a point
-        // try to render text ((3,2)) as an array [3,2] using the eval below
-        // TODO: streamline this
-        var modifiedTxt = eval(txt.replace("((", "[").replace("))", "]"));
-        try {
-            if (JXG.isArray(modifiedTxt)) {
-                removeFromGraph(inputObj);
-                inputObj.graphRef = board.create("point", modifiedTxt,
-                {
-                    visible: true,
-                    strokeColor: inputObj.color,
-                    fillColor: inputObj.color,
-                    fixed: true
-                });
-            }
-
-        } catch (e) {
-            // console.log("with comma " + e);
-        }
-
-    } else if (txt.substring(0, 7) === "l*i*n*e") {
-        //console.log(txt[8] + "," + txt[10]);
-
-        try {
-            var pt1 = board.select(txt[8].toUpperCase());
-            var pt2 = board.select(txt[10].toUpperCase());
-
-            if (JXG.isPoint(pt1) && JXG.isPoint(pt2)) {
-                removeFromGraph(inputObj);
-                inputObj.graphRef = board.create("line", [pt1, pt2],
-                {
-                    visible: true,
-                    strokeWidth: 2,
-                    strokeColor: inputObj.color
-                });
-            }
-        }
-        catch (e) { console.log("caught " + e); }
-
-
-    } else {
-        try {
-            // javascript math conversion here using  mathjs.js 
-            eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-            if (JXG.isFunction(userFunction)) {
-                removeFromGraph(inputObj);
-                inputObj.graphRef = board.create("functiongraph", userFunction,
-                {
-                    visible: true,
-                    strokeWidth: 2,
-                    strokeColor: inputObj.color
-                });
-            }
-        }
-        catch (e) { console.log("caught " + e); }
-    }
-
-}
-*/
