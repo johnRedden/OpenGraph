@@ -874,24 +874,28 @@ function graphTL(currEntry) {
     var userFunction;
 
     //get LaTex from Entry convert to asciiMath
-    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex())
-
+    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
 
-    // p1 will be the closest point on the graph to (d1,0)
-    var p1 = board.create("glider", [d1, userFunction(d1), currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
-    currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
+    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) {  
+        try {
+            var p1 = board.create("glider", [d1, userFunction(d1), currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
+            currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
 
-    p1.on('drag', function () {
-        currEntry.find('.numA').val(p1.X().toFixed(2));
-        currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
-    });
-    currEntry[0].isTangentDisplayed = p1;
+            p1.on('drag', function () {
+                currEntry.find('.numA').val(p1.X().toFixed(2));
+                currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
+            });
+            currEntry[0].isTangentDisplayed = p1;
 
-    //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
-    board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn });
+            //do not what to add tangent as a child of graph becase the color will change (Gray is better for tangent line.)
+            board.create('tangent', [p1], { strokeColor: '#888888', strokeWidth: szeFn });
+        } catch (e) {
+            //something could go wrong
+        }
+    }
 
 }
 
@@ -912,14 +916,13 @@ function onDerivativeClick(e) {
             // Do not know how to get the function from graphRef... should be able to  TODO: find out??
             // so redo it from mathquill
             var userFunction;
-            var txt = MathQuill($(e.target).parents(".entry").find(".math-field")[0]).text();
-			
-            txt = filterText(txt, $(e.target).parents(".entry"), 0);
-            
+            //get LaTex from Entry convert to asciiMath
+            txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 
             // javascript math conversion here using  mathjs.js 
             eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-            if (JXG.isFunction(userFunction)) {
+
+            if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) {
                 // create and then add it as a child to the graph (it's color should change??
                 currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
                 currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
@@ -953,28 +956,32 @@ function graphIntegral(currEntry) {
     if (isNaN(d1)) { d1 = 1.0 }
     var d2 = parseFloat(currEntry.find('.numB').val());
     if (isNaN(d2)) { d2 = 2.0 }
-    currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2, frozen: true });
-    currEntry[0].isIntegralDisplayed.curveLeft.setAttribute({ withLabel: true });
-    currEntry[0].isIntegralDisplayed.curveRight.setAttribute({ withLabel: true });
-    currEntry[0].isIntegralDisplayed.curveLeft.on('drag', function () {
-        currEntry.find('.numA').val(this.X().toFixed(2));
-        // used for riemann sums
-        if (currEntry[0].isRsumDisplayed) {
-            board.removeObject(currEntry[0].isRsumDisplayed);
-            currEntry.find(".RSresult").html("");
-            graphRS(currEntry);
-        }
-    });
-    currEntry[0].isIntegralDisplayed.curveRight.on('drag', function () {
-        currEntry.find('.numB').val(this.X().toFixed(2));
-        // used for riemann sums
-        if (currEntry[0].isRsumDisplayed) {
-            board.removeObject(currEntry[0].isRsumDisplayed);
-            currEntry.find(".RSresult").html("");
-            graphRS(currEntry);
-        }
-    });
-    //currEntry[0].graphRef.addChild(currEntry[0].isIntegralDisplayed);
+
+   
+    if (currEntry[0].graphRef.getType() === 'curve') {  // only on jsxGraph curves
+        currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2, frozen: true });
+        currEntry[0].isIntegralDisplayed.curveLeft.setAttribute({ withLabel: true });
+        currEntry[0].isIntegralDisplayed.curveRight.setAttribute({ withLabel: true });
+        currEntry[0].isIntegralDisplayed.curveLeft.on('drag', function () {
+            currEntry.find('.numA').val(this.X().toFixed(2));
+            // used for riemann sums
+            if (currEntry[0].isRsumDisplayed) {
+                board.removeObject(currEntry[0].isRsumDisplayed);
+                currEntry.find(".RSresult").html("");
+                graphRS(currEntry);
+            }
+        });
+        currEntry[0].isIntegralDisplayed.curveRight.on('drag', function () {
+            currEntry.find('.numB').val(this.X().toFixed(2));
+            // used for riemann sums
+            if (currEntry[0].isRsumDisplayed) {
+                board.removeObject(currEntry[0].isRsumDisplayed);
+                currEntry.find(".RSresult").html("");
+                graphRS(currEntry);
+            }
+        });
+        //currEntry[0].graphRef.addChild(currEntry[0].isIntegralDisplayed);
+    }
 
 }
 
@@ -1026,16 +1033,19 @@ function graphRS(currEntry) {
     // Do not know how to get the function from graphRef... should be able to  TODO: find out??
     // so redo it from mathquill
     var userFunction;
-    var txt = MathQuill(currEntry.find(".math-field")[0]).text();
+    //get LaTex from Entry convert to asciiMath
+    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 
-    txt = filterText(txt, currEntry, 0);
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-    currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
 
-    currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed)
-    currEntry.find(".RSresult").html("&sum; = " + JXG.Math.Numerics.riemannsum(userFunction, n, t, d1, d2).toFixed(4));
+    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) { 
 
+            currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
+
+            currEntry[0].graphRef.addChild(currEntry[0].isRsumDisplayed)
+            currEntry.find(".RSresult").html("&sum; = " + JXG.Math.Numerics.riemannsum(userFunction, n, t, d1, d2).toFixed(4));
+    }
 
 };
 
