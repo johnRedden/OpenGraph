@@ -1,6 +1,6 @@
 ﻿
 
-/* Credit Lippm
+/* Credit Lippman
 \left| expr \right| to  abs(expr)
 \left( expression \right)  to   (expression)
 \sqrt{expression}  to sqrt(expression)
@@ -74,4 +74,40 @@ function MQLaTextoAM(tex) {
     tex = tex.replace(/\^\(-1\)/g, '^-1');
     tex = tex.replace(/\^\((-?[\d\.]+)\)/g, '^$1');
     return tex;
+}
+
+function getUserFunction(currEntry) {
+
+    var fn, fnName, fnAsciiMath, fnIsGraphable;
+
+    //get LaTex from Entry convert to asciiMath
+    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
+ 
+    if ( txt.indexOf("=") !== -1 ) {
+        var inputStrs = txt.split("=");
+        fnName = inputStrs[0];
+        fnAsciiMath = inputStrs[1];
+        
+    } else {
+        fnName = '';
+        fnAsciiMath = txt;
+    }
+
+    // javascript math conversion here using  mathjs.js 
+    try{
+        eval("fn = function(x) { with(Math) return " + mathjs(fnAsciiMath) + " }");
+    }catch(e){
+        console.log("in getUserFunction " + e);
+    }
+    if (txt.indexOf(",") === -1)
+        fnIsGraphable = JXG.isFunction(fn);
+    else
+        fnIsGraphable = false;
+
+    return {
+        name: fnName.trim()[0],
+        variable: 'x',      //todo: detect variable
+        userFunction: fn,
+        isGraphable: fnIsGraphable
+    };
 }

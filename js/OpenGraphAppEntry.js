@@ -48,8 +48,10 @@ function onEntryKeyUp(e) {
 		var	obj=	catchEntryText(currEntry, e.keyCode);
 		
 		// I could not think of a way to make it just the entry go through
-		if(obj.canGraph)
-			renderGraph(currEntry, obj.text, obj.type);
+		if (obj.canGraph) {
+		    console.log(obj.text);
+		    renderGraph(currEntry, obj.text, obj.type);
+		}
     }
 }
 
@@ -150,7 +152,8 @@ function catchEntryText(entry, key) {
 	try
 	{
 		txt=	MathQuill(entry.find(".math-field")[0]).text();
-		txt=	filterText(txt, entry, key);
+		txt = filterText(txt, entry, key);
+
 		
 		/*if
 		(
@@ -166,6 +169,7 @@ function catchEntryText(entry, key) {
 	
 		if(txt.indexOf(",")!== -1)
 		{
+		    
 			txt=	txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\(\[]/g, "").replace(/[\)\]]/g, "");
 			txt=	txt.split(",");
 			
@@ -567,12 +571,65 @@ function renderGraph(entry, txt, type)
 		}
 	}
 	
-	// Not too sure if the check should still be here
+	// **********************main graphing here **************************
 	try {
-		
-		// javascript math conversion here using  mathjs.js 
-		eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-		if (JXG.isFunction(userFunction)) {
+	    var hasPlottedPoint = false;
+	    //console.log("long haul: " + txt);
+        // try to evaluate functions here... no equal only
+	    if (txt.indexOf("=") === -1) {
+	        var test = txt.replace(/\(/g, '');
+	        var value = parseFloat(test.substring(1));
+	        entry.find('.ghost').remove();
+	        if (!isNaN(value)) {
+                // get all of the current entries
+	            var currEntries = entry.parents(".myForm").find(".entry");
+	            
+	            for (var i = 0; i < currEntries.length; i++) {
+	                var obj = getUserFunction($(currEntries[i]));
+
+                    // try to match name of entries to current text name (one char names only)
+	                if (obj.name === txt[0].trim()) {
+	                    // Here is where we evaluate
+	                    var fn = obj.userFunction;
+	                    var yn = fn(value);
+	                    if (!$.isNumeric(yn) || !isFinite(yn) ){
+	                        entry.find('.mathinput').append("<span class='ghost' style='float:right'> undefined </span>");
+	                    } else {
+	                        entry.find('.mathinput').append("<span class='ghost' style='float:right'>= " + fn(value).toFixed(4) + "</span>");
+
+	                        //plot the point
+	                        try {
+	                            removeFromGraph(entry);
+	                            console.log(entry[0]);
+	                            entry[0].graphRef = board.create("point", [value, fn(value)],
+                                {
+                                    visible: true,
+                                    strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+                                    strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                                    fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                                    fixed: true
+                                });
+	                            hasPlottedPoint = true;
+
+	                        }
+	                        catch (e) {
+	                            console.log("function point " + e);
+	                        }
+	                    }
+	                    break;
+	                }
+	                    
+	            }
+
+	        }
+	            
+	    }
+
+        var obj = getUserFunction(entry);
+        var userFunction = obj.userFunction;
+
+	    //todo: enable function notation here and now
+	    if (obj.isGraphable && !hasPlottedPoint) {
 			removeFromGraph(entry);
 		
 			entry[0].graphRef = board.create("functiongraph", userFunction,
@@ -828,7 +885,7 @@ function onNumBKeyUp(e) {
 
 function onTangentLineClick(e) {
     var currEntry = $(e.target).parents(".entry");
-
+    
     if (currEntry[0].isTangentDisplayed) {
         board.removeObject(currEntry[0].isTangentDisplayed);
         currEntry[0].isTangentDisplayed = null;
@@ -846,23 +903,15 @@ function graphTL(currEntry) {
         return (n > 1) ? n - 1 : 1;
     };
     var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
-    //console.log(currEntry[0].graphRef);
 
     var d1 = parseFloat(currEntry.find('.numA').val());
     if (isNaN(d1)) { d1 = 1.0 }
 
-    // Do not know how to get the function from graphRef... should be able to  TODO: find out??
-    // so redo it from mathquill
-    var userFunction;
-
-    //get LaTex from Entry convert to asciiMath
-    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
-
-    // javascript math conversion here using  mathjs.js 
-    eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+    var obj = getUserFunction(currEntry);
+    var userFunction = obj.userFunction;
     
-
-    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1 && txt.indexOf("x=")===-1) {  
+    //todo: change later when functon notation is enabled
+    if (obj.isGraphable ) {  
         try {
             var p1 = board.create("glider", [d1, userFunction(d1), currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
             currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
@@ -896,24 +945,20 @@ function onDerivativeClick(e) {
             };
             var graphColor = currEntry[0].graphRef.getAttribute('strokeColor');
 
-            // Do not know how to get the function from graphRef... should be able to  TODO: find out??
-            // so redo it from mathquill
-            var userFunction;
-            //get LaTex from Entry convert to asciiMath
-            txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
-            
-            // javascript math conversion here using  mathjs.js 
-            eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-            try{
-                if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1 && txt.indexOf("x=") === -1) {
+            var obj = getUserFunction(currEntry);
+            var userFunction = obj.userFunction;
+
+            try {
+                //todo: change later when functon notation is enabled
+                if (obj.isGraphable )  {
                    
-                    // create and then add it as a child to the graph (it's color should change??
-                    currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
-                    currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
+                        // create and then add it as a child to the graph (it's color should change??
+                        currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
+                        currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
+                    }
+                } catch (e) {
+                    //do something
                 }
-            } catch (e) {
-                //do something
-            }
         }
     }
 	
@@ -1017,17 +1062,12 @@ function graphRS(currEntry) {
     if (isNaN(d2)) { d2 = 2.0 }
     var n = parseInt(currEntry.find(".nDisplay").html());
     var t = currEntry.find(".menuTxt").html();
-    
-    // Do not know how to get the function from graphRef... should be able to  TODO: find out??
-    // so redo it from mathquill
-    var userFunction;
-    //get LaTex from Entry convert to asciiMath
-    txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 
-    // javascript math conversion here using  mathjs.js 
-    eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+    var obj = getUserFunction(currEntry);
+    var userFunction = obj.userFunction;
 
-    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1 && txt.indexOf("x=") === -1) {
+    //todo: change later when functon notation is enabled
+    if (obj.isGraphable) {
 
             currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
 
