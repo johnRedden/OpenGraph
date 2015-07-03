@@ -784,7 +784,7 @@ function collapseAll() {
 	});
 }
 
-// Calculus
+// Calculus  ************************************************************
 function onNumAKeyUp(e) {
     var currEntry = $(e.target).parents(".entry");
 
@@ -860,8 +860,9 @@ function graphTL(currEntry) {
 
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
+    
 
-    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) {  
+    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1 && txt.indexOf("x=")===-1) {  
         try {
             var p1 = board.create("glider", [d1, userFunction(d1), currEntry[0].graphRef], { strokeColor: graphColor, fillColor: graphColor, name: '' });
             currEntry.find(".RSresult").html("f '(" + p1.X().toFixed(2) + ") = " + JXG.Math.Numerics.D(userFunction)(p1.X()).toFixed(2));
@@ -900,11 +901,12 @@ function onDerivativeClick(e) {
             var userFunction;
             //get LaTex from Entry convert to asciiMath
             txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
-
+            
             // javascript math conversion here using  mathjs.js 
             eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
             try{
-                if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) {
+                if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1 && txt.indexOf("x=") === -1) {
+                   
                     // create and then add it as a child to the graph (it's color should change??
                     currEntry[0].isDerivDisplayed = board.create('functiongraph', [JXG.Math.Numerics.D(userFunction)], { strokeColor: graphColor, strokeWidth: szeFn, dash: 2 });
                     currEntry[0].graphRef.addChild(currEntry[0].isDerivDisplayed);
@@ -942,8 +944,9 @@ function graphIntegral(currEntry) {
     var d2 = parseFloat(currEntry.find('.numB').val());
     if (isNaN(d2)) { d2 = 2.0 }
 
-   
+    
     if (currEntry[0].graphRef.getType() === 'curve') {  // only on jsxGraph curves
+        
         currEntry[0].isIntegralDisplayed = board.create("integral", [[d1, d2], currEntry[0].graphRef], { color: 'purple', fillOpacity: 0.2, frozen: true });
         currEntry[0].isIntegralDisplayed.curveLeft.setAttribute({ withLabel: true });
         currEntry[0].isIntegralDisplayed.curveRight.setAttribute({ withLabel: true });
@@ -1024,7 +1027,7 @@ function graphRS(currEntry) {
     // javascript math conversion here using  mathjs.js 
     eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
 
-    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1) { 
+    if (JXG.isFunction(userFunction) && txt.indexOf(",") === -1 && txt.indexOf("x=") === -1) {
 
             currEntry[0].isRsumDisplayed = board.create('riemannsum', [userFunction, n, t, d1, d2], { color: 'orange', fillOpacity: 0.2 });
 
