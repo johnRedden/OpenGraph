@@ -314,7 +314,7 @@ function renderGraph(entry, txt, type)
 		            if(golagrange) {
 		                
 		                var f = JXG.Math.Numerics.lagrangePolynomial(pts);
-		                entry[0].graphRef = board.create("functiongraph", [f,-10,10],
+		                entry[0].graphRef = board.create("functiongraph", [f],
 						{
 						    visible: true,
 						    strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
