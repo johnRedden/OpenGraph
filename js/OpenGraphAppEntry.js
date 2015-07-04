@@ -91,7 +91,7 @@ function renderGraph(entry, txt, type)
 					    if (py == "-0.00")
 					        py = "0.00"
 
-					    MathQuill(entry.find(".math-field")[0]).latex("").typedText("(" + px +"," + py + ")");
+					    MathQuill(entry.find(".math-field")[0]).latex("").typedText("(" + px +"," + py + ")").blur();
 					});
 				}
 			    catch (e) { 
