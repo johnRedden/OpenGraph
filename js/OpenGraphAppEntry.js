@@ -430,7 +430,7 @@ function renderGraph(entry, txt, type)
     catch (e) { 
         //console.log("caught " + e); 
     }
-	reRenderLines();
+	//reRenderLines();
 }
 // Re renders any lines on the graph
 function reRenderLines() {
