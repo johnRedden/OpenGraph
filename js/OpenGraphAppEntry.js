@@ -44,7 +44,7 @@ function onEntryKeyUp(e) {
     if (e.keyCode === 13) {  //enter
         constructNewEntry();
     }else{
-		// intervene with the users input
+		// intervene with the users input (in mathConvert.js)
 		var	obj=	catchEntryText(currEntry, e.keyCode);
 		
 		// Try to graph
@@ -206,13 +206,33 @@ function renderGraph(entry, txt, type)
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                            fixed: true
 						});
 					}
 				}
 				catch(e) { console.log("caught "+e); }
 				
 				return;
+		    case "segment":// line is ok here because it is considered a conic section                
+		        try {
+		            var ptA = board.select(txt[0]);
+		            var ptB = board.select(txt[1]);
+		            
+		            removeFromGraph(entry);
+		            if (JXG.isPoint(ptA) && JXG.isPoint(ptB)) {
+		                entry[0].graphRef = board.create("segment", [ptA, ptB],
+						{
+						    visible: true,
+						    strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+						    strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+						    fixed:true
+						});
+		            }
+		        }
+		        catch (e) { console.log("caught " + e); }
+
+		        return;
 			case "circle":
 				try {
 					var	ptA=	board.select(txt[0]);
@@ -225,7 +245,8 @@ function renderGraph(entry, txt, type)
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                            fixed: true
 						});
 					}
 				}
@@ -245,7 +266,8 @@ function renderGraph(entry, txt, type)
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                            fixed: true
 						});
 					}
 				}
@@ -267,7 +289,8 @@ function renderGraph(entry, txt, type)
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                            fixed: true
 						});
 					    // entry[0].graphRef.addChild(l);
                         // the above line crashes the app on Entry delete for some reason??
@@ -291,7 +314,8 @@ function renderGraph(entry, txt, type)
 						{
 							visible: true,
 							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                            fixed: true
 						});
 					}
 				}
@@ -318,7 +342,8 @@ function renderGraph(entry, txt, type)
 						{
 						    visible: true,
 						    strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-						    strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
+						    strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+                            fixed:true
 						});
 		            }
 		        }
@@ -402,7 +427,9 @@ function renderGraph(entry, txt, type)
 			entry[0].graphRef.setAttribute({dash: attr.dash}); // Dashed attribute just didn't want to go into the board options
 		}
 	}
-	catch (e) { console.log("caught " + e); }
+    catch (e) { 
+        //console.log("caught " + e); 
+    }
 	reRenderLines();
 }
 // Re renders any lines on the graph
@@ -554,8 +581,7 @@ function onMapClick(e)
     // no map points on graphs that are points
     if (currEntry[0].graphRef && !JXG.isPoint(currEntry[0].graphRef)) {
 	    board.create("glider", [0, 1, currEntry[0].graphRef], { color: currColor }).on('up', function (e) {
-	        // map point on down stuff here
-            // TODO: add touch capabilties
+	        // map point on down stuff here TODO: add touch capabilties (current right-click to remove)
 	        //console.log(e.which);
 	        if (e.which === 3)
 	            try{

@@ -82,7 +82,6 @@ function getUserFunction(currEntry) {
 
     //get LaTex from Entry convert to asciiMath
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
-    console.log(txt);
  
     if ( txt.indexOf("=") !== -1 ) {
         var inputStrs = txt.split("=");
@@ -214,6 +213,17 @@ function catchEntryText(entry, key) {
             return {
                 text: txt,
                 type: "line",//{line: txt},
+                canGraph: true
+            };
+        }
+        if (txt.indexOf("segment") !== -1) {
+            txt = txt.substring(7).toUpperCase().trim();
+            //console.log(txt);
+            txt = txt.split("");// a little different than the others
+
+            return {
+                text: txt,
+                type: "segment",//{segment: txt},
                 canGraph: true
             };
         }
