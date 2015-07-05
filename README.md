@@ -1,5 +1,5 @@
 # OpenGraph
-Current testing here: https://rawgit.com/johnRedden/OpenGraph/master/opengraph.html
+Current testing here: https://rawgit.com/johnRedden/OpenGraph/master/index.html
 
 Dependencies
 -------
