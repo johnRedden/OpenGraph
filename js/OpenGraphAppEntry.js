@@ -45,23 +45,21 @@ function onEntryKeyUp(e) {
         constructNewEntry();
     }else{
 		// intervene with the users input (in mathConvert.js)
-		var	obj=	catchEntryText(currEntry, e.keyCode);
-		
-		// Try to graph
-		if (obj.canGraph) {
-		    renderGraph(currEntry, obj.text, obj.type);
-		}
+        //catchEntryText(currEntry, e.keyCode);
+        filterText(currEntry, e.keyCode);  
+        // try to render graph
+		renderGraph(currEntry);
     }
 }
 
-
 // Renders the graph
-function renderGraph(entry, txt, type)
+function renderGraph(entry)
 {
 	// Variables
-    var userFunction;
-	var	attr=	{};
-	
+    var attr = {};
+    var obj = getUserFunction(entry);
+    var userFunction = obj.userFunction;
+
 	if(entry[0].graphRef)
 	{
 		attr.dash=	(entry[0].graphRef).getAttribute("dash");
@@ -69,14 +67,15 @@ function renderGraph(entry, txt, type)
 		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
 	}
 	
-	if(type)
+	if(obj.type)
 	{
-		switch(type.toLowerCase())
+		switch(obj.type.toLowerCase())
 		{
 			case "point":
 			    try {
+			        var tt = obj.text.replace('(', '').replace(')','').split(',');
 			        removeFromGraph(entry);
-			        entry[0].graphRef = board.create("point", [parseFloat(txt[0]), parseFloat(txt[1])],
+			        entry[0].graphRef = board.create("point", [parseFloat(tt[0]), parseFloat(tt[1])],
 					{
 						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 						strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),

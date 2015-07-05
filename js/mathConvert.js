@@ -1,93 +1,19 @@
 ﻿
-
-/* Credit Lippman
-\left| expr \right| to  abs(expr)
-\left( expression \right)  to   (expression)
-\sqrt{expression}  to sqrt(expression)
-\nthroot{n}{expr}  to  root(n)(expr)
-\frac{num}{denom} to (num)/(denom)
-\langle whatever \rangle   to   < whatever >                 **not done yet
-\begin{matrix} a&b\\c&d  \end{matrix}    to  [(a,b),(c,d)]   **not done yet
-n\frac{num}{denom} to n num/denom
-*/
-function MQLaTextoAM(tex) {
-    //alert(tex);
-    tex = tex.replace(/\\:/g, ' ');
-    while ((i = tex.indexOf('\\left|')) != -1) { //found a left |
-        nested = 0;
-        do {
-            lb = tex.indexOf('\\left|', i + 1);
-            rb = tex.indexOf('\\right|', i + 1);
-            if (lb != -1 && lb < rb) {	//if another left |
-                nested++;
-            } else if (rb != -1 && (lb == -1 || rb < lb)) {  //if right |
-                nested--;
-            }
-        } while (nested > 0 && rb != -1);  //until nested back to 0 or no right |
-        if (rb != -1) {  //have a right |  - replace with abs( )
-            tex = tex.substring(0, rb) + ")" + tex.substring(rb + 7);
-            tex = tex.substring(0, i) + "abs(" + tex.substring(i + 6);
-        } else {
-            tex = tex.substring(0, i) + "|" + tex.substring(i + 6);
-        }
-    }
-    tex = tex.replace(/\\text{\s*or\s*}/g, ' or ');
-    tex = tex.replace(/\\text{all\s+real\s+numbers}/g, 'all real numbers');
-    tex = tex.replace(/\\le(?!f)/g, '<=');
-    tex = tex.replace(/\\ge/g, '>=');
-    tex = tex.replace(/\\cup/g, 'U');
-    tex = tex.replace(/\\left/g, '');
-    tex = tex.replace(/\\right/g, '');
-    tex = tex.replace(/\\langle/g, '<');
-    tex = tex.replace(/\\rangle/g, '>');
-    tex = tex.replace(/\\pm/g, '+-');
-    tex = tex.replace(/\\cdot/g, '*');
-    tex = tex.replace(/\\infty/g, 'oo');
-    tex = tex.replace(/\\nthroot/g, 'root');
-    tex = tex.replace(/\\varnothing/g, 'DNE');
-    tex = tex.replace(/\\/g, '');
-    tex = tex.replace(/sqrt\[(.*?)\]/g, 'root($1)');
-    tex = tex.replace(/(\d)frac/g, '$1 frac');
-    while ((i = tex.indexOf('frac{')) != -1) { //found a fraction start
-        nested = 1;
-        curpos = i + 5;
-        while (nested > 0 && curpos < tex.length - 1) {
-            curpos++;
-            c = tex.charAt(curpos);
-            if (c == '{') { nested++; }
-            else if (c == '}') { nested--; }
-        }
-        if (nested == 0) {
-            tex = tex.substring(0, i) + "(" + tex.substring(i + 5, curpos) + ")/" + tex.substring(curpos + 1);
-        } else {
-            tex = tex.substring(0, i) + tex.substring(i + 4);
-        }
-    }
-    tex = tex.replace(/_{([\d\.]+)}/g, '_$1');
-    tex = tex.replace(/{/g, '(');
-    tex = tex.replace(/}/g, ')');
-    tex = tex.replace(/\(([\d\.]+)\)\/\(([\d\.]+)\)/g, '$1/$2');  //change (2)/(3) to 2/3
-    tex = tex.replace(/\/\(([\d\.]+)\)/g, '/$1');  //change /(3) to /3
-    tex = tex.replace(/\(([\d\.]+)\)\//g, '$1/');  //change (3)/ to 3/
-    tex = tex.replace(/\/\(([\a-zA-Z])\)/g, '/$1');  //change /(x) to /x
-    tex = tex.replace(/\(([\a-zA-Z])\)\//g, '$1/');  //change (x)/ to x/
-    tex = tex.replace(/\^\(-1\)/g, '^-1');
-    tex = tex.replace(/\^\((-?[\d\.]+)\)/g, '^$1');
-    return tex;
-}
-
+// all user information returned from any given entry
 function getUserFunction(currEntry) {
 
-    var fn, fnName, fnAsciiMath, fnIsGraphable;
+    var fn, fnName, fnAsciiMath, fnIsGraphable, entryType;
 
-    //get LaTex from Entry convert to asciiMath
+    //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
- 
+
+    entryType = getEntryType(txt);
+    
+    // function name is left of = and fn comes from expression to right of =
     if ( txt.indexOf("=") !== -1 ) {
         var inputStrs = txt.split("=");
         fnName = inputStrs[0];
-        fnAsciiMath = inputStrs[1];
-        
+        fnAsciiMath = inputStrs[1]; 
     } else {
         fnName = '';
         fnAsciiMath = txt;
@@ -99,10 +25,8 @@ function getUserFunction(currEntry) {
     }catch(e){
         //console.log("in getUserFunction " + e);
     }
-    if(
-     txt.indexOf("line") === -1 && txt.indexOf("circle") === -1 && txt.indexOf("triangle") === -1 &&
-     txt.indexOf("quad") === -1 && txt.indexOf("ellipse") === -1 && txt.indexOf("parabola") === -1 &&
-     txt.indexOf("hyperbola") === -1 && txt.indexOf(",") === -1)
+
+    if( entryType === 'function')
     {
         fnIsGraphable = JXG.isFunction(fn);
     }
@@ -110,7 +34,7 @@ function getUserFunction(currEntry) {
         fnIsGraphable = false;
 
     //special lagrange function here
-    if (txt.indexOf("lagrange") !== -1) {
+    if (entryType === "lagrange") {
         var inputStrs = txt.substring(8).toUpperCase().trim();
         inputStrs = inputStrs.split(""); // a little different than the others
 
@@ -128,167 +52,20 @@ function getUserFunction(currEntry) {
     }
 
     return {
-        name: fnName.trim()[0],  //name is one char 
+        name: fnName.trim()[0],  //name is one char for now
         variable: 'x',      //todo: detect variable
         userFunction: fn,
-        isGraphable: fnIsGraphable
+        isGraphable: fnIsGraphable,
+        type: entryType,
+        text: txt
     };
 }
 
 // Our special case work
-// special cases
-function catchEntryText(entry, key) {
+// Filters the given text from mq Syntax syntax  
+function filterText(entry, key) {
+    txt = MathQuill(entry.find(".math-field")[0]).text();
 
-    // Variables
-    var txt = "";
-    var bGraph = false;
-
-    try {
-        txt = MathQuill(entry.find(".math-field")[0]).text();
-        txt = filterText(txt, entry, key);
-
-        if (txt.indexOf(",") !== -1) {
-
-            txt = txt.replace(/[\*]?[\s]*,[\s]*[\*]?/g, ",").replace(/[\(\[]/g, "").replace(/[\)\]]/g, "");
-            txt = txt.split(",");
-
-            return {
-                text: txt,
-                type: "point",//{point: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("x=") !== -1) {
-            return {
-                text: txt,
-                type: "vline",//{vline: txt.substring(2)},
-                canGraph: true
-            };
-        }
-        /*
-		if(txt.indexOf("y=")!== -1)
-		{  //basically everyting with y= is labelled a hline?? that does not seem right
-			return {
-				text:	txt,
-				type:	"hline",//{hline: txt.substring(2)},
-				canGraph: true
-			};
-		}
-		*/
-        if (txt.indexOf("triangle") !== -1) {
-            txt = txt.substring(8).toUpperCase();
-            txt = txt.split("*");
-
-            return {
-                text: txt,
-                type: "triangle",//{triangle: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("quad") !== -1) {
-            txt = txt.substring(4).toUpperCase();
-           
-            txt = txt.split("*");
-
-            return {
-                text: txt,
-                type: "quad",//{quad: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("lagrange") !== -1) {
-            txt = txt.substring(8).toUpperCase();
-            txt = txt.split(""); // a little different than the others
-            //console.log(txt);
-            return {
-                text: txt,
-                type: "lagrange",//{lagrange: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("line") !== -1) {
-            txt = txt.substring(4).toUpperCase();
-            txt = txt.split("*");
-
-            return {
-                text: txt,
-                type: "line",//{line: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("segment") !== -1) {
-            txt = txt.substring(7).toUpperCase().trim();
-            //console.log(txt);
-            txt = txt.split("");// a little different than the others
-
-            return {
-                text: txt,
-                type: "segment",//{segment: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("circle") !== -1) {
-            txt = txt.substring(6).toUpperCase();
-            txt = txt.split("*");
-
-            return {
-                text: txt,
-                type: "circle",//{circle: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("ellipse") !== -1) {
-            txt = txt.substring(7).toUpperCase();
-            txt = txt.split("*");
-
-            return {
-                text: txt,
-                type: "ellipse",//{ellipse: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("parabola") !== -1) {
-            txt = txt.substring(8).toUpperCase();
-            txt = txt.split("*");
-
-            return {
-                text: txt,
-                type: "parabola",//{parabola: txt},
-                canGraph: true
-            };
-        }
-        if (txt.indexOf("hyperbola") !== -1) {
-            txt = txt.substring(9).toUpperCase();
-            txt = txt.split("*");
-
-            return {
-                text: txt,
-                type: "hyperbola",//{hyperbola: txt},
-                canGraph: true
-            };
-        }
-
-        // Finds if it is graphable, unsure if we should detect here, or in the render function
-        try {
-            // Variables
-            var userFunction;
-            eval("userFunction= function(x) { with(Math) return " + mathjs(txt) + " }");
-            if (JXG.isFunction(userFunction))
-                bGraph = true;
-        } catch (e) { console.log("caught " + e); }
-    }
-    catch (e) {
-        console.log("caught " + e);
-        bGraph = false;
-    }
-
-    return {
-        text: txt,
-        canGraph: bGraph
-    };
-}
-// Filters the given text from mq Syntax syntax
-function filterText(txt, entry, key) {
     // Gets hyperbolic functions by default
     txt = txt.toLowerCase()
 			.replace(/\*\*[\*]?/g, "^")
@@ -365,4 +142,98 @@ function filterText(txt, entry, key) {
 
 
     return txt;
+}
+
+function getEntryType(txt) {
+    // this function could take in the entry
+    if (txt.indexOf(",") !== -1) { return "point" };
+    if (txt.indexOf("x=") !== -1) { return "vline" };
+    if (txt.indexOf("triangle") !== -1) { return "triangle"};
+    if (txt.indexOf("quad") !== -1) { return "quad" };
+    if (txt.indexOf("lagrange") !== -1) { return "lagrange"};
+    if (txt.indexOf("line") !== -1) { return "line"};
+    if (txt.indexOf("segment") !== -1) { return "segment" };
+    if (txt.indexOf("circle") !== -1) { return "circle"};
+    if (txt.indexOf("ellipse") !== -1) { return "ellipse" };
+    if (txt.indexOf("parabola") !== -1) { return "parabola"};
+    if (txt.indexOf("hyperbola") !== -1) { return "hyperbola" };
+    // if no variable return "arithmetic"
+    return "function";
+
+}
+
+/* Credit Lippman
+\left| expr \right| to  abs(expr)
+\left( expression \right)  to   (expression)
+\sqrt{expression}  to sqrt(expression)
+\nthroot{n}{expr}  to  root(n)(expr)
+\frac{num}{denom} to (num)/(denom)
+\langle whatever \rangle   to   < whatever >                 **not done yet
+\begin{matrix} a&b\\c&d  \end{matrix}    to  [(a,b),(c,d)]   **not done yet
+n\frac{num}{denom} to n num/denom
+*/
+function MQLaTextoAM(tex) {
+    //alert(tex);
+    tex = tex.replace(/\\:/g, ' ');
+    while ((i = tex.indexOf('\\left|')) != -1) { //found a left |
+        nested = 0;
+        do {
+            lb = tex.indexOf('\\left|', i + 1);
+            rb = tex.indexOf('\\right|', i + 1);
+            if (lb != -1 && lb < rb) {	//if another left |
+                nested++;
+            } else if (rb != -1 && (lb == -1 || rb < lb)) {  //if right |
+                nested--;
+            }
+        } while (nested > 0 && rb != -1);  //until nested back to 0 or no right |
+        if (rb != -1) {  //have a right |  - replace with abs( )
+            tex = tex.substring(0, rb) + ")" + tex.substring(rb + 7);
+            tex = tex.substring(0, i) + "abs(" + tex.substring(i + 6);
+        } else {
+            tex = tex.substring(0, i) + "|" + tex.substring(i + 6);
+        }
+    }
+    tex = tex.replace(/\\text{\s*or\s*}/g, ' or ');
+    tex = tex.replace(/\\text{all\s+real\s+numbers}/g, 'all real numbers');
+    tex = tex.replace(/\\le(?!f)/g, '<=');
+    tex = tex.replace(/\\ge/g, '>=');
+    tex = tex.replace(/\\cup/g, 'U');
+    tex = tex.replace(/\\left/g, '');
+    tex = tex.replace(/\\right/g, '');
+    tex = tex.replace(/\\langle/g, '<');
+    tex = tex.replace(/\\rangle/g, '>');
+    tex = tex.replace(/\\pm/g, '+-');
+    tex = tex.replace(/\\cdot/g, '*');
+    tex = tex.replace(/\\infty/g, 'oo');
+    tex = tex.replace(/\\nthroot/g, 'root');
+    tex = tex.replace(/\\varnothing/g, 'DNE');
+    tex = tex.replace(/\\/g, '');
+    tex = tex.replace(/sqrt\[(.*?)\]/g, 'root($1)');
+    tex = tex.replace(/(\d)frac/g, '$1 frac');
+    while ((i = tex.indexOf('frac{')) != -1) { //found a fraction start
+        nested = 1;
+        curpos = i + 5;
+        while (nested > 0 && curpos < tex.length - 1) {
+            curpos++;
+            c = tex.charAt(curpos);
+            if (c == '{') { nested++; }
+            else if (c == '}') { nested--; }
+        }
+        if (nested == 0) {
+            tex = tex.substring(0, i) + "(" + tex.substring(i + 5, curpos) + ")/" + tex.substring(curpos + 1);
+        } else {
+            tex = tex.substring(0, i) + tex.substring(i + 4);
+        }
+    }
+    tex = tex.replace(/_{([\d\.]+)}/g, '_$1');
+    tex = tex.replace(/{/g, '(');
+    tex = tex.replace(/}/g, ')');
+    tex = tex.replace(/\(([\d\.]+)\)\/\(([\d\.]+)\)/g, '$1/$2');  //change (2)/(3) to 2/3
+    tex = tex.replace(/\/\(([\d\.]+)\)/g, '/$1');  //change /(3) to /3
+    tex = tex.replace(/\(([\d\.]+)\)\//g, '$1/');  //change (3)/ to 3/
+    tex = tex.replace(/\/\(([\a-zA-Z])\)/g, '/$1');  //change /(x) to /x
+    tex = tex.replace(/\(([\a-zA-Z])\)\//g, '$1/');  //change (x)/ to x/
+    tex = tex.replace(/\^\(-1\)/g, '^-1');
+    tex = tex.replace(/\^\((-?[\d\.]+)\)/g, '^$1');
+    return tex;
 }
