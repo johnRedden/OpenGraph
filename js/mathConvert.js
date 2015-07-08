@@ -118,7 +118,6 @@ function autoFillSpecialFunctions(entry, key) {
 
 function getEntryType(txt) {
     // this function could take in the entry
-    if (txt.indexOf(",") !== -1) { return "point" };
     if (txt.indexOf("x=") !== -1) { return "vline" };
     if (txt.indexOf("triangle") !== -1) { return "triangle"};
     if (txt.indexOf("quad") !== -1) { return "quad" };
@@ -130,6 +129,7 @@ function getEntryType(txt) {
     if (txt.indexOf("parabola") !== -1) { return "parabola"};
     if (txt.indexOf("hyperbola") !== -1) { return "hyperbola" };
 	if (txt.indexOf("polar") !== -1) { return "polar" };
+    if (txt.indexOf(",") !== -1) { return "point" };
     // if no variable return "arithmetic"
     return "function";
 

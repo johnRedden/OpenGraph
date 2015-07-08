@@ -252,6 +252,58 @@ function renderLagrange(entry, attr, obj)
 	}
 }
 
+// Renders a curve
+function renderCurve(entry, attr, obj)
+{
+	switch(obj.type.toLowerCase())
+	{
+		case "polar":	renderPolarCurve(entry, attr, obj);	break;
+		// TODO: Include more of the other curves?? ( http://jsxgraph.uni-bayreuth.de/docs/symbols/Curve.html )
+	}
+}
+
+// Renders a polar curve /* polar(mainFunc, funcA, funcB, locX, locY); */
+function renderPolarCurve(entry, attr, obj)
+{
+	obj.text=	specialTrim(obj.text, 5).replace(/\(/g, "").replace(/\)/g, "");
+	
+	// Variables
+	var	parameters=	obj.text.split(",");
+	var	nparams;
+	
+	for(var i= 0; i< parameters.length; i++)
+	{
+		if(i=== 3 || i=== 4)
+		{
+			if(isNaN(parameters[i]))
+				parameters[i]=	0;
+			
+			continue;
+		}
+		eval("parameters["+i+"]= function(x) { with(Math) return "+parameters[i]+"; };");
+	}
+	
+	nparams=	[parameters[0], [0,0]];
+	if(parameters[1])
+		nparams[2]=	parameters[1];
+	if(parameters[2])
+		nparams[3]=	parameters[2];
+	if(parameters[3])
+		nparams[1]=	[parseFloat(parameters[3]), 0];
+	if(parameters[4])
+		nparams[1]=	[parseFloat(parameters[3]), parseFloat(parameters[4])];
+	
+	removeFromGraph(entry);
+	entry[0].graphRef=	board.create("curve", nparams,
+	{
+		curveType:	"polar",
+		visible: true,
+		strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+		strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+		fixed:true
+	});
+}
+
 // A special trim that is used for the render functions to crop out the word and any whitespaces
 function specialTrim(txt, substr)
 {

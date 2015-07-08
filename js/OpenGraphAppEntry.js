@@ -82,6 +82,9 @@ function renderGraph(entry)
 				case "parabola":	renderParabola(entry, attr, obj);	return;
 				case "hyperbola":	renderHyperbola(entry, attr, obj);	return;
 				case "lagrange":	renderLagrange(entry, attr, obj);	return;
+				case "polar":
+					renderCurve(entry, attr, obj);
+					return;
 				default:	break;
 			}
 		}catch(e) { console.log("caught "+e); }
