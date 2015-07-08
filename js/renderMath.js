@@ -262,6 +262,7 @@ function renderSector(entry, attr, obj)
 	var	ptB=	board.select(obj.text[1]);
 	var	ptC=	board.select(obj.text[2]);
 	
+	entry.find(".mq-last").removeClass("mq-last"); // Is there a better way here?
 	removeFromGraph(entry);
 	if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
 	{
