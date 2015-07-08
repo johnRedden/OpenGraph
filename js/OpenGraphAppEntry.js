@@ -46,7 +46,7 @@ function onEntryKeyUp(e) {
     }else{
 		// intervene with the users input (in mathConvert.js)
         //catchEntryText(currEntry, e.keyCode);
-        filterText(currEntry, e.keyCode);  
+        autoFillSpecialFunctions(currEntry, e.keyCode);  
         // try to render graph
 		renderGraph(currEntry);
     }
@@ -69,289 +69,22 @@ function renderGraph(entry)
 	
 	if(obj.type)
 	{
-		switch(obj.type.toLowerCase())
-		{
-			case "point":
-			    try {
-			        var tt = obj.text.replace('(', '').replace(')','').split(',');
-			        removeFromGraph(entry);
-			        entry[0].graphRef = board.create("point", [parseFloat(tt[0]), parseFloat(tt[1])],
-					{
-						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-						strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-						fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-						fixed:false
-					}).on('drag', function () {
-					    var px = this.X().toFixed(2);
-					    var py = this.Y().toFixed(2);
-
-					    if (px == "-0.00")
-					        px = "0.00"
-					    if (py == "-0.00")
-					        py = "0.00"
-
-					    MathQuill(entry.find(".math-field")[0]).latex("").typedText("(" + px +"," + py + ")").blur();
-					});
-				}
-			    catch (e) { 
-			        //console.log("caught " + e);
-			    }
-				reRenderLines();
-				
-				return;
-			case "vline":// Render vertical line
-				try {
-					removeFromGraph(entry);
-					entry[0].graphRef = board.create("line", [-1 * parseFloat(txt.substring(2)), 1, 0],
-					{
-						visible: true,
-						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-						strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-						fixed: false  //can make this true for VLT
-					}).on('drag', function (e) {
-						// Variables
-						var	lx=	this.X(0.5).toFixed(2);
-						
-						if(lx== "-0.00")
-							lx="0.00"
-						
-						MathQuill(entry.find(".math-field")[0]).latex("").typedText("x="+lx);
-					});
-				}
-				catch(e) { console.log("caught "+e); }
-				
-				return;
-		    case "hline":// need functiongraph (curve) to do calculus  TODO: Redo this
-                /*
-				if(!isNaN(txt))
-				{ 
-				    try {
-				        
-						removeFromGraph(entry);
-						entry[0].graphRef=	board.create("line", [-1*parseFloat(txt.substring(2)), 0, 1],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-							fixed: false  //can make this true for VLT
-						}).on('drag', function (e) {
-							// Variables
-							var	ly=	this.Y(0.5).toFixed(2);
-							
-							if(ly== "-0.00")
-								ly="0.00"
-							
-							MathQuill(entry.find(".math-field")[0]).latex("").typedText("y="+ly);
-						});
-					}
-					catch(e) { console.log("caught "+e); }
-					
-					return;
-                    
-				}
-				else
-					break;
-                    */
-			case "triangle":
-				try {
-					var	ptA=	board.select(txt[0]);
-					var	ptB=	board.select(txt[1]);
-					var	ptC=	board.select(txt[2]);
-					
-					removeFromGraph(entry);
-					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-					{
-						entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-						});
-					}
-				}
-				catch(e) { console.log("caught "+e); }
-				
-				return;
-			case "quad":
-				try {
-					var	ptA=	board.select(txt[0]);
-					var	ptB=	board.select(txt[1]);
-					var	ptC=	board.select(txt[2]);
-					var	ptD=	board.select(txt[3]);
-					
-					removeFromGraph(entry);
-					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC) && JXG.isPoint(ptD))
-					{
-						entry[0].graphRef=	board.create("polygon", [ptA, ptB, ptC, ptD],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color")
-						});
-					}
-				}
-				catch(e) { console.log("caught "+e); }
-				
-				return;
-		    case "line":// line is ok here because it is considered a conic section                
-				try {
-					var	ptA=	board.select(txt[0]);
-					var	ptB=	board.select(txt[1]);
-					
-					removeFromGraph(entry);
-					if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
-					{
-						entry[0].graphRef=	board.create("line", [ptA, ptB],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                            fixed: true
-						});
-					}
-				}
-				catch(e) { console.log("caught "+e); }
-				
-				return;
-		    case "segment":// line is ok here because it is considered a conic section                
-		        try {
-		            var ptA = board.select(txt[0]);
-		            var ptB = board.select(txt[1]);
-		            
-		            removeFromGraph(entry);
-		            if (JXG.isPoint(ptA) && JXG.isPoint(ptB)) {
-		                entry[0].graphRef = board.create("segment", [ptA, ptB],
-						{
-						    visible: true,
-						    strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-						    strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-						    fixed:true
-						});
-		            }
-		        }
-		        catch (e) { console.log("caught " + e); }
-
-		        return;
-			case "circle":
-				try {
-					var	ptA=	board.select(txt[0]);
-					var	ptB=	board.select(txt[1]);
-					
-					removeFromGraph(entry);
-					if(JXG.isPoint(ptA) && JXG.isPoint(ptB))
-					{
-						entry[0].graphRef=	board.create("circle", [ptA, ptB],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                            fixed: true
-						});
-					}
-				}
-				catch(e) { console.log("caught "+e); }
-				
-				return;
-			case "ellipse":
-				try {
-					var	ptA=	board.select(txt[0]);
-					var	ptB=	board.select(txt[1]);
-					var	ptC=	board.select(txt[2]);
-					
-					removeFromGraph(entry);
-					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-					{
-						entry[0].graphRef=	board.create("ellipse", [ptA, ptB, ptC],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                            fixed: true
-						});
-					}
-				}
-				catch(e) { console.log("caught "+e); }
-				
-				return;
-			case "parabola":
-				try {
-					var	ptA = board.select(txt[0]);
-					var ptB = board.select(txt[1]);
-					var ptC = board.select(txt[2]);
-					
-					removeFromGraph(entry);
-					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-					{
-					    
-					    var l = board.create('line', [ptC, ptB]);
-					    entry[0].graphRef = board.create("parabola", [ptA, l],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                            fixed: true
-						});
-					    // entry[0].graphRef.addChild(l);
-                        // the above line crashes the app on Entry delete for some reason??
-					}
-				}
-			    catch (e) {
-			        //console.log("caught "+e); 
-			    }
-				
-				return;
-			case "hyperbola":
-				try {
-					var	ptA=	board.select(txt[0]);
-					var	ptB=	board.select(txt[1]);
-					var	ptC=	board.select(txt[2]);
-					
-					removeFromGraph(entry);
-					if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
-					{
-						entry[0].graphRef=	board.create("hyperbola", [ptA, ptB, ptC],
-						{
-							visible: true,
-							strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-							strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                            fixed: true
-						});
-					}
-				}
-				catch(e) { console.log("caught "+e); }
-				
-				return;
-		    case "lagrange":
-		        try {
-		            var pts = [];
-		            var golagrange = true;
-		            for (var i = 0; i < txt.length; i++) {
-		                pts[i] = board.select(txt[i]);
-		                if (!JXG.isPoint(pts[0])) {
-		                    golagrange = false;
-		                    break;
-		                }
-		            }
-		            
-		            removeFromGraph(entry);
-		            if(golagrange) {
-		                
-		                var f = JXG.Math.Numerics.lagrangePolynomial(pts);
-		                entry[0].graphRef = board.create("functiongraph", [f],
-						{
-						    visible: true,
-						    strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
-						    strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
-                            fixed:true
-						});
-		            }
-		        }
-		        catch (e) { console.log("caught " + e); }
-
-		        return;
-			default:
-				break;
-		}
+		try {
+			switch(obj.type.toLowerCase())
+			{
+				case "point":	renderPoint(entry, attr, obj);	reRenderLines();	return;
+				case "vline":	renderVerticalLine(entry, attr, obj);	return;
+				case "triangle":	renderTriangle(entry, attr, obj);	return;
+				case "line":	renderLine(entry, attr, obj);	return;
+				case "segment":	renderSegment(entry, attr, obj);	return;
+				case "circle":	renderCircle(entry, attr, obj);	return;
+				case "ellipse":	renderEllipse(entry, attr, obj);	return;
+				case "parabola":	renderParabola(entry, attr, obj);	return;
+				case "hyperbola":	renderHyperbola(entry, attr, obj);	return;
+				case "lagrange":	renderLagrange(entry, attr, obj);	return;
+				default:	break;
+			}
+		}catch(e) { console.log("caught "+e); }
 	}
 	
 	// **********************main graphing here **************************
@@ -392,6 +125,7 @@ function renderGraph(entry)
                                     fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
                                     fixed: true  //can make it dynamic here but choose not to
                                 });
+								entry[0].graphRef.setAttribute({dash: attr.dash});
 	                            hasPlottedPoint = true;
 
 	                        }

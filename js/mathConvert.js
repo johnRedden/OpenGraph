@@ -2,7 +2,7 @@
 // all user information returned from any given entry
 function getUserFunction(currEntry) {
 
-    var fn, fnName, fnAsciiMath, fnIsGraphable, entryType;
+    var fn, fnName, fnAsciiMath, fnIsGraphable, entryType, txt, filteredTxt;
 
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
@@ -61,15 +61,12 @@ function getUserFunction(currEntry) {
     };
 }
 
-// Our special case work
-// Filters the given text from mq Syntax syntax  
-function filterText(entry, key) {
+// Auto fills any special functions like sin, cos, tan, etc.  
+function autoFillSpecialFunctions(entry, key) {
     txt = MathQuill(entry.find(".math-field")[0]).text();
 
     // Gets hyperbolic functions by default
     txt = txt.toLowerCase()
-			.replace(/\*\*[\*]?/g, "^")
-			.replace(/cdot\s/g, "*")
 			.replace(/\\s\*i\*n[\s]*[\*]?/g, "sin")
 			.replace(/\\c\*s\*c[\s]*[\*]?/g, "csc")
 			.replace(/\\c\*o\*s[\s]*[\*]?/g, "cos")
@@ -77,27 +74,7 @@ function filterText(entry, key) {
 			.replace(/\\t\*a\*n[\s]*[\*]?/g, "tan")
 			.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
 			.replace(/\\operatorname\{c\*s\*c\*h}[\*]?/g, "csch")
-			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech")
-			.replace(/\\l\*o\*g[\s]*[\*]?/g, "log")
-			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
-			.replace(/t\*r\*i\*a\*n\*g\*l\*e[\*]?/g, "triangle")
-			.replace(/q\*u\*a\*d[\*]?/g, "quad")
-			.replace(/l\*i\*n\*e[\*]?/g, "line")
-			.replace(/c\*i\*r\*c\*l\*e[\*]?/g, "circle")
-			.replace(/e\*l\*l\*i\*p\*s\*e[\*]?/g, "ellipse")
-			.replace(/p\*a\*r\*a\*b\*o\*l\*a[\*]?/g, "parabola")
-			.replace(/h\*y\*p\*e\*r\*b\*o\*l\*a[\*]?/g, "hyperbola");
-
-    if 
-	(
-		txt.indexOf("line") === -1 && txt.indexOf("circle") === -1 && txt.indexOf("triangle") === -1 &&
-		txt.indexOf("quad") === -1 && txt.indexOf("ellipse") === -1 && txt.indexOf("parabola") === -1 &&
-		txt.indexOf("hyperbola") === -1
-	) {
-        txt = txt.replace(/[\s]*[\*]*[\s]*/g, "");
-    }
-    else
-        txt = txt.replace(/[\s]+\*/g, "");
+			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech");
 
     if ((key == 104 || key == 72) && txt.length >= 6) // Looks for 'h' or 'H'
     {
@@ -137,11 +114,6 @@ function filterText(entry, key) {
             }
         }
     }
-
-    //$("#header").text(txt); // Live view of whats going on
-
-
-    return txt;
 }
 
 function getEntryType(txt) {
@@ -157,6 +129,7 @@ function getEntryType(txt) {
     if (txt.indexOf("ellipse") !== -1) { return "ellipse" };
     if (txt.indexOf("parabola") !== -1) { return "parabola"};
     if (txt.indexOf("hyperbola") !== -1) { return "hyperbola" };
+	if (txt.indexOf("polar") !== -1) { return "polar" };
     // if no variable return "arithmetic"
     return "function";
 
