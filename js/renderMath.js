@@ -252,6 +252,30 @@ function renderLagrange(entry, attr, obj)
 	}
 }
 
+// Renders a sector
+function renderSector(entry, attr, obj)
+{
+	obj.text=	specialTrim(obj.text, 6).toUpperCase();
+	
+	// Variables
+	var	ptA=	board.select(obj.text[0]);
+	var	ptB=	board.select(obj.text[1]);
+	var	ptC=	board.select(obj.text[2]);
+	
+	removeFromGraph(entry);
+	if(JXG.isPoint(ptA) && JXG.isPoint(ptB) && JXG.isPoint(ptC))
+	{
+		entry[0].graphRef=	board.create("sector", [ptA, ptB, ptC],
+		{
+			visible: true,
+			strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+			strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+			fixed: true
+		});
+		entry[0].graphRef.setAttribute({dash: attr.dash});
+	}
+}
+
 // Renders a curve
 function renderCurve(entry, attr, obj)
 {

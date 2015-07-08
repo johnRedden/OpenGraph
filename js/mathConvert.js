@@ -75,8 +75,18 @@ function autoFillSpecialFunctions(entry, key) {
 			.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
 			.replace(/\\operatorname\{c\*s\*c\*h}[\*]?/g, "csch")
 			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech");
-
-    if ((key == 104 || key == 72) && txt.length >= 6) // Looks for 'h' or 'H'
+	
+	if((key== 116 || key== 84) && txt.length>= 6) // Looks for 't' or 'T'
+	{
+		switch(txt.substring(txt.length-6))
+		{
+			case "sec(t)":
+				MathQuill(entry.find(".math-field")[0]).latex("");
+				MathQuill(entry.find(".math-field")[0]).typedText("sect");
+				break;
+		}
+	}
+    else if ((key == 104 || key == 72) && txt.length >= 6) // Looks for 'h' or 'H'
     {
         switch (txt.substring(txt.length - 6)) {
             case "sin(h)":
@@ -117,6 +127,7 @@ function autoFillSpecialFunctions(entry, key) {
 }
 
 function getEntryType(txt) {
+	
     // this function could take in the entry
     if (txt.indexOf("x=") !== -1) { return "vline" };
     if (txt.indexOf("triangle") !== -1) { return "triangle"};
@@ -129,6 +140,7 @@ function getEntryType(txt) {
     if (txt.indexOf("parabola") !== -1) { return "parabola"};
     if (txt.indexOf("hyperbola") !== -1) { return "hyperbola" };
 	if (txt.indexOf("polar") !== -1) { return "polar" };
+	if (txt.indexOf("sec tor") !== -1) { return "sector" }; // TODO: This looks ugly, FIX
     if (txt.indexOf(",") !== -1) { return "point" };
     // if no variable return "arithmetic"
     return "function";
