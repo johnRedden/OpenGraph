@@ -115,3 +115,9 @@
 #info, #help{
     cursor:pointer;
 }
+
+.sharedesc
+{
+	padding:	8px;
+	height:	128px;
+}

@@ -202,6 +202,20 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" id="urlbox" value="NOTHING, AHAHAHA" style="width: 100%;" /><br /><br />
+					<input type="radio" name="urltype" id="encodeNorm" alt="Text Only ( Recommended )" checked="true" />&emsp;Text Only ( Recommended)&emsp;&emsp;
+					<input type="radio" name="urltype" id="encodeFull" alt="Full ( Beta )" />&emsp; Full ( Beta )&emsp;&emsp;
+					<br /><br />
+					<div id="descNorm" class="sharedesc">
+						The text only url link returns only what is written on each entry, and will display whatever is written onto the entries
+					</div>
+					<div id="descFull" class="sharedesc" style="display: none;">
+						The full url link returns not only the text but everything else that could be associated with the graph.
+						So it can return the color used, if it was dashed, any calculus stuff, map points, etc.<br />
+						<span style="color: crimson; font-size: 12px;">
+							[ NOTE: Although it is still in the works and map points don't seem to function too well, plus
+							the calculus things tend to not be friendly with each other ]
+						</span>
+					</div>
                 </div>
             </div>
 
