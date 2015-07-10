@@ -85,15 +85,6 @@ function renderGraph(entry)
 		attr.dash=	(entry[0].graphRef).getAttribute("dash");
 		attr.strokeColor=	(entry[0].graphRef).getAttribute("strokeColor");
 		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
-		d=	entry[0].graphRef.childElements;
-		attr.mps=	new Array();
-		for(elem in d)
-		{
-			if(d[elem].getType()== "glider")
-			{
-				attr.mps.push(d[elem]);
-			}
-		}
 	}
 	
 	if(obj.type)
@@ -193,12 +184,19 @@ function renderGraph(entry)
 				fixed:	true
 			});
 			
+			if(entry[0].graphRef && attr.mps)
+			{
+				for(var i= 0; i< attr.mps.length; i++)
+				{
+					board.create("glider" [0, 1, entry[0].graphRef],
+					{
+						visible:	true,
+						strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+						strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css('color')
+					});
+				}
+			}
 			entry[0].graphRef.setAttribute({dash: attr.dash}); // Dashed attribute just didn't want to go into the board options
-		}
-		if(entry[0].graphRef && attr.mps)
-		{
-			for(var i= 0; i< attr.mps.length; i++)
-				(entry[0].graphRef).addChild(attr.mps[i]);
 		}
 	}
     catch (e) { 
