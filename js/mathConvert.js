@@ -195,6 +195,8 @@ function MQLaTextoAM(tex) {
     tex = tex.replace(/\\/g, '');
     tex = tex.replace(/sqrt\[(.*?)\]/g, 'root($1)');
     tex = tex.replace(/(\d)frac/g, '$1 frac');
+	tex = tex.replace(/x(x|\(|\[)/g, "x*$1");
+	tex = tex.replace(/x(x|\(|\[)/g, "x*$1"); // Seems redundant, but it freakin works!
 	
     while ((i = tex.indexOf('frac{')) != -1) { //found a fraction start
         nested = 1;
