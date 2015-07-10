@@ -52,6 +52,23 @@ function onEntryKeyUp(e) {
     }
 }
 
+function onEntryKeyDown(e) {
+	// Variables
+	var	entry=	$(e.target).parents(".entry");
+	var	mf=	entry.find(".math-field");
+	
+	if(mf.width()> 200)
+	{
+		entry.width(mf.width()+167);
+		entry.find(".mathinput").width(mf.width()+8);
+	}
+	else
+	{
+		entry.width(363);
+		entry.find(".mathinput").width(204);
+	}
+}
+
 // Renders the graph
 function renderGraph(entry)
 {
@@ -91,13 +108,13 @@ function renderGraph(entry)
 		}catch(e) { console.log("caught "+e); }
 	}
 	
-	// **********************main graphing here **************************
 	try {
+	// **********************main graphing here **************************
 	    var hasPlottedPoint = false;
         
         // ******  Evaluating function notation ************
 	    if (txt.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
-	        var test = txt.replace(/\(/g, '');
+	        var test = obj.text.replace(/\(/g, '');
 	        var value = parseFloat(test.substring(1));
 
 	        entry.find('.dynamicOutput').remove();  // generated output element
@@ -146,6 +163,9 @@ function renderGraph(entry)
 	            
 	    }
 	    // ******  End evaluating function notation ************
+		
+		if(obj.text.indexOf("x")=== -1 && obj.text.indexOf("y")=== -1 && obj.text.length> 0)
+			entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>="+(obj.userFunction(0).toFixed(4))+"</span>");
 
         var obj = getUserFunction(entry);
         var userFunction = obj.userFunction;

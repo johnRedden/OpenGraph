@@ -188,6 +188,7 @@ $(document).ready(function()
     ).on("click", ".drawer1", onDrawerClick
     ).on("click", ".drawer2", onDrawer2Click
 	).on("keyup", ".mathinput", onEntryKeyUp
+	).on("keydown", ".mathinput", onEntryKeyDown
     ).on("keyup", ".numA", onNumAKeyUp
     ).on("keyup", ".numB", onNumBKeyUp
 	).on("click", ".collapse-entry", onCollapseEntryClick
