@@ -85,6 +85,8 @@ function renderGraph(entry)
 		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
 	}
 	
+	if(entry.has(entry.find(".dynamicOutput")[0]))
+		entry.find('.dynamicOutput').remove();  
 	if(obj.type)
 	{
 		try {
@@ -115,9 +117,6 @@ function renderGraph(entry)
         
         // ******  Evaluating function notation and stand alone expressions ************
 	    if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
-			
-			if(entry.has(entry.find(".dynamicOutput")[0]))
-				entry.find('.dynamicOutput').remove();  // generated output element
 
 	        var insideStr = obj.text.substring(obj.text.indexOf("(") + 1, obj.text.length - 1);  // here f( insideStr )
 			var	insideFN;
@@ -174,9 +173,6 @@ function renderGraph(entry)
 	                entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (obj.userFunction(0).toFixed(4)) + "</span>");
 	        }
 	            
-	    } else {
-	        // case where the entry has an equal
-	        entry.find('.dynamicOutput').remove(); // generated output element
 	    }
 	    // ******  End evaluating function notation ************
 		
