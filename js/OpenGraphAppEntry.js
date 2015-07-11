@@ -80,9 +80,6 @@ function renderGraph(entry)
 
 	if(entry[0].graphRef)
 	{
-		// Variables
-		var	d;
-		
 		attr.dash=	(entry[0].graphRef).getAttribute("dash");
 		attr.strokeColor=	(entry[0].graphRef).getAttribute("strokeColor");
 		attr.strokeWidth=	(entry[0].graphRef).getAttribute("strokeWidth");
@@ -118,11 +115,15 @@ function renderGraph(entry)
         
         // ******  Evaluating function notation and stand alone expressions ************
 	    if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
-
-	        entry.find('.dynamicOutput').remove();  // generated output element
+			
+			if(entry.has(entry.find(".dynamicOutput")[0]))
+				entry.find('.dynamicOutput').remove();  // generated output element
 
 	        var insideStr = obj.text.substring(obj.text.indexOf("(") + 1, obj.text.length - 1);  // here f( insideStr )
-	        eval("insideFn = function(x) { with(Math) return " + mathjs(insideStr) + " }");
+			var	insideFN;
+			try{
+				eval("insideFn = function(x) { with(Math) return " + mathjs(insideStr) + " }");
+			}catch(e){ console.log(e.message); }
 	        var value = insideFn(0); // maybe composition here later?
 	        
 	        if (!isNaN(value)) {
@@ -141,7 +142,7 @@ function renderGraph(entry)
 	                        entry.find('.mathinput').append("<span class='dynamicOutput' style='float:right'> undefined </span>");
 	                    } else {
 	                        entry.find('.mathinput').append("<span class='dynamicOutput' style='float:right'>= " + fn(value).toFixed(4) + "</span>");
-
+							
 	                        //plot the point
 	                        try {
 	                            removeFromGraph(entry);
@@ -175,7 +176,7 @@ function renderGraph(entry)
 	            
 	    } else {
 	        // case where the entry has an equal
-	        entry.find('.dynamicOutput').remove();  // generated output element
+	        entry.find('.dynamicOutput').remove(); // generated output element
 	    }
 	    // ******  End evaluating function notation ************
 		

@@ -140,7 +140,7 @@ function getEntryType(txt) {
     if (txt.indexOf("parabola") !== -1) { return "parabola"};
     if (txt.indexOf("hyperbola") !== -1) { return "hyperbola" };
 	if (txt.indexOf("polar") !== -1) { return "polar" };
-	if (txt.indexOf("sec tor") !== -1) { return "sector" }; // TODO: This looks ugly, FIX
+	if (txt.indexOf("sec tor") !== -1) { return "sector" };
     if (txt.indexOf(",") !== -1) { return "point" };
     // if no variable return "arithmetic"
     return "function";
