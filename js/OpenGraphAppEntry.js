@@ -43,7 +43,8 @@ function onEntryKeyUp(e) {
 	
     if (e.keyCode === 13) {  //enter
         constructNewEntry();
-    }else{
+    } else {
+        
 		// intervene with the users input (in mathConvert.js)
         //catchEntryText(currEntry, e.keyCode);
         autoFillSpecialFunctions(currEntry, e.keyCode);  
@@ -76,6 +77,7 @@ function renderGraph(entry)
     var attr = {};
     var obj = getUserFunction(entry);
     var userFunction = obj.userFunction;
+   
 
 	if(entry[0].graphRef)
 	{
@@ -115,12 +117,16 @@ function renderGraph(entry)
 	// **********************main graphing here **************************
 	    var hasPlottedPoint = false;
         
-        // ******  Evaluating function notation ************
-	    if (txt.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
-	        var test = obj.text.replace(/\(/g, '');
-	        var value = parseFloat(test.substring(1));
+        // ******  Evaluating function notation and stand alone expressions ************
+	    if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
 
 	        entry.find('.dynamicOutput').remove();  // generated output element
+
+	        var insideStr = obj.text.substring(obj.text.indexOf("(") + 1, obj.text.length - 1);  // here f( insideStr )
+	        eval("insideFn = function(x) { with(Math) return " + mathjs(insideStr) + " }");
+	        var value = insideFn(0); // maybe composition here later?
+	        console.log(value);
+	        
 	        if (!isNaN(value)) {
                 // get all of the current entries
 	            var currEntries = entry.parents(".myForm").find(".entry");
@@ -151,7 +157,6 @@ function renderGraph(entry)
                                 });
 								entry[0].graphRef.setAttribute({dash: attr.dash});
 	                            hasPlottedPoint = true;
-
 	                        }
 	                        catch (e) {
 	                            //console.log("function point " + e);
@@ -163,12 +168,18 @@ function renderGraph(entry)
 	            }
 
 	        }
+	        // if the function evaluated the point has been plotted
+	        if (!hasPlottedPoint)
+	            if (obj.text.indexOf("x") === -1 && obj.text.indexOf("y") === -1 && obj.text.length > 0)
+	                entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (obj.userFunction(0).toFixed(4)) + "</span>");
 	            
+	    } else {
+	        // case where the entry has an equal
+	        entry.find('.dynamicOutput').remove();  // generated output element
 	    }
 	    // ******  End evaluating function notation ************
 		
-		if(obj.text.indexOf("x")=== -1 && obj.text.indexOf("y")=== -1 && obj.text.length> 0)
-			entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>="+(obj.userFunction(0).toFixed(4))+"</span>");
+
 
         var obj = getUserFunction(entry);
         var userFunction = obj.userFunction;
