@@ -44,10 +44,9 @@ function onEntryKeyUp(e) {
     if (e.keyCode === 13) {  //enter
         constructNewEntry();
     } else {
-        
 		// intervene with the users input (in mathConvert.js)
         //catchEntryText(currEntry, e.keyCode);
-        autoFillSpecialFunctions(currEntry, e.keyCode);  
+        autoFillSpecialFunctions(currEntry, e.keyCode);
         // try to render graph
 		renderGraph(currEntry);
     }
@@ -125,7 +124,6 @@ function renderGraph(entry)
 	        var insideStr = obj.text.substring(obj.text.indexOf("(") + 1, obj.text.length - 1);  // here f( insideStr )
 	        eval("insideFn = function(x) { with(Math) return " + mathjs(insideStr) + " }");
 	        var value = insideFn(0); // maybe composition here later?
-	        console.log(value);
 	        
 	        if (!isNaN(value)) {
                 // get all of the current entries
@@ -168,10 +166,12 @@ function renderGraph(entry)
 	            }
 
 	        }
-	        // if the function evaluated the point has been plotted
-	        if (!hasPlottedPoint)
-	            if (obj.text.indexOf("x") === -1 && obj.text.indexOf("y") === -1 && obj.text.length > 0)
+	        // if no point has been plotted then there is no function to evaluate (should be numbers only)
+	        if (!hasPlottedPoint) {
+	            console.log("wtf");
+	            //if (obj.text.indexOf("x") === -1 && obj.text.indexOf("y") === -1 && obj.text.length > 0)
 	                entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (obj.userFunction(0).toFixed(4)) + "</span>");
+	        }
 	            
 	    } else {
 	        // case where the entry has an equal
@@ -179,10 +179,6 @@ function renderGraph(entry)
 	    }
 	    // ******  End evaluating function notation ************
 		
-
-
-        var obj = getUserFunction(entry);
-        var userFunction = obj.userFunction;
 
 	    if (obj.isGraphable && !hasPlottedPoint) {
 			removeFromGraph(entry);
