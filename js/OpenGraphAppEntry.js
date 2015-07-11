@@ -168,7 +168,7 @@ function renderGraph(entry)
 	        }
 	        // if no point has been plotted then there is no function to evaluate (should be numbers only)
 	        if (!hasPlottedPoint) {
-	            console.log("wtf");
+	           
 	            //if (obj.text.indexOf("x") === -1 && obj.text.indexOf("y") === -1 && obj.text.length > 0)
 	                entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (obj.userFunction(0).toFixed(4)) + "</span>");
 	        }
@@ -178,7 +178,9 @@ function renderGraph(entry)
 		
 
 	    if (obj.isGraphable && !hasPlottedPoint) {
-			removeFromGraph(entry);
+	        removeFromGraph(entry);
+	        if ( entry.has(entry.find(".dynamicOutput")[0]) && (obj.text.indexOf("x") !== -1 || obj.text.indexOf("y") !== -1))
+	            entry.find('.dynamicOutput').remove();
 		    // grpahing functiongraphs which is a jsxGraph curve
 			entry[0].graphRef = board.create("functiongraph", userFunction,
 			{
