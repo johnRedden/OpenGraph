@@ -7,8 +7,11 @@ $(document).ready(function()
 	// --- OpenGraphAppPaper.js Initialization ---
 	// -------------------------------------------
 	
-	bMobile=	(/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera\smini/i).test(navigator.userAgent.toLowerCase());
-	
+    bMobile = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera\smini/i).test(navigator.userAgent.toLowerCase());
+    //global jsxGraph options
+    JXG.Options.text.fontSize = 12;
+    //JXG.Options.renderer = 'canvas';  //Can use canvas instead of SVG default
+
 	board = JXG.JSXGraph.initBoard('myBox',
 	{
 	    boundingbox: [-10, 12, 10, -10],
@@ -29,6 +32,7 @@ $(document).ready(function()
 		    needshift: false // mouse panning needs pressing of the shift key
 		}
 	});
+	
     board.resizeContainer($(window).width(), $(window).height()); //init resize
     centerOrigin(); // init center
    
@@ -167,7 +171,7 @@ $(document).ready(function()
 
     // Page Buttons
     $("#dockButton").click(onCollapseCollapser);
-    $("#header").html("<em>OpenGraphingCalculator.com <sub>&alpha; 0.30</sub></em>");
+    $("#header").html("<em>OpenGraphingCalculator.com <sub>&alpha; 0.35</sub></em>");
     $("#addNewEntry").on("click", constructNewEntry);
     $("#deleteAll").on("click", clearAll);
 	$("#dockRight").on("click", collapseAll);

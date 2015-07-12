@@ -355,10 +355,10 @@ function onMapClick(e)
 	// Variables
     var currEntry = $(this).parents(".entry");
     var currColor = currEntry.find(".showColor").css('color');
-
+  
     // no map points on graphs that are points
     if (currEntry[0].graphRef && !JXG.isPoint(currEntry[0].graphRef)) {
-	    board.create("glider", [0, 1, currEntry[0].graphRef], { color: currColor }).on('up', function (e) {
+       board.create("glider", [0, 1, currEntry[0].graphRef], { color: currColor}).on('up', function (e) {
 	        // map point on down stuff here TODO: add touch capabilties (current right-click to remove)
 	        //console.log(e.which);
 	        if (e.which === 3)
@@ -369,6 +369,7 @@ function onMapClick(e)
 	            }
 	        
 	    });
+	
 	} else
 	    currEntry.effect("shake", { times: 2 }, 700);  // not sure this adds value
 	//reRenderLines();  // not sure why we are rerendering here?
