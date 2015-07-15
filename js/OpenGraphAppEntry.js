@@ -125,6 +125,7 @@ function renderGraph(entry)
 			}catch(e){ console.log(e.message); }
 	        var value = insideFn(0); // maybe composition here later?
 	        
+			//$("#header").text(value);
 	        if (!isNaN(value)) {
                 // get all of the current entries
 	            var currEntries = entry.parents(".myForm").find(".entry");
