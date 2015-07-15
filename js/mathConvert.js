@@ -74,7 +74,9 @@ function autoFillSpecialFunctions(entry, key) {
 			.replace(/\\t\*a\*n[\s]*[\*]?/g, "tan")
 			.replace(/\\c\*o\*t[\s]*[\*]?/g, "cot")
 			.replace(/\\operatorname\{c\*s\*c\*h}[\*]?/g, "csch")
-			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech");
+			.replace(/\\operatorname\{s\*e\*c\*h}[\*]?/g, "sech")
+			.replace(/\\l\*n[\s]*[\*]?/g, "ln")
+			.replace(/\\l\*o\*g[\s]*[\*]?/g, "log");
 	
 	if((key== 116 || key== 84) && txt.length>= 6) // Looks for 't' or 'T'
 	{
@@ -195,8 +197,8 @@ function MQLaTextoAM(tex) {
     tex = tex.replace(/\\/g, '');
     tex = tex.replace(/sqrt\[(.*?)\]/g, 'root($1)');
     tex = tex.replace(/(\d)frac/g, '$1 frac');
-	tex = tex.replace(/x(x|\(|\[)/g, "x*$1");
-	tex = tex.replace(/x(x|\(|\[)/g, "x*$1"); // Seems redundant, but it freakin works!
+	tex = tex.replace(/x(x|y|f|g|sin|cos|tan|csc|sec|cot|\(|\[|ln|log)/g, "x*$1");
+	tex = tex.replace(/x(x|y|f|g|sin|cos|tan|csc|sec|cot|\(|\[|ln|log)/g, "x*$1"); // TODO: Improve this a little more?
 	
     while ((i = tex.indexOf('frac{')) != -1) { //found a fraction start
         nested = 1;
