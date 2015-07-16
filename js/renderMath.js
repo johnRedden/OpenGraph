@@ -329,6 +329,68 @@ function renderPolarCurve(entry, attr, obj)
 	});
 }
 
+// Renders an inequality
+function renderInequality(entry, attr, obj)
+{
+	// Variables
+	var	splits;
+	var	bDashed=	true;
+	var	xLoc=	1;
+	var	bInverse=	false;
+	var	userFunction;
+	
+	if(entry[0].inequalityPointA)
+		board.removeObject(entry[0].inequalityPointA);
+	if(entry[0].inequalityPointB)
+		board.removeObject(entry[0].inequalityPointB);
+	if(entry[0].inequalityLine)
+		board.removeObject(entry[0].inequalityLine);
+	removeFromGraph(entry);
+	
+	if(obj.text.indexOf("^")!== -1 || (obj.text.indexOf("<")=== obj.text.length-1 || obj.text.indexOf(">")=== obj.text.length-1) || obj.text.indexOf("y")=== -1)
+		return;
+	
+	if(obj.text.indexOf("=")!== -1)
+	{
+		bDashed=	false;
+		obj.text=	obj.text.replace("=", "");
+	}
+	if(obj.text.indexOf("<")!== -1)
+	{
+		splits=	obj.text.split("<");
+		bInverse=	false;
+	}
+	else if(obj.text.indexOf(">")!== -1)
+	{
+		splits=	obj.text.split(">");
+		bInverse=	true;
+	}
+	if(splits[0].indexOf("y")=== -1)
+	{
+		xLoc=	0;
+		bInverse=	!bInverse;
+	}
+	
+	try
+	{
+		eval("userFunction = function(x) { with(Math) return "+mathjs(splits[xLoc])+"; }");
+		entry[0].inequalityPointA=	board.create("point", [-1, userFunction(-1)]);
+		entry[0].inequalityPointB=	board.create("point", [1, userFunction(1)]);
+		entry[0].inequalityLine=	board.create("line", [entry[0].inequalityPointA, entry[0].inequalityPointB]);
+		entry[0].graphRef=	board.create("inequality", [entry[0].inequalityLine],
+		{
+			visible: true,
+			strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+			strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+			fixed: true,
+			inverse: bInverse
+		});
+		// TODO: Have a move event listener that changes the formula as you move it around
+		// TODO: Set dashed according to the bDashed variable
+	}
+	catch(e) { console.log("caught "+e); }
+}
+
 // A special trim that is used for the render functions to crop out the word and any whitespaces
 function specialTrim(txt, substr)
 {

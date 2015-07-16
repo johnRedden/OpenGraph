@@ -103,9 +103,8 @@ function renderGraph(entry)
 				case "hyperbola":	renderHyperbola(entry, attr, obj);	return;
 				case "lagrange":	renderLagrange(entry, attr, obj);	return;
 				case "sector":	renderSector(entry, attr, obj);	return;
-				case "polar":
-					renderCurve(entry, attr, obj);
-					return;
+				case "polar":	renderCurve(entry, attr, obj);	return;
+				case "inequality":	renderInequality(entry, attr, obj);	return;
 				default:	break;
 			}
 		}catch(e) { console.log("caught "+e); }

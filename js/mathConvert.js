@@ -132,8 +132,8 @@ function getEntryType(txt) {
 	
     // this function could take in the entry
     if (txt.indexOf("x=") !== -1) { return "vline" };
+	if (txt.indexOf("<") !== -1 || txt.indexOf(">") !== -1) { return "inequality";	}
     if (txt.indexOf("triangle") !== -1) { return "triangle"};
-    if (txt.indexOf("quad") !== -1) { return "quad" };
     if (txt.indexOf("lagrange") !== -1) { return "lagrange"};
     if (txt.indexOf("line") !== -1) { return "line"};
     if (txt.indexOf("segment") !== -1) { return "segment" };
