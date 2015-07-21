@@ -2,17 +2,18 @@
 // all user information returned from any given entry
 function getUserFunction(currEntry) {
 
-    var fn, fnName, fnAsciiMath, fnIsGraphable, entryType, txt, filteredTxt;
+    var fn, fnName, fnAsciiMath, fnIsGraphable, entryType, txt, filteredTxt, renewedFuncNotation;
 
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
-
+	txt=	findAndReplaceKnownFunctions(txt, currEntry);
+	
     entryType = getEntryType(txt);
     
     // function name is left of = and fn comes from expression to right of =
     if ( txt.indexOf("=") !== -1 ) {
         var inputStrs = txt.split("=");
-        fnName = inputStrs[0];
+        fnName = inputStrs[0].toLowerCase();
         fnAsciiMath = inputStrs[1]; 
     } else {
         fnName = '';
@@ -25,6 +26,15 @@ function getUserFunction(currEntry) {
     }catch(e){
         //console.log("in getUserFunction " + e);
     }
+	
+	if(fnName!== '')
+	{
+		currEntry[0].funcCreated=	{ // Is there a better name to this?
+			name:	fnName.substring(0, fnName.indexOf("(")),
+			asciiOrigin:	fnAsciiMath,
+			func:	fn
+		};
+	}
 
     if( entryType === 'function')
     {
@@ -59,6 +69,86 @@ function getUserFunction(currEntry) {
         type: entryType,
         text: txt
     };
+}
+
+// Finds and replaces all the known functions with whatever they have
+function findAndReplaceKnownFunctions(text, entry)
+{
+	// Variables
+	var	index=	-1;
+	var	nested=	0;
+	var	lp=	-1;
+	var	rp=	-1;
+	var	sp=	-1;
+	var	ep=	-1;
+	var	f=	null;
+	
+	$(".entry").each(function(index, elem)
+	{
+		if(elem.funcCreated)
+		{
+			if(elem.funcCreated.name== 'f')
+			{
+				if(elem=== entry[0])
+					return;
+				f=	elem.funcCreated;
+			}
+		}
+	});
+	
+	if(f== null)
+		return text;
+		var xx=	0;
+	
+	do
+	{
+		try{
+			if(text.indexOf("f(", index+1)!== -1) // Found a f of x function
+			{
+				index=	text.indexOf("f(", index);
+				nested=	0;
+				sp=	index+2;
+				do
+				{
+					lp=	text.indexOf("(", index+1);
+					rp=	text.indexOf(")", index+1);
+					if(lp!== -1 && lp< rp)
+					{
+						index=	lp;
+						nested++;
+					}
+					else if(rp!== -1 && (lp=== -1 || rp< lp))
+					{
+						index=	rp;
+						nested--;
+					}
+				}while(nested> 0 && rp!== -1);
+				ep=	rp;
+				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
+					text=	text.substring(0, sp-2)+f.func(text.substring(sp, ep))+text.substring(ep+1);
+				else
+				{
+					// Variables
+					var	prefix=	"";
+					var	temp=	f.asciiOrigin;
+					var	suffix=	"";
+					
+					temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
+					if(sp-2!== 0)
+						prefix=	text.substring(0, sp-2);
+					if(ep+2< text.length)
+						suffix=	text.substring(ep+1);
+					text=	prefix+temp+suffix;
+				}
+				index=	sp-2;
+				continue;
+			}
+			
+			index=	-1;
+		}catch(e){console.log("caught "+e);}
+	}while(index!== -1);
+	
+	return text;
 }
 
 // Auto fills any special functions like sin, cos, tan, etc.  
