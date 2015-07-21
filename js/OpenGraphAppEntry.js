@@ -115,7 +115,7 @@ function renderGraph(entry)
 	    var hasPlottedPoint = false;
         
         // ******  Evaluating function notation and stand alone expressions ************
-	    if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
+	   /* if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
 
 	        var insideStr = obj.text.substring(obj.text.indexOf("(") + 1, obj.text.length - 1);  // here f( insideStr )
 			var	insideFN;
@@ -173,7 +173,7 @@ function renderGraph(entry)
 	                entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (obj.userFunction(0).toFixed(4)) + "</span>");
 	        }
 	            
-	    }
+	    }*/
 	    // ******  End evaluating function notation ************
 		
 

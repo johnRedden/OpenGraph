@@ -7,12 +7,19 @@ function getUserFunction(currEntry) {
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 	txt=	findAndReplaceKnownFunctions(txt, currEntry);
+	$("#header").text(txt);
 	
     entryType = getEntryType(txt);
     
     // function name is left of = and fn comes from expression to right of =
     if ( txt.indexOf("=") !== -1 ) {
         var inputStrs = txt.split("=");
+		
+		if(inputStrs[1].indexOf(inputStrs[0])!== -1)
+		{
+			inputStrs[0]=	'';
+			inputStrs[1]=	txt;
+		}
         fnName = inputStrs[0].toLowerCase();
         fnAsciiMath = inputStrs[1]; 
     } else {
