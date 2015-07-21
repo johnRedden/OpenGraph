@@ -7,7 +7,6 @@ function getUserFunction(currEntry) {
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 	txt=	findAndReplaceKnownFunctions(txt, currEntry);
-	$("#header").text(txt);
 	
     entryType = getEntryType(txt);
     
@@ -89,28 +88,37 @@ function findAndReplaceKnownFunctions(text, entry)
 	var	sp=	-1;
 	var	ep=	-1;
 	var	f=	null;
+	var	g=	null;
+	var	bSkipF=	false;
 	
 	$(".entry").each(function(index, elem)
 	{
 		if(elem.funcCreated)
 		{
-			if(elem.funcCreated.name== 'f')
+			if(elem.funcCreated.name== 'f' && f=== null)
 			{
 				if(elem=== entry[0])
 					return;
 				f=	elem.funcCreated;
 			}
+			else if(elem.funcCreated.name== 'g' && g=== null)
+			{
+				if(elem=== entry[0])
+					return;
+				g=	elem.funcCreated;
+			}
 		}
 	});
-	
-	if(f== null)
-		return text;
-		var xx=	0;
 	
 	do
 	{
 		try{
-			if(text.indexOf("f(", index+1)!== -1) // Found a f of x function
+			if(text.indexOf("f(", index+1)> text.indexOf("g(", index+1) && !bSkipF)
+				bSkipF=	true;
+			else
+				bSkipF=	false;
+			
+			if(text.indexOf("f(", index+1)!== -1 && f!= null && !bSkipF) // Found a f of x function
 			{
 				index=	text.indexOf("f(", index);
 				nested=	0;
@@ -151,9 +159,50 @@ function findAndReplaceKnownFunctions(text, entry)
 				continue;
 			}
 			
-			index=	-1;
+			if(text.indexOf("g(", index+1)!== -1 && g!= null) // Found a g of x function
+			{
+				index=	text.indexOf("g(", index);
+				nested=	0;
+				sp=	index+2;
+				do
+				{
+					lp=	text.indexOf("(", index+1);
+					rp=	text.indexOf(")", index+1);
+					if(lp!== -1 && lp< rp)
+					{
+						index=	lp;
+						nested++;
+					}
+					else if(rp!== -1 && (lp=== -1 || rp< lp))
+					{
+						index=	rp;
+						nested--;
+					}
+				}while(nested> 0 && rp!== -1);
+				ep=	rp;
+				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
+					text=	text.substring(0, sp-2)+g.func(text.substring(sp, ep))+text.substring(ep+1);
+				else
+				{
+					// Variables
+					var	prefix=	"";
+					var	temp=	g.asciiOrigin;
+					var	suffix=	"";
+					
+					temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
+					if(sp-2!== 0)
+						prefix=	text.substring(0, sp-2);
+					if(ep+2< text.length)
+						suffix=	text.substring(ep+1);
+					text=	prefix+temp+suffix;
+				}
+				index=	sp-2;
+				continue;
+			}
+			
+			break;
 		}catch(e){console.log("caught "+e);}
-	}while(index!== -1);
+	}while(true);
 	
 	return text;
 }
