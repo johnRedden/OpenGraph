@@ -2,12 +2,12 @@
 // all user information returned from any given entry
 function getUserFunction(currEntry) {
 
-    var fn, fnName, fnAsciiMath, fnIsGraphable, entryType, txt, filteredTxt, renewedFuncNotation;
+    var fn, fnName, fnAsciiMath, fnIsGraphable, fnIsEvaluateable, entryType, txt, filteredTxt, renewedFuncNotation;
 
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 	txt=	findAndReplaceKnownFunctions(txt, currEntry);
-	$("#header").text(txt);
+    $("#header").text(txt);
 	
     entryType = getEntryType(txt);
     
@@ -30,6 +30,7 @@ function getUserFunction(currEntry) {
     // javascript math conversion here using  mathjs.js 
     try{
         eval("fn = function(x) { with(Math) return " + mathjs(fnAsciiMath) + " }");
+
     }catch(e){
         //console.log("in getUserFunction " + e);
     }
@@ -68,11 +69,14 @@ function getUserFunction(currEntry) {
         // fyi lagrange function is a jsxGraph curve
     }
 
+    console.log(fn(0));
+
     return {
         name: fnName.trim()[0],  //name is one char for now
         variable: 'x',      //todo: detect variable
         userFunction: fn,
         isGraphable: fnIsGraphable,
+        isEvaluateable: (fn(0)===NaN)?false:true,
         type: entryType,
         text: txt
     };

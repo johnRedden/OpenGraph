@@ -114,7 +114,11 @@ function renderGraph(entry)
 	// **********************main graphing here **************************
 	    var hasPlottedPoint = false;
         
-        // ******  Evaluating function notation and stand alone expressions ************
+	    // ******  Evaluating function notation and stand alone expressions ************
+	    if (obj.isEvaluateable) {  
+	        entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (obj.userFunction(0).toFixed(4)) + "</span>");
+	    }
+
 	   /* if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
 
 	        var insideStr = obj.text.substring(obj.text.indexOf("(") + 1, obj.text.length - 1);  // here f( insideStr )
