@@ -7,6 +7,7 @@ function getUserFunction(currEntry) {
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 	txt=	findAndReplaceKnownFunctions(txt, currEntry);
+	$("#header").text(txt);
 	
     entryType = getEntryType(txt);
     
@@ -113,7 +114,7 @@ function findAndReplaceKnownFunctions(text, entry)
 	do
 	{
 		try{
-			if(text.indexOf("f(", index+1)> text.indexOf("g(", index+1) && !bSkipF)
+			if(text.indexOf("f(", index+1)> text.indexOf("g(", index+1) && !bSkipF && text.indexOf("g(", index+1)!== -1)
 				bSkipF=	true;
 			else
 				bSkipF=	false;
@@ -155,7 +156,7 @@ function findAndReplaceKnownFunctions(text, entry)
 						suffix=	text.substring(ep+1);
 					text=	prefix+temp+suffix;
 				}
-				index=	sp-2;
+				index=	sp-1;
 				continue;
 			}
 			
@@ -196,7 +197,7 @@ function findAndReplaceKnownFunctions(text, entry)
 						suffix=	text.substring(ep+1);
 					text=	prefix+temp+suffix;
 				}
-				index=	sp-2;
+				index=	sp-1;
 				continue;
 			}
 			
