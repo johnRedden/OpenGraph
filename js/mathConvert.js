@@ -7,7 +7,7 @@ function getUserFunction(currEntry) {
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 	txt=	findAndReplaceKnownFunctions(txt, currEntry);
-    $("#header").text(txt);
+	$("#header").text(txt);
 	
     entryType = getEntryType(txt);
     
@@ -86,23 +86,19 @@ function getUserFunction(currEntry) {
 function findAndReplaceKnownFunctions(text, entry)
 {
 	// Variables
-	var	index=	-1;
+	var	index=	0;
 	var	nested=	0;
 	var	lp=	-1;
 	var	rp=	-1;
 	var	sp=	-1;
 	var	ep=	-1;
-	var	f=	null;
-	var	g=	null;
-	var	y=	null;
-	var	bSkipF=	false;
-	var	bSkipG=	false;
+	var	funcsCreated=	new Array();
 	
 	$(".entry").each(function(index, elem)
 	{
 		if(elem.funcCreated)
 		{
-			if(elem.funcCreated.name== 'f' && f=== null)
+			/*if(elem.funcCreated.name== 'f' && f=== null)
 			{
 				if(elem=== entry[0])
 					return;
@@ -119,13 +115,70 @@ function findAndReplaceKnownFunctions(text, entry)
 				if(elem=== entry[0])
 					return;
 				y=	elem.funcCreated;
+			}*/
+			if(entry[0].funcCreated)
+			{
+				if(elem.funcCreated.name=== entry[0].funcCreated.name)
+					return;
 			}
+			
+			funcsCreated.push(elem.funcCreated);
 		}
 	});
 	
 	do
 	{
-		try{
+		try
+		{
+			if(index>= text.length)
+				break;
+			for(var i= 0; i< funcsCreated.length; i++)
+			{
+				console.log(text.substring(index, text.indexOf("(", index)+1));
+				if(index< text.indexOf("(", index) && funcsCreated[i].name+"("== text.substring(index, text.indexOf("(", index)+1))
+				{
+					//alert("in");
+					index=	text.indexOf(funcsCreated[i].name+"(", index);
+					nested=	0;
+					sp=	index+funcsCreated[i].name.length+1;
+					do
+					{
+						lp=	text.indexOf("(", index+1);
+						rp=	text.indexOf(")", index+1);
+						if(lp!== -1 && lp< rp)
+						{
+							index=	lp;
+							nested++;
+						}
+						else if(rp!== -1 && (lp=== -1 || rp< lp))
+						{
+							index=	rp;
+							nested--;
+						}
+					}while(nested> 0 && rp!== -1);
+					ep=	rp;
+					if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
+						text=	text.substring(0, sp-funcsCreated[i].name.length-1)+funcsCreated[i].func(eval(text.substring(sp, ep)))+text.substring(ep+1);
+					else
+					{
+						// Variables
+						var	prefix=	"";
+						var	temp=	funcsCreated[i].asciiOrigin;
+						var	suffix=	"";
+						
+						temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
+						if(sp-2!== 0)
+							prefix=	text.substring(0, sp-funcsCreated[i].name.length-1);
+						if(ep+2< text.length)
+							suffix=	text.substring(ep+1);
+						text=	prefix+temp+suffix;
+					}
+					index=	sp-funcsCreated[i].name.length;
+				}
+			}
+			index++;
+		} catch(e) { console.log("caught "+e); }
+		/*try{
 			// Gah this is MONSTEROUS, there has got to be a better way than this memory hog :/
 			if(text.indexOf("f(", index+1)> text.indexOf("g(", index+1) && !bSkipF && text.indexOf("g(", index+1)!== -1)
 				bSkipF=	true;
@@ -262,7 +315,7 @@ function findAndReplaceKnownFunctions(text, entry)
 			}
 			
 			break;
-		}catch(e){console.log("caught "+e);}
+		}catch(e){console.log("caught "+e);}*/
 	}while(true);
 	
 	return text;
