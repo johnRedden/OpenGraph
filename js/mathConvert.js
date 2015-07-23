@@ -38,7 +38,7 @@ function getUserFunction(currEntry) {
 	if(fnName!== '')
 	{
 		currEntry[0].funcCreated=	{ // Is there a better name to this?
-			name:	fnName.substring(0, fnName.indexOf("(")),
+			name:	(fnName.indexOf("(")!== -1) ? fnName.substring(0, fnName.indexOf("(")) : fnName,
 			asciiOrigin:	fnAsciiMath,
 			func:	fn
 		};
@@ -94,7 +94,9 @@ function findAndReplaceKnownFunctions(text, entry)
 	var	ep=	-1;
 	var	f=	null;
 	var	g=	null;
+	var	y=	null;
 	var	bSkipF=	false;
+	var	bSkipG=	false;
 	
 	$(".entry").each(function(index, elem)
 	{
@@ -112,16 +114,29 @@ function findAndReplaceKnownFunctions(text, entry)
 					return;
 				g=	elem.funcCreated;
 			}
+			else if(elem.funcCreated.name== 'y' && y== null)
+			{
+				if(elem=== entry[0])
+					return;
+				y=	elem.funcCreated;
+			}
 		}
 	});
 	
 	do
 	{
 		try{
+			// Gah this is MONSTEROUS, there has got to be a better way than this memory hog :/
 			if(text.indexOf("f(", index+1)> text.indexOf("g(", index+1) && !bSkipF && text.indexOf("g(", index+1)!== -1)
+				bSkipF=	true;
+			else if(text.indexOf("f(", index+1)> text.indexOf("y(", index+1) && !bSkipF && text.indexOf("y(", index+1)!== -1)
 				bSkipF=	true;
 			else
 				bSkipF=	false;
+			if(text.indexOf("g(", index+1)> text.indexOf("y(", index+1) && !bSkipG && text.indexOf("y(", index+1)!== -1)
+				bSkipG=	true;
+			else
+				bSkipG=	false;
 			
 			if(text.indexOf("f(", index+1)!== -1 && f!= null && !bSkipF) // Found a f of x function
 			{
@@ -192,6 +207,47 @@ function findAndReplaceKnownFunctions(text, entry)
 					// Variables
 					var	prefix=	"";
 					var	temp=	g.asciiOrigin;
+					var	suffix=	"";
+					
+					temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
+					if(sp-2!== 0)
+						prefix=	text.substring(0, sp-2);
+					if(ep+2< text.length)
+						suffix=	text.substring(ep+1);
+					text=	prefix+temp+suffix;
+				}
+				index=	sp-1;
+				continue;
+			}
+			
+			if(text.indexOf("y(", index+1)!== -1 && y!= null) // Found a g of x function
+			{
+				index=	text.indexOf("y(", index);
+				nested=	0;
+				sp=	index+2;
+				do
+				{
+					lp=	text.indexOf("(", index+1);
+					rp=	text.indexOf(")", index+1);
+					if(lp!== -1 && lp< rp)
+					{
+						index=	lp;
+						nested++;
+					}
+					else if(rp!== -1 && (lp=== -1 || rp< lp))
+					{
+						index=	rp;
+						nested--;
+					}
+				}while(nested> 0 && rp!== -1);
+				ep=	rp;
+				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
+					text=	text.substring(0, sp-2)+y.func(text.substring(sp, ep))+text.substring(ep+1);
+				else
+				{
+					// Variables
+					var	prefix=	"";
+					var	temp=	y.asciiOrigin;
 					var	suffix=	"";
 					
 					temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
