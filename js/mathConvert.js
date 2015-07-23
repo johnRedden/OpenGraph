@@ -20,7 +20,7 @@ function getUserFunction(currEntry) {
 			inputStrs[0]=	'';
 			inputStrs[1]=	txt;
 		}
-        fnName = inputStrs[0].toLowerCase();
+        fnName = inputStrs[0];
         fnAsciiMath = inputStrs[1]; 
     } else {
         fnName = '';
@@ -35,10 +35,10 @@ function getUserFunction(currEntry) {
         //console.log("in getUserFunction " + e);
     }
 	
-	if(fnName!== '')
+	if(fnName!== '' && fnName.replace(/\s/g, "").indexOf("(x)")!== -1)
 	{
 		currEntry[0].funcCreated=	{ // Is there a better name to this?
-			name:	(fnName.indexOf("(")!== -1) ? fnName.substring(0, fnName.indexOf("(")) : fnName,
+			name:	fnName.substring(0, fnName.indexOf("(")),
 			asciiOrigin:	fnAsciiMath,
 			func:	fn
 		};
@@ -98,24 +98,6 @@ function findAndReplaceKnownFunctions(text, entry)
 	{
 		if(elem.funcCreated)
 		{
-			/*if(elem.funcCreated.name== 'f' && f=== null)
-			{
-				if(elem=== entry[0])
-					return;
-				f=	elem.funcCreated;
-			}
-			else if(elem.funcCreated.name== 'g' && g=== null)
-			{
-				if(elem=== entry[0])
-					return;
-				g=	elem.funcCreated;
-			}
-			else if(elem.funcCreated.name== 'y' && y== null)
-			{
-				if(elem=== entry[0])
-					return;
-				y=	elem.funcCreated;
-			}*/
 			if(entry[0].funcCreated)
 			{
 				if(elem.funcCreated.name=== entry[0].funcCreated.name)
@@ -126,7 +108,7 @@ function findAndReplaceKnownFunctions(text, entry)
 		}
 	});
 	
-	do
+	while(true)
 	{
 		try
 		{
@@ -134,10 +116,8 @@ function findAndReplaceKnownFunctions(text, entry)
 				break;
 			for(var i= 0; i< funcsCreated.length; i++)
 			{
-				console.log(text.substring(index, text.indexOf("(", index)+1));
-				if(index< text.indexOf("(", index) && funcsCreated[i].name+"("== text.substring(index, text.indexOf("(", index)+1))
+				if(index< text.indexOf("(", index) && funcsCreated[i].name+"("== text.substring(index, text.indexOf("(", index)+1)) // Found a match!
 				{
-					//alert("in");
 					index=	text.indexOf(funcsCreated[i].name+"(", index);
 					nested=	0;
 					sp=	index+funcsCreated[i].name.length+1;
@@ -178,145 +158,7 @@ function findAndReplaceKnownFunctions(text, entry)
 			}
 			index++;
 		} catch(e) { console.log("caught "+e); }
-		/*try{
-			// Gah this is MONSTEROUS, there has got to be a better way than this memory hog :/
-			if(text.indexOf("f(", index+1)> text.indexOf("g(", index+1) && !bSkipF && text.indexOf("g(", index+1)!== -1)
-				bSkipF=	true;
-			else if(text.indexOf("f(", index+1)> text.indexOf("y(", index+1) && !bSkipF && text.indexOf("y(", index+1)!== -1)
-				bSkipF=	true;
-			else
-				bSkipF=	false;
-			if(text.indexOf("g(", index+1)> text.indexOf("y(", index+1) && !bSkipG && text.indexOf("y(", index+1)!== -1)
-				bSkipG=	true;
-			else
-				bSkipG=	false;
-			
-			if(text.indexOf("f(", index+1)!== -1 && f!= null && !bSkipF) // Found a f of x function
-			{
-				index=	text.indexOf("f(", index);
-				nested=	0;
-				sp=	index+2;
-				do
-				{
-					lp=	text.indexOf("(", index+1);
-					rp=	text.indexOf(")", index+1);
-					if(lp!== -1 && lp< rp)
-					{
-						index=	lp;
-						nested++;
-					}
-					else if(rp!== -1 && (lp=== -1 || rp< lp))
-					{
-						index=	rp;
-						nested--;
-					}
-				}while(nested> 0 && rp!== -1);
-				ep=	rp;
-				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
-					text=	text.substring(0, sp-2)+f.func(eval(text.substring(sp, ep)))+text.substring(ep+1);
-				else
-				{
-					// Variables
-					var	prefix=	"";
-					var	temp=	f.asciiOrigin;
-					var	suffix=	"";
-					
-					temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
-					if(sp-2!== 0)
-						prefix=	text.substring(0, sp-2);
-					if(ep+2< text.length)
-						suffix=	text.substring(ep+1);
-					text=	prefix+temp+suffix;
-				}
-				index=	sp-1;
-				continue;
-			}
-			
-			if(text.indexOf("g(", index+1)!== -1 && g!= null) // Found a g of x function
-			{
-				index=	text.indexOf("g(", index);
-				nested=	0;
-				sp=	index+2;
-				do
-				{
-					lp=	text.indexOf("(", index+1);
-					rp=	text.indexOf(")", index+1);
-					if(lp!== -1 && lp< rp)
-					{
-						index=	lp;
-						nested++;
-					}
-					else if(rp!== -1 && (lp=== -1 || rp< lp))
-					{
-						index=	rp;
-						nested--;
-					}
-				}while(nested> 0 && rp!== -1);
-				ep=	rp;
-				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
-					text=	text.substring(0, sp-2)+g.func(eval(text.substring(sp, ep)))+text.substring(ep+1);
-				else
-				{
-					// Variables
-					var	prefix=	"";
-					var	temp=	g.asciiOrigin;
-					var	suffix=	"";
-					
-					temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
-					if(sp-2!== 0)
-						prefix=	text.substring(0, sp-2);
-					if(ep+2< text.length)
-						suffix=	text.substring(ep+1);
-					text=	prefix+temp+suffix;
-				}
-				index=	sp-1;
-				continue;
-			}
-			
-			if(text.indexOf("y(", index+1)!== -1 && y!= null) // Found a g of x function
-			{
-				index=	text.indexOf("y(", index);
-				nested=	0;
-				sp=	index+2;
-				do
-				{
-					lp=	text.indexOf("(", index+1);
-					rp=	text.indexOf(")", index+1);
-					if(lp!== -1 && lp< rp)
-					{
-						index=	lp;
-						nested++;
-					}
-					else if(rp!== -1 && (lp=== -1 || rp< lp))
-					{
-						index=	rp;
-						nested--;
-					}
-				}while(nested> 0 && rp!== -1);
-				ep=	rp;
-				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
-					text=	text.substring(0, sp-2)+y.func(eval(text.substring(sp, ep)))+text.substring(ep+1);
-				else
-				{
-					// Variables
-					var	prefix=	"";
-					var	temp=	y.asciiOrigin;
-					var	suffix=	"";
-					
-					temp=	"("+temp.replace(/x/g, "("+text.substring(sp, ep)+")")+")";
-					if(sp-2!== 0)
-						prefix=	text.substring(0, sp-2);
-					if(ep+2< text.length)
-						suffix=	text.substring(ep+1);
-					text=	prefix+temp+suffix;
-				}
-				index=	sp-1;
-				continue;
-			}
-			
-			break;
-		}catch(e){console.log("caught "+e);}*/
-	}while(true);
+	}
 	
 	return text;
 }
@@ -486,5 +328,5 @@ function MQLaTextoAM(tex) {
     tex = tex.replace(/\(([\a-zA-Z])\)\//g, '$1/');  //change (x)/ to x/
     tex = tex.replace(/\^\(-1\)/g, '^-1');
     tex = tex.replace(/\^\((-?[\d\.]+)\)/g, '^$1');
-    return tex;
+    return tex.toLowerCase();
 }
