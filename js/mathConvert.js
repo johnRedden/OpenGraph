@@ -69,7 +69,11 @@ function getUserFunction(currEntry) {
         // fyi lagrange function is a jsxGraph curve
     }
 
-    console.log(fn(0));
+    try
+	{
+		console.log(fn(0));
+	}
+	catch(e)	{ fn=	function(x){return "x";};	}
 
     return {
         name: fnName.trim()[0],  //name is one char for now
@@ -109,7 +113,7 @@ function findAndReplaceKnownFunctions(text, entry)
 	});
 	
 	if(funcsCreated.length=== 0)
-		return;
+		return text;
 	
 	while(true)
 	{
