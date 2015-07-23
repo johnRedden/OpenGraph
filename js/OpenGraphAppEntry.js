@@ -116,7 +116,13 @@ function renderGraph(entry)
         
 	    // ******  Evaluating function notation and stand alone expressions ************
 	    if (obj.isEvaluateable) {  
-	        entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (obj.userFunction(0).toFixed(4)) + "</span>");
+			// Variables
+			var	output=	obj.userFunction(0).toFixed(4);
+			
+			if(isNaN(output))
+				entry.find(".mathinput").append("<span class='dynamicOutput smallOutput' style='float:right'>Sorry can't find evaluation, yet.</span>");
+			else
+				entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (output) + "</span>");
 	    }
 
 	   /* if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
