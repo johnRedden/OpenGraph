@@ -160,7 +160,7 @@ function findAndReplaceKnownFunctions(text, entry)
 				}while(nested> 0 && rp!== -1);
 				ep=	rp;
 				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
-					text=	text.substring(0, sp-2)+f.func(text.substring(sp, ep))+text.substring(ep+1);
+					text=	text.substring(0, sp-2)+f.func(eval(text.substring(sp, ep)))+text.substring(ep+1);
 				else
 				{
 					// Variables
@@ -201,7 +201,7 @@ function findAndReplaceKnownFunctions(text, entry)
 				}while(nested> 0 && rp!== -1);
 				ep=	rp;
 				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
-					text=	text.substring(0, sp-2)+g.func(text.substring(sp, ep))+text.substring(ep+1);
+					text=	text.substring(0, sp-2)+g.func(eval(text.substring(sp, ep)))+text.substring(ep+1);
 				else
 				{
 					// Variables
@@ -242,7 +242,7 @@ function findAndReplaceKnownFunctions(text, entry)
 				}while(nested> 0 && rp!== -1);
 				ep=	rp;
 				if(text.substring(sp, ep).indexOf("x")=== -1) // Found no x's or anything
-					text=	text.substring(0, sp-2)+y.func(text.substring(sp, ep))+text.substring(ep+1);
+					text=	text.substring(0, sp-2)+y.func(eval(text.substring(sp, ep)))+text.substring(ep+1);
 				else
 				{
 					// Variables
