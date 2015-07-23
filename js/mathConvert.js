@@ -108,6 +108,9 @@ function findAndReplaceKnownFunctions(text, entry)
 		}
 	});
 	
+	if(funcsCreated.length=== 0)
+		return;
+	
 	while(true)
 	{
 		try
