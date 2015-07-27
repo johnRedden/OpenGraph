@@ -72,15 +72,16 @@ function getUserFunction(currEntry) {
     try
 	{
 		console.log(fn(0));
+		fnIsEvaluateable=	(!isNaN(fn(0)) && txt.indexOf("x")=== -1);
 	}
-	catch(e)	{ fn=	function(x){return "x";};	}
+	catch(e)	{ fnIsEvaluateable=	false;	}
 
     return {
         name: fnName.trim()[0],  //name is one char for now
         variable: 'x',      //todo: detect variable
         userFunction: fn,
         isGraphable: fnIsGraphable,
-        isEvaluateable: !isNaN(fn(0)),
+        isEvaluateable: fnIsEvaluateable, //(fn(0)== NaN) ? false : true,
         type: entryType,
         text: txt
     };
@@ -275,7 +276,7 @@ function getEntryType(txt) {
     if (txt.indexOf("ellipse") !== -1) { return "ellipse" };
     if (txt.indexOf("parabola") !== -1) { return "parabola"};
     if (txt.indexOf("hyperbola") !== -1) { return "hyperbola" };
-	if (txt.indexOf("polar") !== -1) { return "polar" };
+	if (txt.indexOf("r=") !== -1) { return "polar" };
 	if (txt.indexOf("sec tor") !== -1) { return "sector" };
     if (txt.indexOf(",") !== -1) { return "point" };
     // if no variable return "arithmetic"

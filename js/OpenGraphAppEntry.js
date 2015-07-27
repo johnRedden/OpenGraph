@@ -120,6 +120,21 @@ function renderGraph(entry)
 			var	output=	obj.userFunction(0).toFixed(4);
 			
 			entry.find(".mathinput").append("<span class='dynamicOutput' style='float:right'>=" + (output) + "</span>");
+			
+			/*try
+			{
+				removeFromGraph(entry);
+				entry[0].graphRef=	board.create("point", [output, obj.userFunction(output)],
+				{
+					visible: true,
+					strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
+					strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+					fillColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
+					fixed: true  //can make it dynamic here but choose not to
+				});
+				entry[0].graphRef.setAttribute({dash: attr.dash});
+				hasPlottedPoint=	true;
+			} catch(e) { console.log("caught "+e);	}*/
 	    }
 
 	   /* if (obj.text.indexOf("=") === -1) {// try to evaluate functions here... case where no equal
