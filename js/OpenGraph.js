@@ -210,7 +210,11 @@ $(document).ready(function()
 
     // 2. Construct first entry in the form
 
-    //set global mathquill behavior    
+    //set global mathquill behavior
+	/*
+		-	Adding nthroot makes things a bit trickier, doesn't size well with the height
+		-	Figure out if we could implement union somehow or if we even need to
+	*/
     MathQuill.addAutoCommands('pi theta sqrt sum');
     
 

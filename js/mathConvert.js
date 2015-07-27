@@ -7,7 +7,7 @@ function getUserFunction(currEntry) {
     //txt should be clean asciiMath from the Entry LaTex
     txt = MQLaTextoAM(MathQuill(currEntry.find(".math-field")[0]).latex());
 	txt=	findAndReplaceKnownFunctions(txt, currEntry);
-	$("#header").text(txt);
+	//$("#header").text(txt);
 	
     entryType = getEntryType(txt);
     
@@ -35,7 +35,7 @@ function getUserFunction(currEntry) {
         //console.log("in getUserFunction " + e);
     }
 	
-	if(fnName!== '' && fnName.replace(/\s/g, "").indexOf("(x)")!== -1)
+	if(fnName!== '' && fnName.replace(/\s/g, "").indexOf("(x)")!== -1 && !containsPresetFunctions(fnName.substring(0, fnName.indexOf("(")).replace(/\s/g, "")))
 	{
 		currEntry[0].funcCreated=	{ // Is there a better name to this?
 			name:	fnName.substring(0, fnName.indexOf("(")),
@@ -80,10 +80,35 @@ function getUserFunction(currEntry) {
         variable: 'x',      //todo: detect variable
         userFunction: fn,
         isGraphable: fnIsGraphable,
-        isEvaluateable: (fn(0)===NaN)?false:true,
+        isEvaluateable: !isNaN(fn(0)),
         type: entryType,
         text: txt
     };
+}
+
+// Finds if the given text is a preset function
+function isPresetFunction(text)
+{
+	switch(text)
+	{
+		case "sin":
+		case "cos":
+		case "tan":
+		case "csc":
+		case "sec":
+		case "cot":
+		case "ln":
+		case "log":
+		case "sinh":
+		case "cosh":
+		case "tanh":
+		case "csch":
+		case "sech":
+		case "coth":
+			return true;
+		default:
+			return false;
+	}
 }
 
 // Finds and replaces all the known functions with whatever they have
