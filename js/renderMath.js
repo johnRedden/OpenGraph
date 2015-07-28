@@ -290,6 +290,8 @@ function renderCurve(entry, attr, obj)
 // Renders a polar curve /* polar(mainFunc, funcA, funcB, locX, locY); */
 function renderPolarCurve(entry, attr, obj)
 {
+	return; // Does nothing! Polar stuff should be done later or something
+	/*
 	obj.text=	specialTrim(obj.text, 5).replace(/\(/g, "").replace(/\)/g, "");
 	
 	// Variables
@@ -326,7 +328,7 @@ function renderPolarCurve(entry, attr, obj)
 		strokeWidth: attr.strokeWidth ? attr.strokeWidth : 2,
 		strokeColor: attr.strokeColor ? attr.strokeColor : entry.find(".showColor").css("color"),
 		fixed:true
-	});
+	});*/
 }
 
 // Renders an inequality
