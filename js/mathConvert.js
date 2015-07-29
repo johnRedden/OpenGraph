@@ -15,7 +15,7 @@ function getUserFunction(currEntry) {
     if ( txt.indexOf("=") !== -1 ) {
         var inputStrs = txt.split("=");
 		
-		if(inputStrs[1].indexOf(inputStrs[0])!== -1)
+		if(inputStrs[1].indexOf(inputStrs[0])!== -1 || (inputStrs[0].indexOf("(")!== -1 && containsPresetFunctions(inputStrs[0].substring(0, inputStrs[0].indexOf("(")))))
 		{
 			inputStrs[0]=	'';
 			inputStrs[1]=	txt;
@@ -88,7 +88,7 @@ function getUserFunction(currEntry) {
 }
 
 // Finds if the given text is a preset function
-function isPresetFunction(text)
+function containsPresetFunctions(text)
 {
 	switch(text)
 	{
