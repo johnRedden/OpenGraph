@@ -270,6 +270,23 @@ function removeFromGraph(entry)
 {
     if (typeof entry === "object") {
         board.removeObject(entry[0].graphRef);
+		
+		// Removes the inequality stuff
+		if(entry[0].inequalityPointA)
+		{
+			board.removeObject(entry[0].inequalityPointA);
+			entry[0].inequalityPointA=	null;
+		}
+		if(entry[0].inequalityPointB)
+		{
+			board.removeObject(entry[0].inequalityPointB);
+			entry[0].inequalityPointB=	null;
+		}
+		if(entry[0].inequalityLine)
+		{
+			board.removeObject(entry[0].inequalityLine);
+			entry[0].inequalityLine=	null;
+		}
     }
 }
 
@@ -352,6 +369,8 @@ function onDashedClick(e)
 {
 	var	currEntry=	$(this).parents(".entry");
 	
+	if(currEntry[0].inequalityLine)
+		return;
 	if(currEntry[0].graphRef)
 	{
 		if(currEntry[0].graphRef.getAttribute("dash"))

@@ -341,12 +341,6 @@ function renderInequality(entry, attr, obj)
 	var	bInverse=	false;
 	var	userFunction;
 	
-	if(entry[0].inequalityPointA)
-		board.removeObject(entry[0].inequalityPointA);
-	if(entry[0].inequalityPointB)
-		board.removeObject(entry[0].inequalityPointB);
-	if(entry[0].inequalityLine)
-		board.removeObject(entry[0].inequalityLine);
 	removeFromGraph(entry);
 	
 	if(obj.text.indexOf("^")!== -1 || (obj.text.indexOf("<")=== obj.text.length-1 || obj.text.indexOf(">")=== obj.text.length-1) || obj.text.indexOf("y")=== -1)
@@ -376,9 +370,9 @@ function renderInequality(entry, attr, obj)
 	try
 	{
 		eval("userFunction = function(x) { with(Math) return "+mathjs(splits[xLoc])+"; }");
-		entry[0].inequalityPointA=	board.create("point", [-1, userFunction(-1)]);
-		entry[0].inequalityPointB=	board.create("point", [1, userFunction(1)]);
-		entry[0].inequalityLine=	board.create("line", [entry[0].inequalityPointA, entry[0].inequalityPointB]);
+		entry[0].inequalityPointA=	board.create("point", [-1, userFunction(-1)], {visible: false});
+		entry[0].inequalityPointB=	board.create("point", [1, userFunction(1)], {visible: false});
+		entry[0].inequalityLine=	board.create("line", [entry[0].inequalityPointA, entry[0].inequalityPointB], {visible: false});
 		entry[0].graphRef=	board.create("inequality", [entry[0].inequalityLine],
 		{
 			visible: true,
@@ -387,8 +381,18 @@ function renderInequality(entry, attr, obj)
 			fixed: true,
 			inverse: bInverse
 		});
-		// TODO: Have a move event listener that changes the formula as you move it around
-		// TODO: Set dashed according to the bDashed variable
+		(entry[0].graphRef).setAttribute({dash: bDashed ? 2 : 0});
+		
+		if(bDashed)
+		{
+			entry[0].dashed=	true;
+			entry.find(".dashed").css({color: "Black"});
+		}
+		else
+		{
+			entry[0].dashed=	false;
+			entry.find(".dashed").css({color: "LightGray"});
+		}
 	}
 	catch(e) { console.log("caught "+e); }
 }
