@@ -234,7 +234,7 @@ $(document).ready(function()
 		temp=	temp.split("&");
 		for(var i= 0; i< temp.length; i++)
 		{
-			if(temp[i].indexOf("readType=")!== -1)
+			if(temp[i].toLowerCase().indexOf("readtype=")!== -1)
 			{
 				// Variables
 				var	temp2=	temp[i].split("=");
@@ -267,8 +267,8 @@ $(document).ready(function()
 				updateEntry($($(".entry")[k]), temp[i].latex, temp[i].options);
 			else
 			{
-				updateEntry($($(".entry")[k]), temp[i], null);
 				convertSiteTo("iframe");
+				updateEntry($($(".entry")[k]), temp[i], null);
 			}
 			k++;
 		}
@@ -305,6 +305,7 @@ function convertSiteTo(idType)
 			$(".myForm").hide();
 			$("#top-header").hide();
 			$("#accessibilities").hide();
+			console.log("IN:(");
 			break;
 		case "iframe-mobile":	break;
 		case "mobile":	break;
