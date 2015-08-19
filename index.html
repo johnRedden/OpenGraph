@@ -203,17 +203,31 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" id="urlbox" value="NOTHING, AHAHAHA" style="width: 100%;" /><br /><br />
-					<input type="radio" name="urltype" id="encodeNorm" alt="Text Only ( Recommended )" checked="true" />&emsp;Text Only ( Recommended)&emsp;&emsp;
-					<input type="radio" name="urltype" id="encodeFull" alt="Full ( Beta )" />&emsp; Full ( Beta )&emsp;&emsp;
+					<input type="radio" name="urltype" class="encodable" id="encodeNorm" alt="Text Only ( Recommended )" checked="true" /> Text Only ( Recommended )&emsp;
+					<input type="radio" name="urltype" class="encodable" id="encodeIframe" alt="iFrame ( For Embedding )" /> iFrame ( For Embedding )&emsp;
+					<input type="radio" name="urltype" class="encodable" id="encodeFull" alt="Full ( Beta )" /> Full ( Beta )&emsp;
+					<input type="radio" name="urltype" class="encodable" id="encodeIframeFull" alt="iFrame Full ( For Embedding [ Beta ] )" /> iFrame Full ( For Embedding [ Beta ] )&emsp;
 					<br /><br />
 					<div id="descNorm" class="sharedesc">
 						The text only url link returns only what is written on each entry, and will display whatever is written onto the entries
 					</div>
 					<div id="descFull" class="sharedesc" style="display: none;">
 						The full url link returns not only the text but everything else that could be associated with the graph.
-						So it can return the color used, if it was dashed, any calculus stuff, map points, etc.<br />
+						So it can return the color used, if it was dashed, any calculus stuff, trace points, etc.<br />
 						<span style="color: crimson; font-size: 12px;">
-							[ NOTE: Although it is still in the works and map points don't seem to function too well, plus
+							[ NOTE: Although it is still in the works and trace points don't seem to function too well, plus
+							the calculus things tend to not be friendly with each other ]
+						</span>
+					</div>
+					<div id="descIframe" class="sharedesc" style="display: none;">
+						This is used to embed this web app onto other websites.
+					</div>
+					<div id="descIframeFull" class="sharedesc" style="display: none;">
+						This is used to embed this web app onto other websites, while also using the full url link. Which not only
+						graphs the text given, but everything else that could be associated with the graph. So it can return the
+						color used, if it was dashed, any calculus stuff, trace points, etc.<br />
+						<span style="color: crimson; font-size: 12px;">
+							[ NOTE: Although it is still in the works and trace points don't seem to function too well, plus
 							the calculus things tend to not be friendly with each other ]
 						</span>
 					</div>

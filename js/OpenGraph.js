@@ -117,17 +117,30 @@ $(document).ready(function()
 
     });
 		
-		$("#share,#encodeNorm,#encodeFull").on("click", function(e) {
+		$("#share,.encodable").on("click", function(e) {
 			// Variables
-			var	str=	"http://www.opengraphingcalculator.com/?readType=";
+			var	str=	"https://rawgit.com/johnRedden/OpenGraph/master/index.html?readType=";//"http://www.opengraphingcalculator.com/?readType=";
+			var	readType=	0;
+			
+			switch($(".encodable:checked")[0].id)
+			{
+				case "encodeText":	readType=	0;	break;
+				case "encodeFull":	readType=	1;	break;
+				case "encodeIframe":	readType=	2;	break;
+				case "encodeIframeFull":	readType=	3;	break;
+			}
 			var	bTextOnly=	($("#encodeNorm").prop("checked")== true);
 			
 			if($(".entry")[0]=== null)
 				return;
-			if(bTextOnly)
+			if(readType=== 0)
 				str+=	"text&";
-			else
+			else if(readType=== 1)
 				str+=	"full&";
+			else if(readType=== 2 || readType=== 3)
+			{
+				str=	"<iframe src='"+str+"iframe"+((readType=== 3) ? "_full" : "")+"&";
+			}
 			
 			$(".entry").each(function(index, elem)
 			{
@@ -136,25 +149,51 @@ $(document).ready(function()
 				if(index!= 0)
 					str+=	"&";
 				
-				if(bTextOnly)
+				if(readType== 0 || readType== 2)
 					str+=	escape(MathQuill($(elem).find(".math-field")[0]).latex());
 				else
 					str+=	escape(fullEncode($(elem)));
 			});
-			if(str=== "http://www.opengraphingcalculator.com/?readType=text&")
+			if(
+				str=== "http://www.opengraphingcalculator.com/?readType=text&" ||
+				str=== "http://www.opengraphingcalculator.com/?readType=full&" ||
+				str=== "<iframe src='http://www.opengraphingcalculator.com/?readType=iframe&" ||
+				str=== "<iframe src='http://www.opengraphingcalculator.com/?readType=iframe_full&"
+			)
 				str=	"http://www.opengrapgingcalculator.com/";
-			if(str=== "http://www.opengraphingcalculator.com/?readType=full&")
-				str=	"http://www.opengraphingcalculator.com/";
+			else
+			{
+				if(readType=== 2 || readType=== 3)
+				{
+					str+=	"' scrolling='no' width='50%' height='200px'></iframe>";
+				}
+			}
 			
 			$("#shareModal").modal("show").find("input#urlbox").val(str);
 		});
 		$("#encodeNorm").on("click", function(e) {
 			$("#descNorm").show();
 			$("#descFull").hide();
+			$("#descIframe").hide();
+			$("#descIframeFull").hide();
 		});
 		$("#encodeFull").on("click", function(e) {
 			$("#descNorm").hide();
 			$("#descFull").show();
+			$("#descIframe").hide();
+			$("#descIframeFull").hide();
+		});
+		$("#encodeIframe").on("click", function(e) {
+			$("#descNorm").hide();
+			$("#descFull").hide();
+			$("#descIframe").show();
+			$("#descIframeFull").hide();
+		});
+		$("#encodeIframeFull").on("click", function(e) {
+			$("#descNorm").hide();
+			$("#descFull").hide();
+			$("#descIframe").hide();
+			$("#descIframeFull").show();
 		});
         $('#help').on('click', function () {
             $('#helpModal').modal('show');
@@ -247,6 +286,7 @@ $(document).ready(function()
 					case "text":	readType=	0;	break;
 					case "full":	readType=	1;	break;
 					case "iframe":	readType=	2;	break;
+					case "iframe_full":	readType=	3;	break;
 				}
 				skip=	i;
 				
@@ -258,7 +298,7 @@ $(document).ready(function()
 			if(i=== skip)
 				continue;
 			temp[i]=	unescape(temp[i]);
-			if(readType=== 1)
+			if(readType=== 1 || readType=== 3)
 				temp[i]=	fullDecode(temp[i]);
 			if(i< temp.length-1)
 			{
@@ -268,11 +308,17 @@ $(document).ready(function()
 				updateEntry($($(".entry")[k]), temp[i], null);
 			else if(readType=== 1)
 				updateEntry($($(".entry")[k]), temp[i].latex, temp[i].options);
-			else
+			else if(readType=== 2)
 			{
 				convertSiteTo("iframe");
 				updateEntry($($(".entry")[k]), temp[i], null);
 			}
+			else if(readType=== 3)
+			{
+				convertSiteTo("iframe");
+				updateEntry($($(".entry")[k]), temp[i].latex, temp[i].options);
+			}
+			
 			k++;
 		}
 	}
