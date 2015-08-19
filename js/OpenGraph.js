@@ -304,7 +304,7 @@ function convertSiteTo(idType)
 		case "iframe":
 			$(".myForm").hide();
 			$("#top-header").hide();
-			$("#accessabilities").hide();
+			$("#accessibilities").hide();
 			break;
 		case "iframe-mobile":	break;
 		case "mobile":	break;
