@@ -398,9 +398,18 @@ function convertSiteTo(idType)
 			$("#entry-tools").hide();
 			$("#graphPaperButtons").hide();
 			break;
-		case "mobile":	break;
+		case "mobile":
+			$(".myForm").hide();
+			$("#top-header").show();
+			$("#entry-tools").hide();
+			$("#graphPaperButtons").hide();
+			break;
 		case "normal":
 		case "desktop":
+			$(".myForm").show();
+			$("#top-header").show();
+			$("#entry-tools").show();
+			$("#graphPaperButtons").show();
 			break;
 	}
 	siteType=	idType.toLowerCase();
