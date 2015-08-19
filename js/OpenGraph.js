@@ -302,9 +302,9 @@ function convertSiteTo(idType)
 	switch(idType.toLowerCase())
 	{
 		case "iframe":
-			$(".myForm").hide();
-			$("#top-header").hide();
-			$("#accessibilities").hide();
+			//$(".myForm").hide();
+			//$("#top-header").hide();
+			//$("#accessibilities").hide();
 			console.log("IN:(");
 			break;
 		case "iframe-mobile":	break;
