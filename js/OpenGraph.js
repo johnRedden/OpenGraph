@@ -302,7 +302,7 @@ function convertSiteTo(idType)
 	switch(idType.toLowerCase())
 	{
 		case "iframe":
-			//$(".myForm").hide();
+			$(".myForm").hide();
 			$("#top-header").hide();
 			$("#entry-tools").hide();
 			$("#graphPaperButtons").hide();
