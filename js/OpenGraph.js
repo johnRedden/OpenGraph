@@ -227,7 +227,7 @@ $(document).ready(function()
 	{
 		// Variables
 		var	temp=	(location.search).substring(1);
-		var bTextOnly=	true;
+		var readType=	0;
 		var	skip=	-1;
 		var	k=	0;
 		
@@ -239,7 +239,12 @@ $(document).ready(function()
 				// Variables
 				var	temp2=	temp[i].split("=");
 				
-				bTextOnly=	(temp2[1].trim().toLowerCase()=== "text");
+				switch(temp2[1].trim().toLowerCase())
+				{
+					case "text":	readType=	0;	break;
+					case "full":	readType=	1;	break;
+					case "iframe":	readType=	2;	break;
+				}
 				skip=	i;
 				
 				break;
@@ -250,16 +255,21 @@ $(document).ready(function()
 			if(i=== skip)
 				continue;
 			temp[i]=	unescape(temp[i]);
-			if(!bTextOnly)
+			if(readType=== 1)
 				temp[i]=	fullDecode(temp[i]);
 			if(i< temp.length-1)
 			{
 				constructNewEntry();
 			}
-			if(bTextOnly)
+			if(readType=== 0)
 				updateEntry($($(".entry")[k]), temp[i], null);
-			else
+			else if(readType=== 1)
 				updateEntry($($(".entry")[k]), temp[i].latex, temp[i].options);
+			else
+			{
+				updateEntry($($(".entry")[k]), temp[i], null);
+				convertSiteTo("iframe");
+			}
 			k++;
 		}
 	}
@@ -284,6 +294,23 @@ function onCollapseCollapser(e)
 		cc.style.display=	"none";
 		$(this).find(".glyphicon").removeClass("glyphicon-menu-right").addClass("glyphicon-menu-left");
 		parent.css({right: "0px"});
+	}
+}
+
+function convertSiteTo(idType)
+{
+	switch(idType.toLowerCase())
+	{
+		case "iframe":
+			$(".myForm").hide();
+			$("#top-header").hide();
+			$("#accessabilities").hide();
+			break;
+		case "iframe-mobile":	break;
+		case "mobile":	break;
+		case "normal":
+		case "desktop":
+			break;
 	}
 }
 
