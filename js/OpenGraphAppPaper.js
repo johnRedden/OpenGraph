@@ -11,15 +11,21 @@ function centerOrigin() {
     board.moveOrigin($(window).width() / 2.0, $(window).height() / 2.0);
 };
 // Resizes the graphing board
-function resizeBoard() {
+function resizeBoard(options) {
     var bb = board.getBoundingBox();
 
-    board.resizeContainer($(window).width(), $(window).height(), false, true); //the true = do not call setBoundingBox
+    board.resizeContainer(
+		((options.width) ? options.width : $(window).width()),
+		((options.height) ? options.height : $(window).height()),
+		false, true
+	); //the true = do not call setBoundingBox
     board.setBoundingBox(bb, false);  //false = keep aspect ratio and same bb as coming in
 }
 
 // Resizes the board when the window has been resized
-$(window).resize(resizeBoard);
+$(window).resize(function(){
+		resizeBoard()
+});
 
 // Gets the mouse coordinates
 // Do you think we still need this??

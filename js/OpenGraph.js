@@ -1,5 +1,8 @@
 
 
+// Variables
+var	siteType=	"desktop";
+
 // Called when the page is ready and loaded
 $(document).ready(function()
 {
@@ -299,6 +302,9 @@ function onCollapseCollapser(e)
 
 function convertSiteTo(idType)
 {
+	if(siteType=== "iframe") // Doesn't mess with it's orientation if it is a legit iframe
+		return;
+	
 	switch(idType.toLowerCase())
 	{
 		case "iframe":
@@ -307,12 +313,12 @@ function convertSiteTo(idType)
 			$("#entry-tools").hide();
 			$("#graphPaperButtons").hide();
 			break;
-		case "iframe-mobile":	break;
 		case "mobile":	break;
 		case "normal":
 		case "desktop":
 			break;
 	}
+	siteType=	idType.toLowerCase();
 }
 
 // Updates the given entry with the given latex and options
