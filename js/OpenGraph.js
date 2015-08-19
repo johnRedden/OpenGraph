@@ -117,84 +117,43 @@ $(document).ready(function()
 
     });
 		
-		$("#share,.encodable").on("click", function(e) {
-			// Variables
-			var	str=	"https://rawgit.com/johnRedden/OpenGraph/master/index.html?readType=";//"http://www.opengraphingcalculator.com/?readType=";
-			var	readType=	0;
-			
-			switch($(".encodable:checked")[0].id)
-			{
-				case "encodeText":	readType=	0;	break;
-				case "encodeFull":	readType=	1;	break;
-				case "encodeIframe":	readType=	2;	break;
-				case "encodeIframeFull":	readType=	3;	break;
-			}
-			var	bTextOnly=	($("#encodeNorm").prop("checked")== true);
-			
-			if($(".entry")[0]=== null)
-				return;
-			if(readType=== 0)
-				str+=	"text&";
-			else if(readType=== 1)
-				str+=	"full&";
-			else if(readType=== 2 || readType=== 3)
-			{
-				str=	"<iframe src='"+str+"iframe"+((readType=== 3) ? "_full" : "")+"&";
-			}
-			
-			$(".entry").each(function(index, elem)
-			{
-				if(MathQuill($(elem).find(".math-field")[0]).latex()=== "")
-					return;
-				if(index!= 0)
-					str+=	"&";
-				
-				if(readType== 0 || readType== 2)
-					str+=	escape(MathQuill($(elem).find(".math-field")[0]).latex());
-				else
-					str+=	escape(fullEncode($(elem)));
-			});
-			if(
-				str=== "http://www.opengraphingcalculator.com/?readType=text&" ||
-				str=== "http://www.opengraphingcalculator.com/?readType=full&" ||
-				str=== "<iframe src='http://www.opengraphingcalculator.com/?readType=iframe&" ||
-				str=== "<iframe src='http://www.opengraphingcalculator.com/?readType=iframe_full&"
-			)
-				str=	"http://www.opengrapgingcalculator.com/";
-			else
-			{
-				if(readType=== 2 || readType=== 3)
-				{
-					str+=	"' scrolling='no' width='50%' height='200px'></iframe>";
-				}
-			}
-			
-			$("#shareModal").modal("show").find("input#urlbox").val(str);
-		});
+		$("#share,.encodable").on("click", onShareStuffs);
+		$("#buttonText").on("keyup", onShareStuffs);
 		$("#encodeNorm").on("click", function(e) {
 			$("#descNorm").show();
 			$("#descFull").hide();
 			$("#descIframe").hide();
 			$("#descIframeFull").hide();
+			$("#iframeStuffs").hide();
 		});
 		$("#encodeFull").on("click", function(e) {
 			$("#descNorm").hide();
 			$("#descFull").show();
 			$("#descIframe").hide();
 			$("#descIframeFull").hide();
+			$("#iframeStuffs").hide();
 		});
 		$("#encodeIframe").on("click", function(e) {
 			$("#descNorm").hide();
 			$("#descFull").hide();
 			$("#descIframe").show();
 			$("#descIframeFull").hide();
+			$("#iframeStuffs").show();
 		});
 		$("#encodeIframeFull").on("click", function(e) {
 			$("#descNorm").hide();
 			$("#descFull").hide();
 			$("#descIframe").hide();
 			$("#descIframeFull").show();
+			$("#iframeStuffs").show();
 		});
+		$("#includeButton").on("change", function(e) {
+			if($(e.target).prop("checked"))
+				$("#buttonStuffs").show();
+			else
+				$("#buttonStuffs").hide();
+		});
+		
         $('#help').on('click', function () {
             $('#helpModal').modal('show');
         });
@@ -323,6 +282,86 @@ $(document).ready(function()
 		}
 	}
 });
+
+function onShareStuffs(e)
+{
+	// Variables
+	var	str=	"https://rawgit.com/johnRedden/OpenGraph/master/index.html?readType=";//"http://www.opengraphingcalculator.com/?readType=";
+	var	url=	str;
+	var	readType=	0;
+
+	switch($(".encodable:checked")[0].id)
+	{
+		case "encodeText":	readType=	0;	break;
+		case "encodeFull":	readType=	1;	break;
+		case "encodeIframe":	readType=	2;	break;
+		case "encodeIframeFull":	readType=	3;	break;
+	}
+
+	if($(".entry")[0]=== null)
+		return;
+	if(readType=== 0)
+		str+=	"text&";
+	else if(readType=== 1)
+		str+=	"full&";
+	else if(readType=== 2 || readType=== 3)
+	{
+		url=	str+"iframe"+((readType=== 3) ? "_full" : "")+"&";
+		str=	"<iframe src='"+url;
+	}
+
+	$(".entry").each(function(index, elem)
+	{
+		if(MathQuill($(elem).find(".math-field")[0]).latex()=== "")
+			return;
+		if(index!= 0)
+		{
+			url+=	"&";
+			str+=	"&";
+		}
+		
+		if(readType== 0 || readType== 2)
+		{
+			if(readType=== 2)
+				url+=	escape(MathQuill($(elem).find(".math-field")[0]).latex());
+			str+=	escape(MathQuill($(elem).find(".math-field")[0]).latex());
+		}
+		else
+		{
+			if(readType=== 3)
+				url+=	escape(fullEncode($(elem)));
+			str+=	escape(fullEncode($(elem)));
+		}
+	});
+	if(
+		str=== "http://www.opengraphingcalculator.com/?readType=text&" ||
+		str=== "http://www.opengraphingcalculator.com/?readType=full&" ||
+		str=== "<iframe src='http://www.opengraphingcalculator.com/?readType=iframe&" ||
+		str=== "<iframe src='http://www.opengraphingcalculator.com/?readType=iframe_full&"
+	)
+		str=	"http://www.opengrapgingcalculator.com/";
+	else
+	{
+		if(readType=== 2 || readType=== 3)
+		{
+			str+=	"' scrolling='no' width='50%' height='200px'></iframe>";
+			if($("#includeButton").prop("checked"))
+			{
+				// Variables
+				var	btn=	"<button style='width: 50%' onclick='location.assign(\""+url.replace(
+					"readType=iframe"+((readType=== 3) ? "_" : ""), "readType="+((readType=== 2) ? "text" : "")
+				)+"\");'>"+$("#buttonText").val()+"</button>";
+				
+				if($("#isButtonTop").prop("checked"))
+					str=	btn+"<br />"+str;
+				else
+					str+=	"<br />"+btn;
+			}
+		}
+	}
+
+	$("#shareModal").modal("show").find("input#urlbox").val(str);
+}
 
 // Called when the collapser has collapsed a collapsible collapser
 function onCollapseCollapser(e)
