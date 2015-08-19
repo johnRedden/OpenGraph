@@ -286,7 +286,7 @@ $(document).ready(function()
 function onShareStuffs(e)
 {
 	// Variables
-	var	str=	"https://rawgit.com/johnRedden/OpenGraph/master/index.html?readType=";//"http://www.opengraphingcalculator.com/?readType=";
+	var	str=	"http://www.opengraphingcalculator.com/?readType=";
 	var	url=	str;
 	var	readType=	0;
 
